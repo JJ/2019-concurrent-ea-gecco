@@ -1,3 +1,7 @@
+2018-11-15  Juan J. merelo  <jmerelo@penny>
+
+	* utils/pop.R: Analyzing hung experiments, the best average number of evaluations is for pop=512; however, if we look at time it's worse than for pop=256. Too bad. 
+
 2018-11-11  JJMerelo  <jmerelo@bojack>
 
 	* utils/chart.R: Two more experiments, or sets of experiments, should be proposed:
