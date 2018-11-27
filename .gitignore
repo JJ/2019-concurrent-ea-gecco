@@ -10,8 +10,7 @@
 *.fot
 *.cb
 *.cb2
-# tex is OK
-# *.tex
+*.tex
 
 ## Intermediate documents:
 *.dvi
