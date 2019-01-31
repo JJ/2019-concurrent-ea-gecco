@@ -51,14 +51,16 @@ Institute Two
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{abstract}
 Creating a concurrent and stateless version of an evolutionary algorithm implies
-changes in its behavior. From the performance point of view, the main challenge is to balance computation
-with communication, but from the algorithmic point of view we have to
+changes in its behavior. From the performance point of view, the main challenge 
+is to balance computation with communication, but from the algorithmic point of view, we have to
 keep diversity high so that the algorithm is not stuck in local
 minima. In a concurrent setting, we will have to find the right
 balance so that improvements in both fields do not cancel out. This is
 what we will be doing in this paper, where we explore the space of
-parameters of a population based concurrent evolutionary algorithm to
+parameters of a population-based concurrent evolutionary algorithm to
 find out the best combination for a particular problem.
+% We could comment that even if this tested in a particular problem
+% the methodology could be applied to other problems.
 \end{abstract}
 
 \keywords{Concurrent algorithms, distributed computing, stateless algorithms,
@@ -74,8 +76,9 @@ high-level interface that allows the user to program code that might
 be executed in parallel either in threads or in different processes \cite{andrews1991concurrent}.
 
 Different languages offer different facilities for concurrency at the
-primitive level, and mainly differ on how they deal with shared state,
-that is, variables that are accessed from several
+primitive level, and mainly differ on how they deal with a shared state,
+that is, variables that are accessed from several 
+% ... that are accessed concurrently from several ... - Mario 
 processes. Actor-based concurrency \cite{schippers2009towards}
 eliminates shared state by introducing a series of {\em actors} that
 store state and can change it; on the other hand,  channel based
@@ -83,6 +86,7 @@ concurrency follows the {\em communicating sequential processes}
 methodology \cite{Hoare:1978:CSP:359576.359585}, which is effectively
 stateless, with different processes reacting to channel input without
 changing state, and writing to these channels. 
+% Can I include tuple-spaces? It's also a concurrency manager - Mario 
 
 This kind of concurrency is the one implemented by many modern
 languages such as Go or Perl 6 \cite{lenzperl}. However, the
