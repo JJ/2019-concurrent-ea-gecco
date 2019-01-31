@@ -169,10 +169,75 @@ implementation of any algorithm. In particular, evolutionary
 algorithms need to change to fit an architecture that creates and
 processes streams of data using functions that do not change state. 
 
+% Paper layout goes here
+
+\section{State of the Art}
+
+
 Despite the emphasis on hardware-based techniques such as
 cloud computing or GPGPU, there are not many papers \cite{Xia2010} dealing with
 creating concurrent evolutionary algorithms that work in a single
 computing node or that extend seamlessly from single to many computers.
+
+The concurrent programming paradigm (or concurrency oriented
+programming \cite{Armstrong2003}) is characterized by the presence of
+programming constructs for managing processes like first class
+objects. That is, with operators for acting upon them and the
+possibility of using them like parameters or function's result
+values. This changes the coding of concurrent algorithms due to the
+direct mapping between patterns of communications and processes with
+language expressions; on one hand it becomes simpler since the
+language provides an abstraction for communication, in the other hand
+it changes the paradigm for implementing algorithms, since these new
+communication constructs have to be taken into account.
+
+This design has to take into account the communication/synchronization
+between processes, which nowadays will be mainly threads. One of the best efforts to formalize
+and simplify that is the Hoare’s {\em Communicating Sequential
+  Processes} \cite{Hoare:1978:CSP:359576.359585}, this interaction
+description language is the theoretical support for many libraries and
+new programming languages. This kind of concurrent programs is based
+on {\em channels}, which are used to interchange message between the
+different processes or threads; messages can be interchanged
+asynchronously or synchronously. The Go language uses this kind of
+model, and Perl 6 will use, among others (like {\em promises} or
+low-level access to the creation of threads), this one.
+Another, different, approach is actor-based
+concurrency, \cite{schippers2009towards}. This actor model bans shared
+state, with different {\em actors} communicating through messages \cite{erb2012concurrent}. 
+
+
+The fact that messages have to be processed without secondary effects
+and that actors do not share any kind of state makes concurrent
+programming specially fit for functional languages or languages with
+functional features; this has made this paradigm specially popular for
+late cloud computing implementations; however, its presence in the EA
+world is not so widespread, although some efforts have lately revived
+the interest for this kind of paradigm \cite{swan2015research}. Several years ago was used in Genetic Programming
+\cite{Briggs:2008:FGP:1375341.1375345,Huelsbergen:1996:TSE:1595536.1595579,walsh:1999:AFSFESIHLP}
+and recently in neuroevolution \cite{Sher2013} but in EA its presence,
+despite being scarce in the previous years
+\cite{Hawkins:2001:GFG:872017.872197}, has experimented a certain rise
+lately with papers such as \cite{valkov2018synthesis} which perform
+program synthesis using functional programming or
+\cite{barwell2017using} which uses the functional and parallel
+language Erlang for an evolutionary multi-agent system.
+
+Among languages with functional features, the languages Erlang and Scala have
+embraced the actor model of concurrency and get excellent results in
+many application domains; Clojure is another one with concurrent
+features such as promises/futures, Software Transaction Memory and
+agents; Kotlin \cite{simson2017open} has been recently used for
+implementing a functional evolutionary algorithm framework.  
+
+On the
+other hand, Perl 6 \cite{Tang:2007:PRI:1190215.1190218} uses different
+concurrency models, that go from implicit concurrency using a
+particular function that automatically parallelizes operations on
+iterable data structures, to explicit concurrency using threads. These
+both types of concurrency will be analyzed in this paper, which uses
+the {\tt Algorithm::Evolutionary::Simple} library for that language
+which was presented in the same conference \cite{DBLP:conf/gecco/GuervosV18}
 
 For instance, the EvAg model \cite{evag:gpem} is a locally concurrent and globally
 parallel evolutionary algorithm that leaves the management of the
