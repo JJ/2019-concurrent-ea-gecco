@@ -333,11 +333,11 @@ We will present the experimental setup next.
 \includegraphics[width=0.95\textwidth]{../figure/popmixer}
 \caption{General scheme of operation of channels and thread groups. }
 \label{fig:evals}
-\end{figure*}
+\end{figure}
 In principle, we will work with two threads, one for
 mixing the populations and another for evolution. This setup, while
 being concurrent, allows us to focus more on the basic features of the
-algorithm, which is what we are exploring in this paper. 
+algorithm, which is what we are exploring in this paper.
 
 What we want to find out in these set of experiments is what is the
 generation gap that gives the best performance in terms of raw time to
