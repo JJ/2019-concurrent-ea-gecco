@@ -327,6 +327,13 @@ We will present the experimental setup next.
 
 \section{Experimental setup and results}
 \label{sec:res}
+
+\begin{figure}[h!tb]
+  \centering
+\includegraphics[width=0.95\textwidth]{../figure/popmixer}
+\caption{General scheme of operation of channels and thread groups. }
+\label{fig:evals}
+\end{figure*}
 In principle, we will work with two threads, one for
 mixing the populations and another for evolution. This setup, while
 being concurrent, allows us to focus more on the basic features of the
