@@ -36,5 +36,5 @@ data.generations <- data.frame(
     time=c(data.compress.generations$Time,data.freqs.generations$Time) )
 
 ggplot(data.generations,aes(x=gap,y=evaluations,group=strategy, color=strategy))+ stat_summary(fun.y="mean", geom="line")+geom_point()+scale_y_log10()+scale_x_log10()+theme_tufte()+labs(x="Generations",y="Evaluations")
-ggplot(data.generations,aes(x=gap,y=time,group=strategy, color=strategy))+ stat_summary(fun.y="mean", geom="line")+geom_point()+scale_y_log10()+scale_x_log10()+theme_tufte()+labs(x="Generations",y="Evaluations")
-ggplot(data.generations,aes(x=gap,y=evaluations/time,group=strategy, color=strategy))+ stat_summary(fun.y="mean", geom="line")+geom_point()+scale_y_log10()+scale_x_log10()+theme_tufte()+labs(x="Generations",y="Evaluations")
+ggplot(data.generations,aes(x=gap,y=time,group=strategy, color=strategy))+ stat_summary(fun.y="mean", geom="line")+geom_point()+scale_y_log10()+scale_x_log10()+theme_tufte()+labs(x="Generations",y="Time")
+ggplot(data.generations,aes(x=gap,y=evaluations/time,group=strategy, color=strategy))+ stat_summary(fun.y="mean", geom="line")+geom_point()+scale_y_log10()+scale_x_log10()+theme_tufte()+labs(x="Generations",y="Evaluations/second")

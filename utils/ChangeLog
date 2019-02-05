@@ -3,4 +3,5 @@
 	* charts-gecco-2019.R: The evaluation/time rate does not seem to change, even increasing the number of threads. Maybe because the number of initial populations is not increased.
 	The number of evaluations, and generations per unit time, increases with the number of generations. The less generations, the better.
 	Same problem with the compressed send, does not improve the number of generations, no way.
+	Evaluations/second for 8 generations gap is the best, with the lowest time and highest number of evaluations/second.
 
