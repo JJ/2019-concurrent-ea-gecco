@@ -1,0 +1,4 @@
+2019-02-05  Juan J. merelo  <jmerelo@penny>
+
+	* charts-gecco-2019.R: The evaluation/time rate does not seem to change, even increasing the number of threads. Maybe because the number of initial populations is not increased.
+

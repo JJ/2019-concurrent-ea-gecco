@@ -4,7 +4,7 @@ use v6;
 
 use JSON::Fast;
 
-say "Threads, Generation-Gap, Generations, Time";
+say "Threads, Generation-Gap, Evaluations, Time";
 for @*ARGS -> $file {
     my $content =  $file.IO.slurp;
     $content ~~ s:g/\} . \{/\},\n\{/;
