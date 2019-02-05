@@ -6,9 +6,11 @@ use JSON::Fast;
 
 say "Threads, Generation-Gap, Evaluations, Time";
 for @*ARGS -> $file {
+    say $file;
     my $content =  $file.IO.slurp;
     $content ~~ s:g/\} . \{/\},\n\{/;
     my @data = from-json('[' ~ $content ~ ']')<>;
+    next if @data[0]<msg>:!exists;
     my %start = @data[0]<msg>;
     my (@ends) = @data.grep( *.<msg><finishing-at> );
     next if ! @ends;
