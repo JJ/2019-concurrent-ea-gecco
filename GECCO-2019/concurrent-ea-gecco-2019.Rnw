@@ -330,7 +330,7 @@ We will present the experimental setup next.
 
 \begin{figure}[h!tb]
   \centering
-\includegraphics[width=0.95\textwidth]{../figure/popmixer}
+\includegraphics[width=0.95\columnwidth]{../figure/popmixer}
 \caption{General scheme of operation of channels and thread groups. }
 \label{fig:evals}
 \end{figure}
