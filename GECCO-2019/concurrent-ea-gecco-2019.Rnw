@@ -351,17 +351,8 @@ performance.
 
 We will present the experimental setup next.
 
-\begin{figure*}[h!tb]
-  \centering
-\includegraphics[width=0.95\textwidth]{../figure/screenshot}
-\caption{Screenshot using the htop utility of the used machine running
-  two experiments at the same time. As it can be seen, all processors
-  are kept busy, with a very high load average. }
-\label{fig:screenshot}
-\end{figure*}
-%
-\section{Experimental setup and results}
-\label{sec:res}
+\section{Experimental setup}
+\label{sec:exp}
 
 \begin{figure}[h!tb]
   \centering
@@ -370,10 +361,48 @@ We will present the experimental setup next.
 \label{fig:scheme}
 \end{figure}
 %
-In principle, we will work with two threads, one for
-mixing the populations and another for evolution. This setup, while
-being concurrent, allows us to focus more on the basic features of the
-algorithm, which is what we are exploring in this paper.
+
+The setup is similar to the one used in previous experiments
+\cite{Merelo:2018:MEA:3205651.3208317:anon}. Our intention was to
+create a system that was not functionally equivalent to a sequential
+evolutionary algorithms, and that followed the principle of
+communicating sequential processes. In this kind of methodology, we
+will have processes (or threads) communicating state through
+channels. Every process itself will be stateless, reacting to the
+presence of messages in the channels it is listening to and sending
+result back to them, without changing state.
+
+As in the previous papers, \cite{merelo:WEA:anon}, we will use two
+groups of threads and two channels. We will see them in turns.
+
+The two groups of threads perform the following
+functions:\begin{itemize}
+\item The {\em evolutionary} threads will be the ones that will be in
+  principle running the evolutionary algorithm.
+\item The {\em mixing} threads will {\em mix} populations, and create
+  new ones as a mixture of them.
+\end{itemize}
+
+The two channels carry messages that are equivalent to populations,
+but they do so in a different way:\begin{itemize}
+  
+\item The {\em evolutionary} channel will be used for carrying
+  non-evolved, or generated, populations.
+\item The {\em mixer} channel will carry, {\em in pairs}, evolved
+  populations. 
+\end{itemize}
+
+These will be connected as shown in Figure \ref{fig:scheme}. The
+evolutionary group of threads will read only from the evolutionary channel,
+evolve for a number of generations, and place result in the mixer
+channel; the mixer group of threads will read only from the mixer
+channel, in pairs. From every pair, a random element is put back into
+the mixer channel, and a new population is generated and sent back to
+the evolutionary channel. The main objective of using two channels is
+to avoid deadlocks; the fact that one population is written always
+back to the mixer channel avoids starvation in the channel.
+
+
 
 What we want to find out in these set of experiments is what is the
 generation gap that gives the best performance in terms of raw time to
@@ -445,6 +474,18 @@ which means that, on average, the solution will be found faster with a
 generation gap of 8 or 16. This is shown in Figure \ref{fig:time}.
 % I don't feel confortable modifying this paragraph, but I find it a bit twisted - Juanlu
 % Rewritten - JJ
+
+
+\begin{figure*}[h!tb]
+  \centering
+\includegraphics[width=0.95\textwidth]{../figure/screenshot}
+\caption{Screenshot using the htop utility of the used machine running
+  two experiments at the same time. As it can be seen, all processors
+  are kept busy, with a very high load average. }
+\label{fig:screenshot}
+\end{figure*}
+%
+
 
 \section{Conclusions}
 \label{sec:conclusions}
