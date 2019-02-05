@@ -19,3 +19,11 @@ data.freqs.generations <- read.csv('../data/gecco-2019-freqs-generations.csv')
 ggplot(data.freqs.generations,aes(x=Generation.Gap,y=Evaluations,group=Generation.Gap))+geom_boxplot()+scale_x_log10()+theme_tufte()+labs(x="Generations",y="Evaluations",title="Generation gap = 8")
 ggplot(data.freqs.generations,aes(x=Generation.Gap,y=Time,group=Generation.Gap))+geom_boxplot()+scale_x_log10()+theme_tufte()+labs(x="Generations",y="Time",title="Generation gap = 8")
 ggplot(data.freqs.generations,aes(x=Generation.Gap,y=Evaluations/Time,group=Generation.Gap))+geom_boxplot()+scale_x_log10()+theme_tufte()+labs(x="Generations",y="Evaluation/time",title="Generation gap = 8")
+
+
+data.compress.generations <- read.csv('../data/gecco-2019-compress-generations.csv')
+
+
+ggplot(data.compress.generations,aes(x=Generation.Gap,y=Evaluations,group=Generation.Gap))+geom_boxplot()+scale_x_log10()+theme_tufte()+labs(x="Generations",y="Evaluations",title="Generation gap = 8")
+ggplot(data.compress.generations,aes(x=Generation.Gap,y=Time,group=Generation.Gap))+geom_boxplot()+scale_x_log10()+theme_tufte()+labs(x="Generations",y="Time",title="Generation gap = 8")
+ggplot(data.compress.generations,aes(x=Generation.Gap,y=Evaluations/Time,group=Generation.Gap))+geom_boxplot()+scale_x_log10()+theme_tufte()+labs(x="Generations",y="Evaluation/time",title="Generation gap = 8")
