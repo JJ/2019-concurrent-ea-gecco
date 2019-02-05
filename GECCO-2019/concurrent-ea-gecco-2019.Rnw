@@ -351,6 +351,15 @@ performance.
 
 We will present the experimental setup next.
 
+\begin{figure*}[h!tb]
+  \centering
+\includegraphics[width=0.95\textwidth]{../figure/screenshot}
+\caption{Screenshot using the htop utility of the used machine running
+  two experiments at the same time. As it can be seen, all processors
+  are kept busy, with a very high load average. }
+\label{fig:screenshot}
+\end{figure*}
+%
 \section{Experimental setup and results}
 \label{sec:res}
 
@@ -358,8 +367,9 @@ We will present the experimental setup next.
   \centering
 \includegraphics[width=0.95\columnwidth]{../figure/popmixer}
 \caption{General scheme of operation of channels and thread groups. }
-\label{fig:evals}
+\label{fig:scheme}
 \end{figure}
+%
 In principle, we will work with two threads, one for
 mixing the populations and another for evolution. This setup, while
 being concurrent, allows us to focus more on the basic features of the
