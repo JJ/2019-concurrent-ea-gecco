@@ -37,6 +37,31 @@
 
 
 \begin{document}
+
+<<setup, cache=FALSE,echo=FALSE>>=
+library(reshape2)
+library(ggplot2)
+library(ggthemes)
+
+data.freqs.threads <- read.csv('../data/gecco-2019-freqs-threads.csv')
+data.compress.threads <- read.csv('../data/gecco-2019-compress-threads.csv')
+data.freqs.generations <- read.csv('../data/gecco-2019-freqs-generations.csv')
+data.compress.generations <- read.csv('../data/gecco-2019-compress-generations.csv')
+data.evostar <- read.csv("../data/evostar2019.csv")
+
+data.generations <- data.frame(
+    strategy=c(rep("Compress",length(data.compress.generations$Generation.Gap)),
+               rep("EDA",length(data.freqs.generations$Generation.Gap)),
+               rep("Full",length(data.evostar$gap))),
+    gap=c(data.compress.generations$Generation.Gap,data.freqs.generations$Generation.Gap,data.evostar$gap),
+    evaluations=c(data.compress.generations$Evaluations,data.freqs.generations$Evaluations,data.evostar$evaluations),
+    time=c(data.compress.generations$Time,data.freqs.generations$Time,data.evostar$time) )
+
+
+
+
+@
+
 \title{Exploring concurrent and stateless evolutionary algorithms}
 \titlenote{Produces the permission block, and
   copyright information}
@@ -88,6 +113,7 @@
   % The default list of authors is too long for headers.
   \renewcommand{\shortauthors}{A. Author et al.}
 
+  
 
 \begin{abstract}
 Concurrent algorithms use channels for communication, which implies

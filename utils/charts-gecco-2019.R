@@ -28,12 +28,15 @@ ggplot(data.compress.generations,aes(x=Generation.Gap,y=Evaluations,group=Genera
 ggplot(data.compress.generations,aes(x=Generation.Gap,y=Time,group=Generation.Gap))+geom_boxplot()+scale_x_log10()+theme_tufte()+labs(x="Generations",y="Time",title="Generation gap = 8")
 ggplot(data.compress.generations,aes(x=Generation.Gap,y=Evaluations/Time,group=Generation.Gap))+geom_boxplot()+scale_x_log10()+theme_tufte()+labs(x="Generations",y="Evaluation/time",title="Generation gap = 8")
 
+data.evostar <- read.csv("../data/evostar2019.csv")
+
 data.generations <- data.frame(
     strategy=c(rep("Compress",length(data.compress.generations$Generation.Gap)),
-               rep("EDA",length(data.freqs.generations$Generation.Gap))),
-    gap=c(data.compress.generations$Generation.Gap,data.freqs.generations$Generation.Gap),
-    evaluations=c(data.compress.generations$Evaluations,data.freqs.generations$Evaluations),
-    time=c(data.compress.generations$Time,data.freqs.generations$Time) )
+               rep("EDA",length(data.freqs.generations$Generation.Gap)),
+               rep("Full",length(data.evostar$gap))),
+    gap=c(data.compress.generations$Generation.Gap,data.freqs.generations$Generation.Gap,data.evostar$gap),
+    evaluations=c(data.compress.generations$Evaluations,data.freqs.generations$Evaluations,data.evostar$evaluations),
+    time=c(data.compress.generations$Time,data.freqs.generations$Time,data.evostar$time) )
 
 ggplot(data.generations,aes(x=gap,y=evaluations,group=strategy, color=strategy))+ stat_summary(fun.y="mean", geom="line")+geom_point()+scale_y_log10()+scale_x_log10()+theme_tufte()+labs(x="Generations",y="Evaluations")
 ggplot(data.generations,aes(x=gap,y=time,group=strategy, color=strategy))+ stat_summary(fun.y="mean", geom="line")+geom_point()+scale_y_log10()+scale_x_log10()+theme_tufte()+labs(x="Generations",y="Time")
