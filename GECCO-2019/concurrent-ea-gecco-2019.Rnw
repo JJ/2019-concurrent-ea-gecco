@@ -201,7 +201,16 @@ and can thus be implemented easily in this kind of languages. We will
 use Perl 6, but in principle implementation should be possible in
 other languages such as Go.
 
-In 
+In previous papers
+\cite{Merelo:2018:MEA:3205651.3208317:anon,merelo:WEA:anon,} we
+designed an evolutionary algorithm that fits well this architecture,
+and explored its possibilities. This initial exploration showed that
+since these algorithms are built around communication, designing
+efficient messages is one of the keys to a good algorithmic
+performance and scaling. In this paper, we will test several
+communication procedures: a lossless one that compress the population,
+and a lossy one that sends a representation of population gene-wise
+statistics.
 
 \section{State of the Art}
 
