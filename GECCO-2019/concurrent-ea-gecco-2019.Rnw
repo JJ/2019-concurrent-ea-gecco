@@ -146,33 +146,6 @@ multi-threaded and multi-core capabilities of modern computers.
 
 \section{Introduction}
 
-Concurrent programming adds a layer of abstraction over the parallel
-facilities processors and operating systems to offer a
-high-level interface that allows the user to program code that might
-be executed in parallel either in threads or in different processes \cite{andrews1991concurrent}.
-
-Different languages offer different facilities for concurrency at the
-primitive level, and mainly differ on how they deal with shared state,
-that is, variables that are accessed from several
-processes. Actor-based concurrency \cite{schippers2009towards}
-eliminates shared state by introducing a series of {\em actors} that
-store state and can change it; on the other hand,  channel based
-concurrency follows the {\em communicating sequential processes}
-methodology \cite{Hoare:1978:CSP:359576.359585}, which is effectively
-stateless, with different processes reacting to channel input without
-changing state, and writing to these channels. 
-
-This kind of concurrency is the one implemented by many modern
-languages such as Go or Perl 6 \cite{lenzperl}. However, the
-statelessness of the implementation asks for a change in the
-implementation of any algorithm. In particular, evolutionary
-algorithms need to change to fit an architecture that creates and
-processes streams of data using functions that do not change state. 
-
-% Paper layout goes here
-
-\section{State of the Art}
-
 
 Despite the emphasis on hardware-based techniques such as
 cloud computing or GPGPU, there are not many papers \cite{Xia2010} dealing with
@@ -189,7 +162,49 @@ direct mapping between patterns of communications and processes with
 language expressions; on one hand it becomes simpler since the
 language provides an abstraction for communication, in the other hand
 it changes the paradigm for implementing algorithms, since these new
-communication constructs have to be taken into account.
+communication constructs have to be taken into account. 
+
+Since concurrent programming adds a layer of abstraction over the parallel
+facilities processors and operating systems to offer a
+high-level interface that allows the user to program code that might
+be executed in parallel either in threads or in different processes \cite{andrews1991concurrent}.
+
+Different languages offer different facilities for concurrency, that
+is, different abstraction layers and mainly differ on how they deal with shared state,
+that is, data structures that could be accessed from several
+processes. In this, there are two major fields (with some other
+variations): \begin{itemize}
+\item Actor-based concurrency \cite{schippers2009towards}
+totally eliminates shared state by introducing a series of data
+structures called {\em actors} that
+store state and can mutate it locally. 
+\item Process calculi or process algebra is a framework to describe
+  systems that work with independent
+  processes that interact between them using channels. One of the best
+  know ones is called the {\em communicating sequential processes} (CSP)
+methodology \cite{Hoare:1978:CSP:359576.359585}, which is effectively
+stateless, with different processes reacting to channel input without
+changing state, and writing to these channels. Unlike actor based
+concurrency, which keeps state local, in this case per-process state is totally
+eliminated, with all computation state kept in the channel messages.
+\item Other, less well known paradigms, that use, for instance, tuple
+  spaces \cite{gelernter1985generative}.
+\end{itemize}
+
+Most modern languages, however, follow the CSP abstraction, and it has
+become popular since it fits well other programming paradigms, like
+reactive and functional programming, and allows for a more efficient
+implementation, with less overhead and with well defined
+primitives. This is what we will use in this paper for creating new
+evolutionary algorithms that live {\em natively} in these environments
+and can thus be implemented easily in this kind of languages. We will
+use Perl 6, but in principle implementation should be possible in
+other languages such as Go.
+
+In 
+
+\section{State of the Art}
+
 
 This design has to take into account the communication/synchronization
 between processes, which nowadays will be mainly threads. One of the best efforts to formalize
