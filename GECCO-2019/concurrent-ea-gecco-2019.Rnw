@@ -180,13 +180,13 @@ computing node or that extend seamlessly from single to many computers.
 
 The concurrent programming paradigm (or concurrency oriented
 programming \cite{Armstrong2003}) is characterized by the presence of
-programming constructs for managing processes like first class
-objects. That is, with operators for acting upon them and the
-possibility of using them like parameters or function's result
-values. This changes the coding of concurrent algorithms due to the
+programming constructs for managing processes like first-class
+objects. That is, with native operators for acting upon them and the
+possibility of using them as parameters or as return values of 
+a function. This changes the coding of concurrent algorithms due to the
 direct mapping between patterns of communications and processes with
 language expressions; on one hand it becomes simpler since the
-language provides an abstraction for communication, in the other hand
+language provides an abstraction for communication, on the other hand
 it changes the paradigm for implementing algorithms, since these new
 communication constructs have to be taken into account. 
 
@@ -207,12 +207,12 @@ store state and can mutate it locally.
 \item Process calculi or process algebra is a framework to describe
   systems that work with independent
   processes that interact between them using channels. One of the best
-  know ones is called the {\em communicating sequential processes} (CSP)
+  known is called the {\em communicating sequential processes} (CSP)
 methodology \cite{Hoare:1978:CSP:359576.359585}, which is effectively
-stateless, with different processes reacting to channel input without
+stateless, with different processes reacting to a channel input without
 changing state, and writing to these channels. Unlike actor based
 concurrency, which keeps state local, in this case per-process state is totally
-eliminated, with all computation state kept in the channel messages.
+eliminated, with all computation state kept as messages in a channel.
 \item Other, less well known paradigms, that use, for instance, tuple
   spaces \cite{gelernter1985generative}.
 \end{itemize}
@@ -220,21 +220,21 @@ eliminated, with all computation state kept in the channel messages.
 Most modern languages, however, follow the CSP abstraction, and it has
 become popular since it fits well other programming paradigms, like
 reactive and functional programming, and allows for a more efficient
-implementation, with less overhead and with well defined
+implementation, with less overhead, and with well-defined
 primitives. This is what we will use in this paper for creating new
 evolutionary algorithms that live {\em natively} in these environments
 and can thus be implemented easily in this kind of languages. We will
-use Perl 6, but in principle implementation should be possible in
+use Perl 6, but in principle, implementation should be possible in
 other languages such as Go.
 
 In previous papers
 \cite{Merelo:2018:MEA:3205651.3208317:anon,merelo:WEA:anon,} we
-designed an evolutionary algorithm that fits well this architecture,
+designed an evolutionary algorithm that fits well this architecture
 and explored its possibilities. This initial exploration showed that
 since these algorithms are built around communication, designing
 efficient messages is one of the keys to a good algorithmic
 performance and scaling. In this paper, we will test several
-communication procedures: a lossless one that compress the population,
+communication procedures: a lossless one that compresses the population,
 and a lossy one that sends a representation of population gene-wise
 statistics.
 
