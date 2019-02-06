@@ -2,7 +2,7 @@
 \documentclass[sigconf]{acmart}
 
 \usepackage{booktabs} % For formal tables
-
+\usepackage[underline=false]{pgf-umlsd}
 
 % Copyright
 %\setcopyright{none}
@@ -183,23 +183,24 @@ programming \cite{Armstrong2003}) is characterized by the presence of
 programming constructs for managing processes like first-class
 objects. That is, with native operators for acting upon them and the
 possibility of using them as parameters or as return values of 
-a function. This changes the coding of concurrent algorithms due to the
+a function. 
+The latter yields to changes in the implementation of concurrent algorithms due to the
 direct mapping between patterns of communications and processes with
 language expressions; on one hand it becomes simpler since the
 language provides an abstraction for communication, on the other hand
 it changes the paradigm for implementing algorithms, since these new
 communication constructs have to be taken into account. 
 
-Since concurrent programming adds a layer of abstraction over the parallel
-facilities processors and operating systems to offer a
-high-level interface that allows the user to program code that might
-be executed in parallel either in threads or in different processes \cite{andrews1991concurrent}.
+Moreover, concurrent programming adds a layer of abstraction over the parallel
+facilities of processors and operating systems, offering a
+high-level interface that allows the user to program modules of code that can
+be executed in parallel threads \cite{andrews1991concurrent}.
 
-Different languages offer different facilities for concurrency, that
-is, different abstraction layers and mainly differ on how they deal with shared state,
+Different languages offer different concurrency strategies mainly differing on how they deal with shared state,
 that is, data structures that could be accessed from several
-processes. In this, there are two major fields (with some other
-variations): \begin{itemize}
+processes. In this regard, there are two major fields (with some other
+variations): 
+\begin{itemize}
 \item Actor-based concurrency \cite{schippers2009towards}
 totally eliminates shared state by introducing a series of data
 structures called {\em actors} that
@@ -212,8 +213,8 @@ methodology \cite{Hoare:1978:CSP:359576.359585}, which is effectively
 stateless, with different processes reacting to a channel input without
 changing state, and writing to these channels. Unlike actor based
 concurrency, which keeps state local, in this case per-process state is totally
-eliminated, with all computation state kept as messages in a channel.
-\item Other, less well known paradigms, that use, for instance, tuple
+eliminated, with all computation state managed as messages in a channel.
+\item Other, less well known models using, for instance, tuple
   spaces \cite{gelernter1985generative}.
 \end{itemize}
 
@@ -221,20 +222,19 @@ Most modern languages, however, follow the CSP abstraction, and it has
 become popular since it fits well other programming paradigms, like
 reactive and functional programming, and allows for a more efficient
 implementation, with less overhead, and with well-defined
-primitives. This is what we will use in this paper for creating new
+primitives. This is why we will use it in this paper for creating new
 evolutionary algorithms that live {\em natively} in these environments
-and can thus be implemented easily in this kind of languages. We will
-use Perl 6, but in principle, implementation should be possible in
-other languages such as Go.
+and can thus be implemented easily in this kind of languages. We have chosen Perl 6, although 
+other languages such as Go, are feasible alternatives.
 
 In previous papers
 \cite{Merelo:2018:MEA:3205651.3208317:anon,merelo:WEA:anon,} we
 designed an evolutionary algorithm that fits well this architecture
-and explored its possibilities. This initial exploration showed that
-since these algorithms are built around communication, designing
-efficient messages is one of the keys to a good algorithmic
+and explored its possibilities. That initial exploration showed that
+a critical factor within this algorithic model is communication between threads; therefore designing
+efficient messages is high-priority to obtain a good algorithmic
 performance and scaling. In this paper, we will test several
-communication procedures: a lossless one that compresses the population,
+communication strategoes: a lossless one that compresses the population,
 and a lossy one that sends a representation of population gene-wise
 statistics.
 
@@ -242,21 +242,16 @@ statistics.
 
 
 This design has to take into account the communication/synchronization
-between processes, which nowadays will be mainly threaded. 
-%% The following sentences are not clear to me -- Start 
-One of the best efforts to formalize
+between processes, which nowadays will be mainly threads. One of the best efforts to formalize
 and simplify that is the Hoare’s {\em Communicating Sequential
   Processes} \cite{Hoare:1978:CSP:359576.359585}, this interaction
 description language is the theoretical support for many libraries and
-new programming languages. 
-%% -- Finish - Mario
-This kind of concurrent programs are based
-on {\em channels}, which are used to interchange messages between the
+new programming languages. This kind of concurrent programs is based
+on {\em channels}, which are used to interchange message between the
 different processes or threads; messages can be interchanged
-asynchronously or synchronously. Perl 6 and the Go language both use this kind of
-model, with Perl 6 having other options like {\em promises} or
-low-level access to the creation of threads. % edited a this sentence please check - mario 
-%% The following is mentioned earlier almost exactly  (203)- Mario 
+asynchronously or synchronously. The Go language uses this kind of
+model, and Perl 6 will use, among others (like {\em promises} or
+low-level access to the creation of threads), this one.
 Another, different, approach is actor-based
 concurrency, \cite{schippers2009towards}. This actor model bans shared
 state, with different {\em actors} communicating through messages \cite{erb2012concurrent}. 
@@ -285,15 +280,16 @@ features such as promises/futures, Software Transaction Memory and
 agents; Kotlin \cite{simson2017open} has been recently used for
 implementing a functional evolutionary algorithm framework.  
 
-On the other hand, Perl 6 \cite{Tang:2007:PRI:1190215.1190218} uses different
+On the
+other hand, Perl 6 \cite{Tang:2007:PRI:1190215.1190218} uses different
 concurrency models, that go from implicit concurrency using a
 particular function that automatically parallelizes operations on
-iterable data structures, to explicit concurrency using threads. Both 
-of these types of concurrency will be analyzed in this paper, using
-the {\tt Algorithm::Evolutionary::Simple} library for the same language.
-The library was presented in the same conference \cite{DBLP:conf/gecco/GuervosV18}.
-% For instance?, this appears to come from another idea   
-For instance, the EvAg model \cite{evag:gpem} is a locally concurrent and globally  
+iterable data structures, to explicit concurrency using threads. These
+both types of concurrency will be analyzed in this paper, which uses
+the {\tt Algorithm::Evolutionary::Simple} library for that language
+which was presented in the same conference \cite{DBLP:conf/gecco/GuervosV18}
+
+For instance, the EvAg model \cite{evag:gpem} is a locally concurrent and globally
 parallel evolutionary algorithm that leaves the management of the
 different agents (i.e. threads) to the underlying platform scheduler
 and displays an interesting feature: the model is able to scale
@@ -309,14 +305,10 @@ reported speed-up was $\times 960$ which is beyond the linear $\times
 account.  
 
 The aforementioned algorithm used a protocol that worked
-asynchronously, leveraging its peer-to-peer capabilities; 
-%%%  Mentioned earlier (line 244) - Start 
-in general
+asynchronously, leveraging its peer-to-peer capabilities; in general
 the design of concurrent EAs has to take into account the
 communication/synchronization 
-between processes, which nowadays will be mainly threads. 
-%%% Finish -- Mario
-Although the
+between processes, which nowadays will be mainly threads. Although the
 paper above was original in its approach, other authors targeted
 explicitly multi-core architectures, such as Tagawa
 \cite{Tagawa201212} which used shared memory and a clever mechanism to
@@ -331,8 +323,7 @@ In our previous papers
 we presented the proof of concept and initial results with this kind
 of stateless evolutionary algorithms, implemented in the Perl 6
 language. These evolutionary algorithms use a single channel where
-whole populations are sent. The (stateless) functions read a single % maybe we should make 
-%clear that these are islands or fragments of the overall population
+whole populations are sent. The (stateless) functions read a single
 population from the channel, run an evolutionary algorithm for a fixed
 number of generations, which we call the {\em generation gap} or
 simply {\em gap}, and send the population in the final generation back
@@ -348,7 +339,7 @@ concurrent evolutionary algorithms have a big resemblance).
 We did some initial exploration of the parameter space in
 \cite{merelo:WEA:anon}. In these initial explorations we realized
 that the parameters we used had an influence at the algorithmic level,
-but also at the implementation level, changing the wall-clock
+but also at the implementation level, changing the wallclock
 performance of the algorithm.
 
 In this paper we will explore the parameter space systematically
@@ -356,9 +347,7 @@ looking particularly at two parameters that have a very important
 influence on performance: population size and generation gap. Our
 intention is to create a rule of thumb for setting them in this kind
 of algorithms, so that they are able to achieve the best
-performance.  % This should be mentioned more clearly in the abstract, (almost copy-paste) there is no
-% mention of EA related parameters there, it seems only 
-% centered in communication betwwen processes not population size and gap - Mario
+performance. 
 
 We will present the experimental setup next.
 
@@ -373,15 +362,87 @@ We will present the experimental setup next.
 \end{figure}
 %
 
+\begin{figure}[h!tb]
+  \centering
+  
+\begin{sequencediagram}
+
+\newthread[red]{E}{Evolver} 
+
+\tikzstyle{inststyle}+=[rounded corners=3mm] 
+\newinst{C}{Channel}
+
+\tikzstyle{inststyle}+=[rounded corners=0]
+\newthread[blue]{M}{Mixer}
+
+\begin{call}{E}{evolve()}{E}{}\end{call}
+
+\setthreadbias{east}
+\begin{messcall}{E}{$pop_1$}{C} 
+\mess{C}{$pop_1$}{M}
+\end{messcall}
+
+\prelevel\prelevel
+\begin{call}{E}{evolve()}{E}{}\end{call}
+
+\setthreadbias{east}
+\begin{messcall}{E}{$pop_2$}{C}  
+\mess{C}{$pop_2$}{M}
+\end{messcall}
+
+\prelevel\prelevel
+\begin{call}{M}{mix()}{M}{}\end{call}
+
+\postlevel\postlevel
+\setthreadbias{west}
+\begin{messcall}{M}{\shortstack{ \{\ $mixpop_1$,\\ $mixpop_2$,\\ \vdots \\ $mixpop_k$ \} }}{C}
+
+\mess{C}{$mixpop_1$}{E} 
+\begin{call}{E}{evolve()}{E}{}\end{call}
+
+\setthreadbias{east}
+\begin{messcall}{E}{$pop_3$}{C} 
+\postlevel
+\mess{C}{$mixpop_2$}{E} 
+%\prelevel
+\mess{C}{$pop_3$}{M}
+\end{messcall}
+
+\prelevel\prelevel
+\begin{call}{E}{evolve()}{E}{}\end{call}
+
+\setthreadbias{east}
+\begin{messcall}{E}{$pop_4$}{C}
+\mess{C}{$pop_4$}{M}
+\end{messcall}
+
+\setthreadbias{west}
+\prelevel
+\mess{C}{$mixpop_k$}{E}%\end{messcall}
+
+\end{messcall}
+
+\prelevel\prelevel
+\begin{call}{M}{mix()}{M}{\vdots}\end{call}
+\prelevel
+\begin{call}{E}{evolve()}{E}{\vdots}\end{call}
+
+\end{sequencediagram}
+
+\caption{Schematic of communication between threads and channels for concurrent EAs.}
+\label{fig:schematic}
+\end{figure}
+
+
 The setup is similar to the one used in previous experiments
 \cite{Merelo:2018:MEA:3205651.3208317:anon}. Our intention was to
 create a system that was not functionally equivalent to a sequential
-evolutionary algorithm, and that followed the principle of
+evolutionary algorithms, and that followed the principle of
 communicating sequential processes. In this kind of methodology, we
 will have processes (or threads) communicating state through
 channels. Every process itself will be stateless, reacting to the
 presence of messages in the channels it is listening to and sending
-result back to them, without changing the internal state.
+result back to them, without changing state.
 
 As in the previous papers, \cite{merelo:WEA:anon}, we will use two
 groups of threads and two channels. We will see them in turns.
