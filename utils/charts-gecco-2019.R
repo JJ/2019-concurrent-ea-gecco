@@ -2,7 +2,10 @@ library(ggplot2)
 library(ggthemes)
 
 
-data.compress.nw.freq <- read.csv('../data/gecco-2019-compress-nowb-threads.csv')
+data.freqs.ap.threads <- read.csv('../data/gecco-2019-freqs-ap-threads.csv')
+ggplot(data.freqs.ap.threads,aes(x=Threads,y=Evaluations,group=Threads))+geom_boxplot()+theme_tufte()+labs(x="Threads",y="Evaluations",title="Adaptive population")
+ggplot(data.freqs.ap.threads,aes(x=Threads,y=Time,group=Threads))+geom_boxplot()+theme_tufte()+labs(x="Generation.Gap",y="Time",title="Adaptive population")
+ggplot(data.freqs.ap.threads,aes(x=Threads,y=Evaluations/Time,group=Threads))+geom_boxplot()+theme_tufte()+labs(x="Generation.Gap",y="Evaluation/time",title="Generation gap = 8")
 
 data.freqs.nw.gens <- read.csv('../data/gecco-2019-freqs-noweb-generations.csv')
 ggplot(data.freqs.nw.gens,aes(x=Generation.Gap,y=Evaluations,group=Generation.Gap))+geom_boxplot()+scale_x_log10()+theme_tufte()+labs(x="Generation.Gap",y="Evaluations",title="Generation gap = 8")
