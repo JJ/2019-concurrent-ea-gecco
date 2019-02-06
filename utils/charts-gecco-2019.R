@@ -2,6 +2,8 @@ library(ggplot2)
 library(ggthemes)
 
 
+data.compress.nw.freq <- read.csv('../data/gecco-2019-compress-nowb-threads.csv')
+
 data.freqs.nw.gens <- read.csv('../data/gecco-2019-freqs-noweb-generations.csv')
 ggplot(data.freqs.nw.gens,aes(x=Generation.Gap,y=Evaluations,group=Generation.Gap))+geom_boxplot()+scale_x_log10()+theme_tufte()+labs(x="Generation.Gap",y="Evaluations",title="Generation gap = 8")
 ggplot(data.freqs.nw.gens,aes(x=Generation.Gap,y=Time,group=Generation.Gap))+geom_boxplot()+scale_x_log10()+theme_tufte()+labs(x="Generation.Gap",y="Time",title="Generation gap = 8")
