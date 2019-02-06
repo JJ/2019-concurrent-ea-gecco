@@ -193,10 +193,10 @@ communication constructs have to be taken into account.
 
 Moreover, concurrent programming adds a layer of abstraction over the parallel
 facilities of processors and operating systems, offering a
-high-level interface that allows the user to program modules of code that can
+high-level interface that allows the user to program modules of code to
 be executed in parallel threads \cite{andrews1991concurrent}.
 
-Different languages offer different concurrency strategies mainly differing on how they deal with shared state,
+Different languages offer different concurrency strategies depending on how they deal with shared state,
 that is, data structures that could be accessed from several
 processes. In this regard, there are two major fields (with some other
 variations): 
