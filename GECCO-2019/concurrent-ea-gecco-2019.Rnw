@@ -265,7 +265,7 @@ lately with papers such as \cite{valkov2018synthesis} which perform
 program synthesis using the functional programming features of the ERlang language
 \cite{barwell2017using} for building an evolutionary multi-agent system.
 
-Among languages with functional features, the languages Erlang and Scala have
+Regarding functional languages, Erlang and Scala have
 embraced the actor model of concurrency and get excellent results in
 many application domains; Clojure is another one with concurrent
 features such as promises/futures, Software Transaction Memory and
@@ -274,74 +274,99 @@ implementing a functional evolutionary algorithm framework.
 
 On the
 other hand, Perl 6 \cite{Tang:2007:PRI:1190215.1190218} uses different
-concurrency models, that go from implicit concurrency using a
+concurrency models, varying from implicit concurrency using a
 particular function that automatically parallelizes operations on
 iterable data structures, to explicit concurrency using threads. These
-both types of concurrency will be analyzed in this paper, which uses
-the {\tt Algorithm::Evolutionary::Simple} library for that language
-which was presented in the same conference \cite{DBLP:conf/gecco/GuervosV18}
+both types of concurrency will be considered in this study whilst using 
+the {\tt Algorithm::Evolutionary::Simple}, a Perl 6 library introduced in last year's version of this very same conference \cite{DBLP:conf/gecco/GuervosV18}.
 
-For instance, the EvAg model \cite{evag:gpem} is a locally concurrent and globally
-parallel evolutionary algorithm that leaves the management of the
-different agents (i.e. threads) to the underlying platform scheduler
-and displays an interesting feature: the model is able to scale
-seamlessly and take full advantage of CPU threads. In a first attempt
-to measure the scalability of the approach experiments were conducted
-in \cite{wcci:evoag} for a single and a dual-core processor showing
-that, for cost functions passing some milliseconds of computing
-time, the model was able to achieve near linear speed-ups . This study
+%%% SR: Two paragraphs below are replicated from Evo* paper. I rewrote/summarised them
+
+% For instance, the EvAg model \cite{evag:gpem} is a locally concurrent and globally
+% parallel evolutionary algorithm that leaves the management of the
+% different agents (i.e. threads) to the underlying platform scheduler
+% and displays an interesting feature: the model is able to scale
+% seamlessly and take full advantage of CPU threads. In a first attempt
+% to measure the scalability of the approach experiments were conducted
+% in \cite{wcci:evoag} for a single and a dual-core processor showing
+% that, for cost functions passing some milliseconds of computing
+% time, the model was able to achieve near linear speed-ups . This study
+% was later on extended in \cite{DBLP:conf/evoW/LaredoBMG12} by scaling
+% up the experimentation to up to 188 parallel machines. The
+% reported speed-up was $\times 960$ which is beyond the linear $\times
+% 188$ that could be expected if local concurrency were not taken into
+% account.  
+% The aforementioned algorithm used a protocol that worked
+% asynchronously, leveraging its peer-to-peer capabilities; in general
+% the design of concurrent EAs has to take into account the
+% communication/synchronization 
+% between processes, which nowadays will be mainly threads. Although the
+% paper above was original in its approach, other authors targeted
+% explicitly multi-core architectures, such as Tagawa
+% \cite{Tagawa201212} which used shared memory and a clever mechanism to
+% avoid deadlock. Other authors \cite{kerdprasop2012concurrent} actually
+% use a message-based architecture based in the concurrent functional
+% language Erlang, which separates GA populations as different
+% processes, although all communication takes place with a common
+% central thread. 
+
+Earlier efforts to study the issues of concurrency in EA are worth mentioning. For instance, the EvAg model \cite{evag:gpem} resorts to the underlying platform scheduler to manage the different threads of execution of the evolving agents; in this way the model scaled-up 
+seamlessly to take full advantage of CPU cores. In the same avenue of measuring scalability,  experiments were conducted
+in \cite{wcci:evoag} comparing single and a dual-core processor concurrency 
+achieving near linear speed-ups . The latter
 was later on extended in \cite{DBLP:conf/evoW/LaredoBMG12} by scaling
-up the experimentation to up to 188 parallel machines. The
-reported speed-up was $\times 960$ which is beyond the linear $\times
-188$ that could be expected if local concurrency were not taken into
-account.  
-
-The aforementioned algorithm used a protocol that worked
-asynchronously, leveraging its peer-to-peer capabilities; in general
-the design of concurrent EAs has to take into account the
-communication/synchronization 
-between processes, which nowadays will be mainly threads. Although the
-paper above was original in its approach, other authors targeted
+up the experiment to up to 188 parallel machines, reporting speed-ups up to $960\times$, nearly four times the expected linear growth in the number of machines (when local concurrency were not taken into account). Other authors have addressed
 explicitly multi-core architectures, such as Tagawa
 \cite{Tagawa201212} which used shared memory and a clever mechanism to
-avoid deadlock. Other authors \cite{kerdprasop2012concurrent} actually
-use a message-based architecture based in the concurrent functional
-language Erlang, which separates GA populations as different
-processes, although all communication takes place with a common
+avoid deadlock. Similarly, \cite{kerdprasop2012concurrent}
+used a message-based architecture developed in Erlang, separating GA populations as different
+processes, although all communication tooking place with a common
 central thread. 
 
-In our previous papers 
+%%% SR: Again, below paragraphs replicated in Evo*. I re-wrote/summarised
+
+% In our previous papers 
+% \cite{Merelo:2018:MEA:3205651.3208317:anon,Garcia-Valdez:2018:MEA:3205651.3205719:anon},
+% we presented the proof of concept and initial results with this kind
+% of stateless evolutionary algorithms, implemented in the Perl 6
+% language. These evolutionary algorithms use a single channel where
+% whole populations are sent. The (stateless) functions read a single
+% population from the channel, run an evolutionary algorithm for a fixed
+% number of generations, which we call the {\em generation gap} or
+% simply {\em gap}, and send the population in the final generation back
+% to the channel. Several populations are created initially, and a
+% concurrent {\em mixer} is run which takes populations in couples,
+% mixes them leaving only a single population with the best individuals
+% selected from the two merged populations.
+%  This {\em
+%   gap} is then conceptually, if not functionally, similar to the {\em
+%   time to migration} in parallel evolutionary algorithms (with which
+% concurrent evolutionary algorithms have a big resemblance).
+% 
+% We did some initial exploration of the parameter space in
+% \cite{merelo:WEA:anon}. In these initial explorations we realized
+% that the parameters we used had an influence at the algorithmic level,
+% but also at the implementation level, changing the wallclock
+% performance of the algorithm.
+
+In previous papers 
 \cite{Merelo:2018:MEA:3205651.3208317:anon,Garcia-Valdez:2018:MEA:3205651.3205719:anon},
-we presented the proof of concept and initial results with this kind
-of stateless evolutionary algorithms, implemented in the Perl 6
-language. These evolutionary algorithms use a single channel where
-whole populations are sent. The (stateless) functions read a single
-population from the channel, run an evolutionary algorithm for a fixed
-number of generations, which we call the {\em generation gap} or
-simply {\em gap}, and send the population in the final generation back
-to the channel. Several populations are created initially, and a
-concurrent {\em mixer} is run which takes populations in couples,
-mixes them leaving only a single population with the best individuals
-selected from the two merged populations.
- This {\em
-  gap} is then conceptually, if not functionally, similar to the {\em
-  time to migration} in parallel evolutionary algorithms (with which
-concurrent evolutionary algorithms have a big resemblance).
+we presented a proof of concept of the implementation 
+of stateless evolutionary algorithms using Perl 6, based on a single channel model communicating threads for population evolving and mixing. In addition, we studied the effect of running parameters such as {\em generation gap} (similar to the concept of {\em
+  time to migration} in parallel evolutionary algorithms) and population size, realizing that the choice of parameters may have a strong influence at the algorithmic level,
+but also at the implementation level, in fact affecting the actual wallclock
+performance of the EA.
 
-We did some initial exploration of the parameter space in
-\cite{merelo:WEA:anon}. In these initial explorations we realized
-that the parameters we used had an influence at the algorithmic level,
-but also at the implementation level, changing the wallclock
-performance of the algorithm.
+%%% SR: I suggest to eliminate the paragraph below
 
-In this paper we will explore the parameter space systematically
-looking particularly at two parameters that have a very important
-influence on performance: population size and generation gap. Our
-intention is to create a rule of thumb for setting them in this kind
-of algorithms, so that they are able to achieve the best
-performance. 
-
-We will present the experimental setup next.
+% In this paper we will explore the parameter space systematically
+% looking particularly at two parameters that have a very important
+% influence on performance: population size and generation gap. Our
+% intention is to create a rule of thumb for setting them in this kind
+% of algorithms, so that they are able to achieve the best
+% performance. 
+% 
+% We will present the experimental setup next.
 
 \section{Experimental setup}
 \label{sec:exp}
