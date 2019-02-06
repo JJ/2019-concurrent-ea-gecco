@@ -242,16 +242,21 @@ statistics.
 
 
 This design has to take into account the communication/synchronization
-between processes, which nowadays will be mainly threads. One of the best efforts to formalize
+between processes, which nowadays will be mainly threaded. 
+%% The following sentences are not clear to me -- Start 
+One of the best efforts to formalize
 and simplify that is the Hoare’s {\em Communicating Sequential
   Processes} \cite{Hoare:1978:CSP:359576.359585}, this interaction
 description language is the theoretical support for many libraries and
-new programming languages. This kind of concurrent programs is based
-on {\em channels}, which are used to interchange message between the
+new programming languages. 
+%% -- Finish - Mario
+This kind of concurrent programs are based
+on {\em channels}, which are used to interchange messages between the
 different processes or threads; messages can be interchanged
-asynchronously or synchronously. The Go language uses this kind of
-model, and Perl 6 will use, among others (like {\em promises} or
-low-level access to the creation of threads), this one.
+asynchronously or synchronously. Perl 6 and the Go language both use this kind of
+model, with Perl 6 having other options like {\em promises} or
+low-level access to the creation of threads. % edited a this sentence please check - mario 
+%% The following is mentioned earlier almost exactly  (203)- Mario 
 Another, different, approach is actor-based
 concurrency, \cite{schippers2009towards}. This actor model bans shared
 state, with different {\em actors} communicating through messages \cite{erb2012concurrent}. 
@@ -280,16 +285,15 @@ features such as promises/futures, Software Transaction Memory and
 agents; Kotlin \cite{simson2017open} has been recently used for
 implementing a functional evolutionary algorithm framework.  
 
-On the
-other hand, Perl 6 \cite{Tang:2007:PRI:1190215.1190218} uses different
+On the other hand, Perl 6 \cite{Tang:2007:PRI:1190215.1190218} uses different
 concurrency models, that go from implicit concurrency using a
 particular function that automatically parallelizes operations on
-iterable data structures, to explicit concurrency using threads. These
-both types of concurrency will be analyzed in this paper, which uses
-the {\tt Algorithm::Evolutionary::Simple} library for that language
-which was presented in the same conference \cite{DBLP:conf/gecco/GuervosV18}
-
-For instance, the EvAg model \cite{evag:gpem} is a locally concurrent and globally
+iterable data structures, to explicit concurrency using threads. Both 
+of these types of concurrency will be analyzed in this paper, using
+the {\tt Algorithm::Evolutionary::Simple} library for the same language.
+The library was presented in the same conference \cite{DBLP:conf/gecco/GuervosV18}.
+% For instance?, this appears to come from another idea   
+For instance, the EvAg model \cite{evag:gpem} is a locally concurrent and globally  
 parallel evolutionary algorithm that leaves the management of the
 different agents (i.e. threads) to the underlying platform scheduler
 and displays an interesting feature: the model is able to scale
@@ -305,10 +309,14 @@ reported speed-up was $\times 960$ which is beyond the linear $\times
 account.  
 
 The aforementioned algorithm used a protocol that worked
-asynchronously, leveraging its peer-to-peer capabilities; in general
+asynchronously, leveraging its peer-to-peer capabilities; 
+%%%  Mentioned earlier (line 244) - Start 
+in general
 the design of concurrent EAs has to take into account the
 communication/synchronization 
-between processes, which nowadays will be mainly threads. Although the
+between processes, which nowadays will be mainly threads. 
+%%% Finish -- Mario
+Although the
 paper above was original in its approach, other authors targeted
 explicitly multi-core architectures, such as Tagawa
 \cite{Tagawa201212} which used shared memory and a clever mechanism to
@@ -323,7 +331,8 @@ In our previous papers
 we presented the proof of concept and initial results with this kind
 of stateless evolutionary algorithms, implemented in the Perl 6
 language. These evolutionary algorithms use a single channel where
-whole populations are sent. The (stateless) functions read a single
+whole populations are sent. The (stateless) functions read a single % maybe we should make 
+%clear that these are islands or fragments of the overall population
 population from the channel, run an evolutionary algorithm for a fixed
 number of generations, which we call the {\em generation gap} or
 simply {\em gap}, and send the population in the final generation back
@@ -339,7 +348,7 @@ concurrent evolutionary algorithms have a big resemblance).
 We did some initial exploration of the parameter space in
 \cite{merelo:WEA:anon}. In these initial explorations we realized
 that the parameters we used had an influence at the algorithmic level,
-but also at the implementation level, changing the wallclock
+but also at the implementation level, changing the wall-clock
 performance of the algorithm.
 
 In this paper we will explore the parameter space systematically
@@ -347,7 +356,9 @@ looking particularly at two parameters that have a very important
 influence on performance: population size and generation gap. Our
 intention is to create a rule of thumb for setting them in this kind
 of algorithms, so that they are able to achieve the best
-performance. 
+performance.  % This should be mentioned more clearly in the abstract, (almost copy-paste) there is no
+% mention of EA related parameters there, it seems only 
+% centered in communication betwwen processes not population size and gap - Mario
 
 We will present the experimental setup next.
 
