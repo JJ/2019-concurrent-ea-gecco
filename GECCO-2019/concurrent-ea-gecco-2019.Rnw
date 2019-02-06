@@ -376,12 +376,12 @@ We will present the experimental setup next.
 The setup is similar to the one used in previous experiments
 \cite{Merelo:2018:MEA:3205651.3208317:anon}. Our intention was to
 create a system that was not functionally equivalent to a sequential
-evolutionary algorithms, and that followed the principle of
+evolutionary algorithm, and that followed the principle of
 communicating sequential processes. In this kind of methodology, we
 will have processes (or threads) communicating state through
 channels. Every process itself will be stateless, reacting to the
 presence of messages in the channels it is listening to and sending
-result back to them, without changing state.
+result back to them, without changing the internal state.
 
 As in the previous papers, \cite{merelo:WEA:anon}, we will use two
 groups of threads and two channels. We will see them in turns.
