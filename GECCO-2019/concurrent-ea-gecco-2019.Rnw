@@ -116,15 +116,21 @@ data.generations <- data.frame(
 \begin{abstract}
 Concurrent algorithms use channels for communication, which implies
 that communication is an integral part of them, so some attention must
-be devoted to its design. In the design of concurrent evolutionary
-algorithms, there are several options that can be used for performing
-this communication. In this paper we will explore how  communication
-overhead can be reduced, and how it influences scaling. The
+be devoted to its design. Concurrent, stateless evolutionary algorithm
+will use threads for performing different types of tasks like evolving
+and mixing populations and these threads communicate via messages. In
+this paper we will explore the design of these messages and how it
+influences scaling and the performance of the algorithm itself. The
 evolutionary algorithm will use a concurrent language, and leverage
 its capabilities. Eventually, we will try to prove how concurrent
 version of algorithms offer a good option to leverage the
 multi-threaded and multi-core capabilities of modern computers.
-% we can expand this abstrct, it's too short.
+In order to do this, we will explore the performance of the system by
+increasing the number of threads in order to find out the limits of
+the speed up and the causes why they are reached. Results show that
+concurrency is achieved, but there the interaction between
+communication, the number of threads and the algorithm parameters is
+very important, opening new possibilities of algorithm design.
 
 \end{abstract}
 
@@ -238,10 +244,10 @@ In previous papers
 \cite{Merelo:2018:MEA:3205651.3208317:anon,merelo:WEA:anon} we
 designed an evolutionary algorithm that fits well this architecture
 and explored its possibilities. That initial exploration showed that
-a critical factor within this algorithic model is communication between threads; therefore designing
+a critical factor within this algorithmic model is communication between threads; therefore designing
 efficient messages is high-priority to obtain a good algorithmic
 performance and scaling. In this paper, we will test several
-communication strategoes: a lossless one that compresses the population,
+communication strategies: a lossless one that compresses the population,
 and a lossy one that sends a representation of population gene-wise
 statistics.
 
@@ -272,7 +278,7 @@ and recently in neuroevolution \cite{Sher2013} but its occurrence in EA,
 despite being scarce in the previous years
 \cite{Hawkins:2001:GFG:872017.872197}, has experimented a certain rise
 lately with papers such as \cite{valkov2018synthesis} which perform
-program synthesis using the functional programming features of the ERlang language
+program synthesis using the functional programming features of the Erlang language
 \cite{barwell2017using} for building an evolutionary multi-agent system.
 
 Regarding functional languages, Erlang and Scala have
@@ -330,7 +336,7 @@ explicitly multi-core architectures, such as Tagawa
 \cite{Tagawa201212} which used shared memory and a clever mechanism to
 avoid deadlock. Similarly, \cite{kerdprasop2012concurrent}
 used a message-based architecture developed in Erlang, separating GA populations as different
-processes, although all communication tooking place with a common
+processes, although all communication taking place with a common
 central thread. 
 
 %%% SR: Again, below paragraphs replicated in Evo*. I re-wrote/summarised
@@ -466,7 +472,7 @@ performance of the EA.
 \end{figure}
 
 
-The baselinwe we are coming from is similar to the one used in previous experiments
+The baseline we are coming from is similar to the one used in previous experiments
 \cite{Merelo:2018:MEA:3205651.3208317:anon}. Our intention was to
 create a system that was not functionally equivalent to a sequential
 evolutionary algorithms, and that followed the principle of
@@ -516,7 +522,7 @@ the size increased with population size, obviously. This tipped the
 balance between communication and computation towards communication,
 so that the more threads, the more communication was taking place. Our
 first intention in this paper was to slim down messages so that they
-took less bandwith (or memory) and less time to send and process. In
+took less bandwidth (or memory) and less time to send and process. In
 general, this strategy also can be framed in the context of migration
 strategies, since that is the most similar thing in the context of
 parallel algorithms. In parallel algorithms, an adequate selection of
@@ -533,7 +539,7 @@ similar. For this paper, we introduced two different messaging strategies: \begi
   this strategy is similar to the one presented by de la Ossa et
   al. in \cite{10.1007/978-3-540-30217-9_25}. Not being an estimation
   of distribution algorithm {\em per se}, since the evolutionary
-  thread runs a canonical genetic algorith, when the message is being
+  thread runs a canonical genetic algorithm, when the message is being
   composed, every (binary) gene of the 25\% best individuals in the
   population is examined, and an array with the
   probabilities for each gene is sent to the mixer thread. The {\em
@@ -677,7 +683,7 @@ re-evaluate the population when the message is received, but also, in
 the case of EDA, the population is rebuilt from its statistical
 description, so the exact individual (with the possible highest
 fitness) is not kept. The lowest number of evaluations, although not
-significatively so, is achieved for the EDA strategy with no writeback.
+significantly so, is achieved for the EDA strategy with no writeback.
 
 This chart can also be used to check the performance of the {\em
   no-writeback} strategies. In principle, since they use more evolved
@@ -686,7 +692,7 @@ are injecting an additional population that is actually evolved, they
 use more evaluations. So in principle these strategies will be
 discarded.
 
-Additionaly, we evaluate the raw performance, in evaluations per
+Additionally, we evaluate the raw performance, in evaluations per
 second, of all strategies, since at the end of the day, working with
 concurrent evolutionary algorithms pursue higher speed. This is shown
 in Figure \ref{fig:evals2}, which shows in the $y$ axis the number of
@@ -697,7 +703,7 @@ achieves the best combination of algorithmic and wallclock
 performance.
 
 Our initial intention in this paper was to design a communication
-strategy that improves the speed of the algorith, and with the EDA
+strategy that improves the speed of the algorithm, and with the EDA
 strategy we have achieved just that. However, there are two parts in
 this strategy: using significantly smaller messages, and moving
 selection strategy from the mixer to the evolver (when computing the
@@ -736,7 +742,7 @@ for adaptive population, was to divide the number of total individuals
 between the threads, so that 4 threads, for instance, get 128
 individuals each. We repeated every run 15 times.
 
-In this case, experients were run on a different machine with the
+In this case, experiments were run on a different machine with the
 Ubuntu 18.04 OS and an AMD Ryzen 7 2700X Eight-Core Processor
 at 3.7GHz. Figure \ref{fig:screenshot} shows the utility htop with an
 experiment running; the top of the screen shows the rate at which all
@@ -744,7 +750,7 @@ cores are working, showing all of them occupied; of course, the
 program was not running exclusively, but the list of processes below
 show how the program is replicated in several processor, thus
 leveraging their full power. Please check also the number of threads
-that are actually running at the same time, a few of which are being used by our appplication. 
+that are actually running at the same time, a few of which are being used by our application. 
 
 \begin{figure}[h!tb]
   \centering
@@ -769,9 +775,9 @@ We are first interested in the number of evaluations needed to find
 the solution, which are plotted in Fig. \ref{fig:threads1}. It
 increases slightly and not significantly from 2 to 4 threads, but it
 does increase significantly for 6 and 8 threads, indicating that the
-algorith is performing significantly worse when we increase the number
+algorithm is performing significantly worse when we increase the number
 of threads. This is probably due to the fact that we are
-simultaneaously decreasing the population size, leading to earlier
+simultaneously decreasing the population size, leading to earlier
 convergence for the number of generations (8) it is being used. This
 interplay between the degree of concurrency, the population size and
 the number of generations will have to be explored further.
@@ -817,7 +823,7 @@ using the distribution of probabilities as a representation of the
 population, or in a data structure specific way, compressing the
 bitstring to actual bits in a binary message. We also tested different messaging strategies.
 
-Experiments show that no matter what the communication or messaging strategy is, we need to keep the number of generations the population undergoes to a small number, which resulted to be 8 in this case. This is equivalent to 2048 evaluations, and this is a number which is probably dependent on the problem and the data structure we are evolving. We would need to investigate this number further, and find a methodology to set it in advance, avoiding heuristics. That is left as a future line of work, but meanwhile our conclusion would be the importance of this generation gap in stateless evolutionary algorithms and the need to follow an experimenta strategy to establish its value for particular problems or implementations. 
+Experiments show that no matter what the communication or messaging strategy is, we need to keep the number of generations the population undergoes to a small number, which resulted to be 8 in this case. This is equivalent to 2048 evaluations, and this is a number which is probably dependent on the problem and the data structure we are evolving. We would need to investigate this number further, and find a methodology to set it in advance, avoiding heuristics. That is left as a future line of work, but meanwhile our conclusion would be the importance of this generation gap in stateless evolutionary algorithms and the need to follow an experimental strategy to establish its value for particular problems or implementations. 
 
 These experiments also yielded the EDA strategy as the fastest, with a relatively low impact in the number of evaluations. The fact that messages are the most compact is probably the main reason, but the fact that it uses a higher selective pressure is probably also a factor that should be taken into account.
 
