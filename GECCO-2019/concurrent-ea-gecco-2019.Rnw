@@ -2,7 +2,11 @@
 \documentclass[sigconf]{acmart}
 
 \usepackage{booktabs} % For formal tables
+\usepackage{tikz}
+\usepackage{pgfbaselayers}
 \usepackage[underline=false]{pgf-umlsd}
+\usetikzlibrary{shadows}
+\usetikzlibrary{arrows}
 
 % Copyright
 %\setcopyright{none}
@@ -446,7 +450,12 @@ performance of the EA.
 
 \end{sequencediagram}
 
-\caption{Schematic of communication between threads and channels for concurrent EAs.}
+\caption{Schematic of communication between threads and channels for
+  concurrent EAs. The two central bars represent the channel, and
+  color corresponds to the {\em main} function they perform; blue for
+  mixer, red for evolver. As the figure shows, the evolver threads
+  always read from the mixer channel, and always write to the evolver
+  channel.}
 \label{fig:schematic}
 \end{figure}
 
