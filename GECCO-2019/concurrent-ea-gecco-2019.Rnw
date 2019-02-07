@@ -187,17 +187,26 @@ evaluation, algorithm design}
 
 Despite the emphasis on algorithmic techniques whose foundation is on
 software techniques that have an ultimate basis on newer hardware
-features, there are not many papers \cite{Xia2010} dealing with 
+features,
+% The sentence is too large and somehow not clear enough. - Juanlu
+% What about this one: 
+% Despite the emphasis on laveraging newer hardware features
+% with best-suited software techniques,... - Juanlu
+ there are not many papers \cite{Xia2010} dealing with 
 creating concurrent evolutionary algorithms that work in a single
 computing node or that extend seamlessly from single to many
-computers. Concurrent programming has a physical basis: the existence
+computers. 
+Concurrent programming has a physical basis: the existence
 of multi-core processors that are able to deal with many processes at
 the same time, and the support for threads, or lightweight processes,
-within those same processors. This eventually means that many
+within those same processors.
+% ... to many computers. However, concurrent programming seems to be the best option
+% if we are dealing with a multi-core processor architecture where many processes and threads can coexists at the same time. - Juanlu
+ This eventually means that many
 processes (heavy or lightweight) can be leveraged to take full
 advantage of the processor capabilities.
 
-These capabilities must be matches at an abstract level by languages
+These capabilities must be matched at an abstract level by languages
 that build on them so that high-level algorithms can use them without
 worrying about the low-level mechanisms of creation or destruction of
 threads, or how data is shared or communicated among them. These
@@ -211,7 +220,7 @@ objects; that means that the language includes  operators for acting upon them a
 possibility of using them like parameters or function's result
 values. This changes the coding of concurrent algorithms due to the
 direct mapping between patterns of communications and processes with
-language expressions; on one hand it becomes simpler since the
+language expressions; on the one hand it becomes simpler since the
 language provides an abstraction for communication, on the other hand
 it changes the paradigm for implementing algorithms, since these new
 communication constructs have to be taken into account. 
@@ -823,23 +832,23 @@ time that scales gracefully to a high number of processors.
 \label{sec:conclusions}
 
 Designing a concurrent, stateless evolutionary algorithm brings a new
-set of configuration decisions that must be taken at the algorithm and
+set of configuration decisions that must be taken into account at the algorithm and
 at the parameter level. Thus, the main intention in this paper was to
 explore the parameter space in a concurrent evolutionary algorithm
 looking for the combination that yields the best performance in terms
 of time, without sacrificing the algorithmic performance. Since the
 biggest obstacle to scaling and high performance was the size of
-messages interchanged with the channel, in this paper we decided to
-redesign this communication either in an algorithmic specific way,
+messages interchanged within the channel, in this paper we decided to
+redesign this communication either in an algorithmic specific way:
 using the distribution of probabilities as a representation of the
-population, or in a data structure specific way, compressing the
+population; or in a data structure specific way: compressing the
 bitstring to actual bits in a binary message. We also tested different messaging strategies.
 
-Experiments show that no matter what the communication or messaging strategy is, we need to keep the number of generations the population undergoes to a small number, which resulted to be 8 in this case. This is equivalent to 2048 evaluations, and this is a number which is probably dependent on the problem and the data structure we are evolving. We would need to investigate this number further, and find a methodology to set it in advance, avoiding heuristics. That is left as a future line of work, but meanwhile our conclusion would be the importance of this generation gap in stateless evolutionary algorithms and the need to follow an experimental strategy to establish its value for particular problems or implementations. 
+Experiments show that no matter what the communication or messaging strategy is, we need to keep the number of generations that the population undergoes to a small number, which resulted to be 8 in this case. This is equivalent to 2048 evaluations: a number which is likely dependent on the problem and the data structure we are evolving. We would need to investigate this number further, and find a methodology to set it in advance, avoiding heuristics. That is left as a future line of work, but meanwhile our conclusion would be the importance of this generation gap in stateless evolutionary algorithms and the need to follow an experimental strategy to establish its value for particular problems or implementations. 
 
 These experiments also yielded the EDA strategy as the fastest, with a relatively low impact in the number of evaluations. The fact that messages are the most compact is probably the main reason, but the fact that it uses a higher selective pressure is probably also a factor that should be taken into account.
 
-Finally, this paper has proved for the first time the good scaling
+Finally, this paper has shown for the first time the good scaling
 behavior of this kind of concurrent evolutionary
 algorithms. Simultaneous threads running an evolutionary algorithm do
 increase the number of simultaneous evaluations, although since this
@@ -860,11 +869,11 @@ research are open. The first one is to continue exploring the
 algorithm itself trying to find out a scaling strategy that does not
 have a negative influence in the number of evaluations, so that actual
 increasing in the number of simultaneous evaluations achieved the
-equivalent speedup. The second like would be to find out what is the
+equivalent speedup. The second one would be to find out what is the
 maximum number of simultaneous evaluations that can be achieved, so
 that an optimum number of threads can be advised, if possible
 independently of the problem and depending only on the physical number
-of threads available.
+of cores available.
 
 The messaging strategies proposed here can be used only if the problem
 can be represented via a binary data structure. New strategies will
