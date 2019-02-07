@@ -69,11 +69,8 @@ data.generations <- data.frame(
 @
 
 \title{Exploring concurrent and stateless evolutionary algorithms}
-\titlenote{Produces the permission block, and
-  copyright information}
-\subtitle{Subtitle}
-\subtitlenote{The full version of the author's guide is available as
-  \texttt{acmart.pdf} document}
+\subtitle{Seeking the best communication strategies in a communicating
+sequential process framework}
 
   \author{Anonymous Author 1}
   \orcid{1234-5678-9012}
@@ -551,12 +548,41 @@ similar. For this paper, we introduced two different messaging strategies: \begi
 \end{itemize}
 
 
-
-
-What we want to find out in these set of experiments is what is the
+In the same way we did in our previous papers, first we will have to
+evaluate these new strategies compared with baseline; since the
+overhead will be different depending on the computation time, which in
+this case is regulated by the number of generations that are going to
+be performed by every thread, we will first perform an experiment
+changing that. We will call this parameter the {\em generation gap},
+implying that's the gap between receiving a message and activating the
+thread and sending it, deactivating it. Besides, what we want to find
+out in these set of experiments is what is the 
 generation gap that gives the best performance in terms of raw time to
 find a solution, as well as the best number of evaluations per
-second. In order to do that, we prepared an experiment using the
+second.
+
+Additionally, it is impossible to know from first principles if this
+setup is the only possible. We have to heuristically explore other
+possibilities; in this case, we will explore another messaging
+strategy called {\em no writeback}, or {\sf nw}, where the mixer
+thread, instead of sending one of the individuals back again to the
+mixer thread, sends it to the evolver channel, where it will undergo
+an additional round of evolution. The main difference between these
+two strategies is twofold:\begin{itemize}
+\item The mixer channel can be empty for some time, since it is not
+  always holding at least one population message (written back every
+  time it is activated). This might lead to {\em starvation} of the
+  mixer thread, but in fact it will not take long since it is going to
+  be processed immediately by the evolver thread.
+\item Every population is mixed just once, which might lead to
+  improvements in the algorithm.
+\end{itemize}
+
+
+\section{Experimental results}
+\label{sec:exp}
+
+In order to do that, we prepared an experiment using the
 OneMax function with 64 bits, a concurrent evolutionary algorithm such
 as the one described in \cite{Merelo:2018:MEA:3205651.3208317:anon},
 which is based in the free Perl 6 evolutionary algorithm library {\tt
