@@ -623,7 +623,6 @@ simultaneously by the two threads and sent to the mixer channel, this
 channel will always hold a population that will combine with a fresh
 one coming from either of the mixer threads.
 
-
 \begin{figure*}[h!tb]
   \centering
 <<gens, cache=FALSE,echo=FALSE,fig.height=4>>=
@@ -633,10 +632,11 @@ ggplot(data.generations,aes(x=gap,y=evaluations,group=strategy, color=strategy))
   strategy (in pink) and the EDA and compress messaging strategies,
   with or without writeback (WB). Lines run over the average value;
   every point represents the number of evaluations in individual
-  experiments. Smaller, in this case, is better.}
+  experiments. Smaller, in this case, is better. Please note that both
+axes are logarithmic.}
 \label{fig:evals}
 \end{figure*}
-
+%
 \begin{figure}[h!tb]
   \centering
 <<gens2, cache=FALSE,echo=FALSE,fig.height=4>>=
@@ -644,9 +644,58 @@ ggplot(data.generations,aes(x=gap,y=evaluations/time,group=strategy, color=strat
 @ 
 \caption{Number of evaluations per second vs. generation gap for the baseline
   strategy (in pink) and the EDA and compress messaging strategies,
-  with or without writeback (WB). Higher is better.}
+  with or without writeback (WB). Higher is better. Axes are logarithmic.}
 \label{fig:evals2}
 \end{figure}
+
+Since we are exploring the parameter space, we will first try
+to find out the generation gap and strategy that obtains the smaller
+number of evaluations, indicating it is the best algorithmic
+strategy. These are shown in Figure \ref{fig:evals}, where the two
+messaging strategies, EDA and compress, with or without writeback, are
+plotted and compared with the baseline strategy, which uses the full,
+evaluated population as a message. The first observation is that, in
+general, the number of evaluations increases with the generation
+gap. More evolution without interchange with other populations implies
+more exploitation, and then the possibility of stagnation. For 8
+generations the results are very similar, but they diverge with the
+generation gap. Clearly, the baseline strategy achieves the lowest
+number of evaluations, for two reasons: it does not need to
+re-evaluate the population when the message is received, but also, in
+the case of EDA, the population is rebuilt from its statistical
+description, so the exact individual (with the possible highest
+fitness) is not kept. The lowest number of evaluations, although not
+significatively so, is achieved for the EDA strategy with no writeback.
+
+This chart can also be used to check the performance of the {\em
+  no-writeback} strategies. In principle, since they use more evolved
+populations, they should be better. As a matter of fact, since they
+are injecting an additional population that is actually evolved, they
+use more evaluations. So in principle these strategies will be
+discarded.
+
+Additionaly, we evaluate the raw performance, in evaluations per
+second, of all strategies, since at the end of the day, working with
+concurrent evolutionary algorithms pursue higher speed. This is shown
+in Figure \ref{fig:evals2}, which shows in the $y$ axis the number of
+evaluations per second. In this case, the EDA strategy is clearly
+superior to the rest, beating them significantly for all generation
+gaps. In this case, generation gap == 8 will be chosen, since it
+achieves the best combination of algorithmic and wallclock
+performance.
+
+Our initial intention in this paper was to design a communication
+strategy that improves the speed of the algorith, and with the EDA
+strategy we have achieved just that. However, there are two parts in
+this strategy: using significantly smaller messages, and moving
+selection strategy from the mixer to the evolver (when computing the
+probability distribution). In fact, 1/4 of the population is used to
+compute the distribution, as opposed to the baseline mixer (labeled
+``Full''), which takes the better half of the pair of populations for
+mixing. This is undoubtedly a factor that contributes to balance the
+number of additional evaluations needed for the new, rebuilt,
+populations. However, the increase of speed must be entirely due to
+the compactness of the messages used by this strategy.
 
 \begin{figure*}[h!tb]
   \centering
