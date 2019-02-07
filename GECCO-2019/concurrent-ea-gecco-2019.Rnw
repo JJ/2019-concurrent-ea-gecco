@@ -747,11 +747,29 @@ that are actually running at the same time.
 
 \begin{figure}[h!tb]
   \centering
-<<threads1, cache=FALSE,echo=FALSE,fig.height=4>>=
+<<threads1, cache=FALSE,echo=FALSE,fig.height=4,message=FALSE>>=
 data.freqs.ap.threads <- read.csv('../data/gecco-2019-freqs-ap-threads.csv')
 ggplot(data.freqs.ap.threads,aes(x=Threads,y=Evaluations,group=Threads)) + geom_boxplot(fill='green',notch=TRUE)+theme_tufte()+scale_x_continuous(name="Threads",breaks=c(2,4,6,8))+labs(x="Threads",y="Evaluations",title="Adaptive population")
 @ 
-\caption{Number of evaluations vs. number of threads. Higher is better}
+\caption{Number of evaluations vs. number of threads. Higher is better.}
+\label{fig:evals2}
+\end{figure}
+%
+\begin{figure}[h!tb]
+  \centering
+<<threads2, cache=FALSE,echo=FALSE,fig.height=4,message=FALSE>>=
+ggplot(data.freqs.ap.threads,aes(x=Threads,y=Time,group=Threads))+geom_boxplot(fill='blue',notch=TRUE)+theme_tufte()+scale_x_continuous(name="Threads",breaks=c(2,4,6,8))+labs(x="Generation.Gap",y="Time",title="Adaptive population")
+@ 
+\caption{Total time vs. number of threads. Lower is better.}
+\label{fig:evals2}
+\end{figure}
+%
+\begin{figure}[h!tb]
+  \centering
+<<threads3, cache=FALSE,echo=FALSE,fig.height=4,message=FALSE>>=
+ggplot(data.freqs.ap.threads,aes(x=Threads,y=Evaluations/Time,group=Threads))+geom_boxplot(fill='yellow',notch=TRUE)+theme_tufte()+scale_x_continuous(name="Threads",breaks=c(2,4,6,8))+labs(x="Generation.Gap",y="Evaluation/time",title="Adaptive population")
+@ 
+\caption{Total time vs. number of threads. Lower is better.}
 \label{fig:evals2}
 \end{figure}
 
