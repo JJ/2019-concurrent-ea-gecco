@@ -114,8 +114,7 @@ data.generations <- data.frame(
   
 
 \begin{abstract}
-Concurrent algorithms use channels for communication, which implies
-that communication is an integral part of them, so some attention must
+  Communication is an integral part of concurrent algorithms, so some attention must
 be devoted to its design. Concurrent, stateless evolutionary algorithm
 will use threads for performing different types of tasks like evolving
 and mixing populations and these threads communicate via messages. In
