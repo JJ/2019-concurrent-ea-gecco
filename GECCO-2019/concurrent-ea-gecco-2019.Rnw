@@ -39,7 +39,7 @@
 %\editor{Theo D'Hondt}
 %\editor{Wolfgang De Meuter}
 
-
+\hypersetup{draft} 
 \begin{document}
 
 <<setup, cache=FALSE,echo=FALSE>>=
@@ -618,6 +618,7 @@ Evolver threads & 2 \\
     Population size & 256 \\
     Initial populations & 3 \\
     Bits & 64 \\
+    Repetitions & $>=$ 15 \\
   \bottomrule
   \end{tabular}
 \end{table}
@@ -733,7 +734,7 @@ the total population by the number of threads. Initially we had two
 threads and total population equal to 512, so our strategy, called AP
 for adaptive population, was to divide the number of total individuals
 between the threads, so that 4 threads, for instance, get 128
-individuals each. 
+individuals each. We repeated every run 15 times.
 
 In this case, experients were run on a different machine with the
 Ubuntu 18.04 OS and an AMD Ryzen 7 2700X Eight-Core Processor
@@ -743,35 +744,62 @@ cores are working, showing all of them occupied; of course, the
 program was not running exclusively, but the list of processes below
 show how the program is replicated in several processor, thus
 leveraging their full power. Please check also the number of threads
-that are actually running at the same time.
+that are actually running at the same time, a few of which are being used by our appplication. 
 
 \begin{figure}[h!tb]
   \centering
 <<threads1, cache=FALSE,echo=FALSE,fig.height=4,message=FALSE>>=
 data.freqs.ap.threads <- read.csv('../data/gecco-2019-freqs-ap-threads.csv')
-ggplot(data.freqs.ap.threads,aes(x=Threads,y=Evaluations,group=Threads)) + geom_boxplot(fill='green',notch=TRUE)+theme_tufte()+scale_x_continuous(name="Threads",breaks=c(2,4,6,8))+labs(x="Threads",y="Evaluations",title="Adaptive population")
+ggplot(data.freqs.ap.threads,aes(x=Threads,y=Evaluations,group=Threads)) + geom_boxplot(fill='green',notch=TRUE)+theme_tufte()+scale_x_continuous(name="Threads",breaks=c(2,4,6,8))+labs(x="Threads",y="Evaluations",title="Scaling")
 @ 
 \caption{Number of evaluations vs. number of threads. Higher is better.}
-\label{fig:evals2}
+\label{fig:threads1}
 \end{figure}
 %
 \begin{figure}[h!tb]
   \centering
 <<threads2, cache=FALSE,echo=FALSE,fig.height=4,message=FALSE>>=
-ggplot(data.freqs.ap.threads,aes(x=Threads,y=Time,group=Threads))+geom_boxplot(fill='blue',notch=TRUE)+theme_tufte()+scale_x_continuous(name="Threads",breaks=c(2,4,6,8))+labs(x="Generation.Gap",y="Time",title="Adaptive population")
+ggplot(data.freqs.ap.threads,aes(x=Threads,y=Time,group=Threads))+geom_boxplot(fill='blue',notch=TRUE)+theme_tufte()+scale_x_continuous(name="Threads",breaks=c(2,4,6,8))+labs(x="Generation.Gap",y="Time",title="Scaling")
 @ 
 \caption{Total time vs. number of threads. Lower is better.}
-\label{fig:evals2}
+\label{fig:threads2}
 \end{figure}
 %
+We are first interested in the number of evaluations needed to find
+the solution, which are plotted in Fig. \ref{fig:threads1}. It
+increases slightly and not significantly from 2 to 4 threads, but it
+does increase significantly for 6 and 8 threads, indicating that the
+algorith is performing significantly worse when we increase the number
+of threads. This is probably due to the fact that we are
+simultaneaously decreasing the population size, leading to earlier
+convergence for the number of generations (8) it is being used. This
+interplay between the degree of concurrency, the population size and
+the number of generations will have to be explored further.
+
 \begin{figure}[h!tb]
   \centering
 <<threads3, cache=FALSE,echo=FALSE,fig.height=4,message=FALSE>>=
-ggplot(data.freqs.ap.threads,aes(x=Threads,y=Evaluations/Time,group=Threads))+geom_boxplot(fill='yellow',notch=TRUE)+theme_tufte()+scale_x_continuous(name="Threads",breaks=c(2,4,6,8))+labs(x="Generation.Gap",y="Evaluation/time",title="Adaptive population")
+ggplot(data.freqs.ap.threads,aes(x=Threads,y=Evaluations/Time,group=Threads))+geom_boxplot(fill='yellow',notch=TRUE)+theme_tufte()+scale_x_continuous(name="Threads",breaks=c(2,4,6,8))+labs(x="Generation.Gap",y="Evaluation/time",title="Scaling")
 @ 
-\caption{Total time vs. number of threads. Lower is better.}
-\label{fig:evals2}
+\caption{Evaluations per second vs. number of threads. Higher is better.}
+\label{fig:threads3}
 \end{figure}
+%
+But we were also interested in the actual wallclock time, plotted in
+Fig. \ref{fig:threads2}. The picture shows that it decreases
+significantly when we go from 2 (the baseline) to 4 threads, since we
+are using more computing power for (roughly) the same number of
+evaluations. It then increases slightly we we increase the number of
+threads; as a matter of fact and as shown in \ref{fig:threads3}, the
+number of evaluations per second increases steeply up to 6 threads,
+and slightly when we use 8 threads. However, the amount of evaluations
+needed overcompensates this speed, resulting in a worse results. It
+confirms, however, that we are actually using all threads for
+evaluations, and if only we could find a strategy that didn't need
+more evaluations we should be able to get a big boost in computation
+time that scales gracefully to a high number of processors.
+
+
 
 \section{Conclusions}
 \label{sec:conclusions}
