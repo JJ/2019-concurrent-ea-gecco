@@ -38,11 +38,7 @@
 
 \begin{document}
 \title{Exploring concurrent and stateless evolutionary algorithms}
-\titlenote{Produces the permission block, and
-  copyright information}
-\subtitle{Subtitle}
-\subtitlenote{The full version of the author's guide is available as
-  \texttt{acmart.pdf} document}
+\subtitle{Improving the algorithmic efficiency and performance of channel-based evolutionary algorithms}
 
   \author{Anonymous Author 1}
   \orcid{1234-5678-9012}
@@ -174,20 +170,34 @@ processes streams of data using functions that do not change state.
 \section{State of the Art}
 
 
-Despite the emphasis on hardware-based techniques such as
-cloud computing or GPGPU, there are not many papers \cite{Xia2010} dealing with
+Despite the emphasis on algorithmic techniques whose foundation is on
+software techniques that have an ultimate basis on newer hardware
+features, there are not many papers \cite{Xia2010} dealing with 
 creating concurrent evolutionary algorithms that work in a single
-computing node or that extend seamlessly from single to many computers.
+computing node or that extend seamlessly from single to many
+computers. Concurrent programming has a physical basis: the existence
+of multi-core processors that are able to deal with many processes at
+the same time, and the support for threads, or lightweight processes,
+within those same processors. This eventually means that many
+processes (heavy or lightweight) can be leveraged to take full
+advantage of the processor capabilities.
 
-The concurrent programming paradigm (or concurrency oriented
-programming \cite{Armstrong2003}) is characterized by the presence of
-programming constructs for managing processes like first class
-objects. That is, with operators for acting upon them and the
+These capabilities must be matches at an abstract level by languages
+that build on them so that high-level algorithms can use them without
+worrying about the low-level mechanisms of creation or destruction of
+threads, or how data is shared or communicated among them. These
+languages are called concurrent, and the programming paradigm
+implemented in them concurrency-oriented programming or simply
+concurrent programming \cite{Armstrong2003}. 
+
+These languages are characterized by the presence of
+programming constructs that manage processes like first class
+objects; that means that the language includes  operators for acting upon them and the
 possibility of using them like parameters or function's result
 values. This changes the coding of concurrent algorithms due to the
 direct mapping between patterns of communications and processes with
 language expressions; on one hand it becomes simpler since the
-language provides an abstraction for communication, in the other hand
+language provides an abstraction for communication, on the other hand
 it changes the paradigm for implementing algorithms, since these new
 communication constructs have to be taken into account.
 
