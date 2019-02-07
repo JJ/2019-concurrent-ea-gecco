@@ -803,48 +803,19 @@ time that scales gracefully to a high number of processors.
 
 \section{Conclusions}
 \label{sec:conclusions}
-In this paper we have set out to explore the interaction between the
-generation gap and the algorithmic parameters in a concurrent and stateless evolutionary algorithm. From the point of view
-of the algorithm, increasing the generation gap favors exploitation
-over exploration, which might be a plus in some problems, but also
-decreases diversity, which might lead to premature convergence; in a
-parallel setting, this will make the algorithm need more evaluations
-to find a solution. The effect in a concurrent program goes in the
-opposite direction: by decreasing communication, the amount of
-code that can be executed concurrently increases, increasing
-performance. Since the two effects cancel out, in this paper we have
-used a experimental methodology to find out what is the combination
-that is able to minimize wallclock time, which is eventually what we
-are interested in by maximizing the number of evaluations per second
-while, at the same time, increasing by a small quantity the number of
-evaluations needed to find the solution.
 
-For the specific problem we have used in this short paper, a 64-bit
-onemax, the generation gap that is in that area is 16. The time to
-communication for that specific generation gap is around 2 seconds,
-since 16 generations imply 4096 evaluations and evaluation speed is
-approximately 2K/s. This gives us a ballpark of the amount of
-computation that is needed for concurrency to be efficient. In this
-case, we are sending the whole population to the communication
-channel, and this implies a certain overhead in reading, transmiting
-and writing. Increasing the population size also increases that
-overhead.
-
-We can thus deduce than the amount of computation, for this particular
-machine, should be on the order of 2 seconds, so that it effectively
-overcomes the amount of communication needed. This amount could be
-played out in different way, for instance by increasing the
-population; if the evaluation function takes more time, different
-combinations should be tested so that no message is sent unless that
-particular amount of time is reached.
-
-With these conclusions in mind, we can set out to work with other
-parameters, such as population size or number of initial populations,
-so that the loss of diversity for bigger population sizes is
-overcome. Also we have to somehow overcome the problem of the message
-size by using a statistical distribution of the population, or simply
-other different setup. This is left as future work.%\end{document}  % This is where a 'short' article might terminate
-
+Designing a concurrent, stateless evolutionary algorithm brings a new
+set of configuration decisions that must be taken at the algorithm and
+at the parameter level. Thus, the main intention in this paper was to
+explore the parameter space in a concurrent evolutionary algorithm
+looking for the combination that yields the best performance in terms
+of time, without sacrificing the algorithmic performance. Since the
+biggest obstacle to scaling and high performance was the size of
+messages interchanged with the channel, in this paper we decided to
+redesign this communication either in an algorithmic specific way,
+using the distribution of probabilities as a representation of the
+population, or in a data structure specific way, compressing the
+bitstring to actual bits in a binary message. 
 
 
 \begin{acks}
