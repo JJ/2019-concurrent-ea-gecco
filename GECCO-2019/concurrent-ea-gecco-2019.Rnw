@@ -185,23 +185,18 @@ evaluation, algorithm design}
 \section{Introduction}
 
 
-Despite the emphasis on algorithmic techniques whose foundation is on
-software techniques that have an ultimate basis on newer hardware
-features,
+%% Despite the emphasis on algorithmic techniques whose foundation is on
+%% software techniques that have an ultimate basis on newer hardware
+%% features,
 % The sentence is too large and somehow not clear enough. - Juanlu
 % What about this one: 
-% Despite the emphasis on laveraging newer hardware features
-% with best-suited software techniques,... - Juanlu
+Despite the emphasis on leveraging newer hardware features
+with best-suited software techniques
  there are not many papers \cite{Xia2010} dealing with 
 creating concurrent evolutionary algorithms that work in a single
 computing node or that extend seamlessly from single to many
-computers. 
-Concurrent programming has a physical basis: the existence
-of multi-core processors that are able to deal with many processes at
-the same time, and the support for threads, or lightweight processes,
-within those same processors.
-% ... to many computers. However, concurrent programming seems to be the best option
-% if we are dealing with a multi-core processor architecture where many processes and threads can coexists at the same time. - Juanlu
+computers. However, concurrent programming seems to be the best option
+if we are dealing with a multi-core processor architecture where many processes and threads can coexists at the same time.
  This eventually means that many
 processes (heavy or lightweight) can be leveraged to take full
 advantage of the processor capabilities.
