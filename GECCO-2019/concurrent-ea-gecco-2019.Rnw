@@ -64,9 +64,11 @@ data.generations <- data.frame(
 
 @
 
-\title{Exploring concurrent and stateless evolutionary algorithms}
-\subtitle{Improving the algorithmic efficiency and performance of channel-based evolutionary algorithms}
+\title{Improving the algorithmic efficiency and performance of channel-based evolutionary algorithms}
+\title{Exploring concurrent and stateless evolutionary algorithms in Perl 6}
+
 % Same title as EvoApp paper? - Juanlu
+% I hadn't realized that... 
 % I propose that the subtitle becomes the title and the subtitle becomes something like: "The case of a Perl6-based implementation" -  Juanlu
 
   \author{Anonymous Author 1}
