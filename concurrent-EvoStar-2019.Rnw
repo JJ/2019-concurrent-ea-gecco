@@ -96,7 +96,8 @@ algorithms need to change to fit an architecture that creates and
 processes streams of data using functions that do not change state. 
 
 Despite the emphasis on hardware-based techniques such as
-cloud computing or GPGPU, there are not many papers \cite{Xia2010} dealing with
+cloud computing or GPGPU (general-purpose GPU), there are not many papers \cite{Xia2010} dealing with
+% added the  "general-purpose" I had to google it - Mario
 creating concurrent evolutionary algorithms that work in a single
 computing node or that extend seamlessly from single to many computers.
 
@@ -123,7 +124,7 @@ between processes, which nowadays will be mainly threads. Although the
 paper above was original in its approach, other authors targeted
 explicitly multi-core architectures, such as Tagawa
 \cite{Tagawa201212} which used shared memory and a clever mechanism to
-avoid deadlock. Other authors \cite{kerdprasop2012concurrent} actually
+avoid deadlock. Other authors \cite{kerdprasop2012concurrent}
 use a message-based architecture based in the concurrent functional
 language Erlang, which separates GA populations as different
 processes, although all communication takes place with a common

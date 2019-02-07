@@ -2,7 +2,11 @@
 \documentclass[sigconf]{acmart}
 
 \usepackage{booktabs} % For formal tables
-
+\usepackage{tikz}
+\usepackage{pgfbaselayers}
+\usepackage[underline=false]{pgf-umlsd}
+\usetikzlibrary{shadows}
+\usetikzlibrary{arrows}
 
 % Copyright
 %\setcopyright{none}
@@ -37,6 +41,29 @@
 
 
 \begin{document}
+
+<<setup, cache=FALSE,echo=FALSE>>=
+library(ggplot2)
+library(ggthemes)
+
+data.freqs.nw.gens <- read.csv('../data/gecco-2019-freqs-noweb-generations.csv')
+data.compress.nw.gens <- read.csv('../data/gecco-2019-compress-noweb-generations.csv')
+data.freqs.generations <- read.csv('../data/gecco-2019-freqs-generations.csv')
+data.compress.generations <- read.csv('../data/gecco-2019-compress-generations.csv')
+data.evostar <- read.csv("../data/evostar2019.csv")
+
+data.generations <- data.frame(
+    strategy=c(rep("Compress",length(data.compress.generations$Generation.Gap)),
+               rep("CompressNW",length(data.compress.nw.gens$Generation.Gap)),
+               rep("EDA",length(data.freqs.generations$Generation.Gap)),
+               rep("EDANW",length(data.freqs.nw.gens$Generation.Gap)),
+               rep("Full",length(data.evostar$gap))),
+    gap=c(data.compress.generations$Generation.Gap,data.compress.nw.gens$Generation.Gap,data.freqs.generations$Generation.Gap,data.freqs.nw.gens$Generation.Gap,data.evostar$gap),
+    evaluations=c(data.compress.generations$Evaluations,data.compress.nw.gens$Evaluations,data.freqs.generations$Evaluations,data.freqs.nw.gens$Evaluation,data.evostar$evaluations),
+    time=c(data.compress.generations$Time,data.compress.nw.gens$Time,data.freqs.generations$Time,data.freqs.nw.gens$Time,data.evostar$time) )
+
+@
+
 \title{Exploring concurrent and stateless evolutionary algorithms}
 \subtitle{Improving the algorithmic efficiency and performance of channel-based evolutionary algorithms}
 
@@ -84,6 +111,7 @@
   % The default list of authors is too long for headers.
   \renewcommand{\shortauthors}{A. Author et al.}
 
+  
 
 \begin{abstract}
 Concurrent algorithms use channels for communication, which implies
@@ -104,70 +132,38 @@ multi-threaded and multi-core capabilities of modern computers.
 % http://dl.acm.org/ccs.cfm
 % Please copy and paste the code instead of the example below. 
 %
-\begin{CCSXML}
+ \begin{CCSXML}
 <ccs2012>
- <concept>
-  <concept_id>10010520.10010553.10010562</concept_id>
-  <concept_desc>Computer systems organization~Embedded systems</concept_desc>
-  <concept_significance>500</concept_significance>
- </concept>
- <concept>
-  <concept_id>10010520.10010575.10010755</concept_id>
-  <concept_desc>Computer systems organization~Redundancy</concept_desc>
-  <concept_significance>300</concept_significance>
- </concept>
- <concept>
-  <concept_id>10010520.10010553.10010554</concept_id>
-  <concept_desc>Computer systems organization~Robotics</concept_desc>
-  <concept_significance>100</concept_significance>
- </concept>
- <concept>
-  <concept_id>10003033.10003083.10003095</concept_id>
-  <concept_desc>Networks~Network reliability</concept_desc>
-  <concept_significance>100</concept_significance>
- </concept>
-</ccs2012>  
+<concept>
+<concept_id>10003752.10003809.10011778</concept_id>
+<concept_desc>Theory of computation~Concurrent algorithms</concept_desc>
+<concept_significance>500</concept_significance>
+</concept>
+<concept>
+<concept_id>10010147.10010257.10010293.10011809.10011812</concept_id>
+<concept_desc>Computing methodologies~Genetic algorithms</concept_desc>
+<concept_significance>500</concept_significance>
+</concept>
+<concept>
+<concept_id>10002944.10011123.10011674</concept_id>
+<concept_desc>General and reference~Performance</concept_desc>
+<concept_significance>300</concept_significance>
+</concept>
+</ccs2012>
+
 \end{CCSXML}
 
-\ccsdesc[500]{Computer systems organization~Embedded systems}
-\ccsdesc[300]{Computer systems organization~Redundancy}
-\ccsdesc{Computer systems organization~Robotics}
-\ccsdesc[100]{Networks~Network reliability}
+\ccsdesc[500]{Theory of computation~Concurrent algorithms}
+\ccsdesc[500]{Computing methodologies~Genetic algorithms}
+\ccsdesc[300]{General and reference~Performance}
 
-
-\keywords{ACM proceedings, \LaTeX, text tagging}
+\keywords{Concurrency, Concurrent evolutionary algorithms, performance
+evaluation, algorithm design}
 
 
 \maketitle
 
 \section{Introduction}
-
-Concurrent programming adds a layer of abstraction over the parallel
-facilities processors and operating systems to offer a
-high-level interface that allows the user to program code that might
-be executed in parallel either in threads or in different processes \cite{andrews1991concurrent}.
-
-Different languages offer different facilities for concurrency at the
-primitive level, and mainly differ on how they deal with shared state,
-that is, variables that are accessed from several
-processes. Actor-based concurrency \cite{schippers2009towards}
-eliminates shared state by introducing a series of {\em actors} that
-store state and can change it; on the other hand,  channel based
-concurrency follows the {\em communicating sequential processes}
-methodology \cite{Hoare:1978:CSP:359576.359585}, which is effectively
-stateless, with different processes reacting to channel input without
-changing state, and writing to these channels. 
-
-This kind of concurrency is the one implemented by many modern
-languages such as Go or Perl 6 \cite{lenzperl}. However, the
-statelessness of the implementation asks for a change in the
-implementation of any algorithm. In particular, evolutionary
-algorithms need to change to fit an architecture that creates and
-processes streams of data using functions that do not change state. 
-
-% Paper layout goes here
-
-\section{State of the Art}
 
 
 Despite the emphasis on algorithmic techniques whose foundation is on
@@ -199,22 +195,68 @@ direct mapping between patterns of communications and processes with
 language expressions; on one hand it becomes simpler since the
 language provides an abstraction for communication, on the other hand
 it changes the paradigm for implementing algorithms, since these new
-communication constructs have to be taken into account.
+communication constructs have to be taken into account. 
 
-This design has to take into account the communication/synchronization
-between processes, which nowadays will be mainly threads. One of the best efforts to formalize
-and simplify that is the Hoare’s {\em Communicating Sequential
-  Processes} \cite{Hoare:1978:CSP:359576.359585}, this interaction
-description language is the theoretical support for many libraries and
-new programming languages. This kind of concurrent programs is based
-on {\em channels}, which are used to interchange message between the
-different processes or threads; messages can be interchanged
-asynchronously or synchronously. The Go language uses this kind of
-model, and Perl 6 will use, among others (like {\em promises} or
-low-level access to the creation of threads), this one.
-Another, different, approach is actor-based
-concurrency, \cite{schippers2009towards}. This actor model bans shared
-state, with different {\em actors} communicating through messages \cite{erb2012concurrent}. 
+Moreover, concurrent programming adds a layer of abstraction over the parallel
+facilities of processors and operating systems, offering a
+high-level interface that allows the user to program modules of code to
+be executed in parallel threads \cite{andrews1991concurrent}.
+
+Different languages offer different concurrency strategies depending on how they deal with shared state,
+that is, data structures that could be accessed from several
+processes. In this regard, there are two major fields (with some other
+variations): 
+\begin{itemize}
+\item Actor-based concurrency \cite{schippers2009towards}
+totally eliminates shared state by introducing a series of data
+structures called {\em actors} that
+store state and can mutate it locally. 
+\item Process calculi or process algebra is a framework to describe
+  systems that work with independent
+  processes that interact between them using channels. One of the best
+  known is called the {\em communicating sequential processes} (CSP)
+methodology \cite{Hoare:1978:CSP:359576.359585}, which is effectively
+stateless, with different processes reacting to a channel input without
+changing state, and writing to these channels. Unlike actor based
+concurrency, which keeps state local, in this case per-process state is totally
+eliminated, with all computation state managed as messages in a channel.
+\item Other, less well known models using, for instance, tuple
+  spaces \cite{gelernter1985generative}.
+\end{itemize}
+
+Most modern languages, however, follow the CSP abstraction, and it has
+become popular since it fits well other programming paradigms, like
+reactive and functional programming, and allows for a more efficient
+implementation, with less overhead, and with well-defined
+primitives. This is why we will use it in this paper for creating new
+evolutionary algorithms that live {\em natively} in these environments
+and can thus be implemented easily in this kind of languages. We have chosen Perl 6, although 
+other languages such as Go, are feasible alternatives.
+
+In previous papers
+\cite{Merelo:2018:MEA:3205651.3208317:anon,merelo:WEA:anon} we
+designed an evolutionary algorithm that fits well this architecture
+and explored its possibilities. That initial exploration showed that
+a critical factor within this algorithic model is communication between threads; therefore designing
+efficient messages is high-priority to obtain a good algorithmic
+performance and scaling. In this paper, we will test several
+communication strategoes: a lossless one that compresses the population,
+and a lossy one that sends a representation of population gene-wise
+statistics.
+
+\section{State of the Art}
+
+The problem of communication/synchronization
+between processes, which nowadays is accomplished by means of threads, has been the subject of long-standing study. One of the best efforts to formalize
+and simplify that matter is Hoare’s {\em Communicating Sequential
+  Processes} \cite{Hoare:1978:CSP:359576.359585}, that proposes an interaction
+description language which is the theoretical support for many libraries and
+modern programming languages. In such model, concurrent programs communicate on the basis of {\em channels}, a sort of pipe buffer used to interchange messages between the
+different processes or threads, either asynchronously or synchronously. Languages such as Go and Perl 6 implement this concurrency model (the latter including additional mechanisms such as {\em promises} or low-level access to the creation of threads).
+
+% SR: I suggest to eliminate the paragraph below, as it has been covered in the Introduction section
+
+%, this one. Another, different, approach is actor-based concurrency, \cite{schippers2009towards}. This actor model bans shared state, with different {\em actors} communicating through messages \cite{erb2012concurrent}. 
 
 
 The fact that messages have to be processed without secondary effects
@@ -223,17 +265,16 @@ programming specially fit for functional languages or languages with
 functional features; this has made this paradigm specially popular for
 late cloud computing implementations; however, its presence in the EA
 world is not so widespread, although some efforts have lately revived
-the interest for this kind of paradigm \cite{swan2015research}. Several years ago was used in Genetic Programming
+the interest for this kind of paradigm \cite{swan2015research}. Several years ago it was used in Genetic Programming
 \cite{Briggs:2008:FGP:1375341.1375345,Huelsbergen:1996:TSE:1595536.1595579,walsh:1999:AFSFESIHLP}
-and recently in neuroevolution \cite{Sher2013} but in EA its presence,
+and recently in neuroevolution \cite{Sher2013} but its occurrence in EA,
 despite being scarce in the previous years
 \cite{Hawkins:2001:GFG:872017.872197}, has experimented a certain rise
 lately with papers such as \cite{valkov2018synthesis} which perform
-program synthesis using functional programming or
-\cite{barwell2017using} which uses the functional and parallel
-language Erlang for an evolutionary multi-agent system.
+program synthesis using the functional programming features of the ERlang language
+\cite{barwell2017using} for building an evolutionary multi-agent system.
 
-Among languages with functional features, the languages Erlang and Scala have
+Regarding functional languages, Erlang and Scala have
 embraced the actor model of concurrency and get excellent results in
 many application domains; Clojure is another one with concurrent
 features such as promises/futures, Software Transaction Memory and
@@ -241,153 +282,441 @@ agents; Kotlin \cite{simson2017open} has been recently used for
 implementing a functional evolutionary algorithm framework.  
 
 On the
-other hand, Perl 6 \cite{Tang:2007:PRI:1190215.1190218} uses different
-concurrency models, that go from implicit concurrency using a
+other hand, Perl 6 \cite{Tang:2007:PRI:1190216.1190218,lenzperl} uses different
+concurrency models, varying from implicit concurrency using a
 particular function that automatically parallelizes operations on
 iterable data structures, to explicit concurrency using threads. These
-both types of concurrency will be analyzed in this paper, which uses
-the {\tt Algorithm::Evolutionary::Simple} library for that language
-which was presented in the same conference \cite{DBLP:conf/gecco/GuervosV18}
+both types of concurrency will be considered in this study whilst using 
+the {\tt Algorithm::Evolutionary::Simple}, a Perl 6 library introduced in last year's version of this very same conference \cite{DBLP:conf/gecco/GuervosV18}.
 
-For instance, the EvAg model \cite{evag:gpem} is a locally concurrent and globally
-parallel evolutionary algorithm that leaves the management of the
-different agents (i.e. threads) to the underlying platform scheduler
-and displays an interesting feature: the model is able to scale
-seamlessly and take full advantage of CPU threads. In a first attempt
-to measure the scalability of the approach experiments were conducted
-in \cite{wcci:evoag} for a single and a dual-core processor showing
-that, for cost functions passing some milliseconds of computing
-time, the model was able to achieve near linear speed-ups . This study
+%%% SR: Two paragraphs below are replicated from Evo* paper. I rewrote/summarised them
+
+% For instance, the EvAg model \cite{evag:gpem} is a locally concurrent and globally
+% parallel evolutionary algorithm that leaves the management of the
+% different agents (i.e. threads) to the underlying platform scheduler
+% and displays an interesting feature: the model is able to scale
+% seamlessly and take full advantage of CPU threads. In a first attempt
+% to measure the scalability of the approach experiments were conducted
+% in \cite{wcci:evoag} for a single and a dual-core processor showing
+% that, for cost functions passing some milliseconds of computing
+% time, the model was able to achieve near linear speed-ups . This study
+% was later on extended in \cite{DBLP:conf/evoW/LaredoBMG12} by scaling
+% up the experimentation to up to 188 parallel machines. The
+% reported speed-up was $\times 960$ which is beyond the linear $\times
+% 188$ that could be expected if local concurrency were not taken into
+% account.  
+% The aforementioned algorithm used a protocol that worked
+% asynchronously, leveraging its peer-to-peer capabilities; in general
+% the design of concurrent EAs has to take into account the
+% communication/synchronization 
+% between processes, which nowadays will be mainly threads. Although the
+% paper above was original in its approach, other authors targeted
+% explicitly multi-core architectures, such as Tagawa
+% \cite{Tagawa201212} which used shared memory and a clever mechanism to
+% avoid deadlock. Other authors \cite{kerdprasop2012concurrent} actually
+% use a message-based architecture based in the concurrent functional
+% language Erlang, which separates GA populations as different
+% processes, although all communication takes place with a common
+% central thread. 
+
+Earlier efforts to study the issues of concurrency in EA are worth mentioning. For instance, the EvAg model \cite{evag:gpem} resorts to the underlying platform scheduler to manage the different threads of execution of the evolving agents; in this way the model scaled-up 
+seamlessly to take full advantage of CPU cores. In the same avenue of measuring scalability,  experiments were conducted
+in \cite{wcci:evoag} comparing single and a dual-core processor concurrency 
+achieving near linear speed-ups . The latter
 was later on extended in \cite{DBLP:conf/evoW/LaredoBMG12} by scaling
-up the experimentation to up to 188 parallel machines. The
-reported speed-up was $\times 960$ which is beyond the linear $\times
-188$ that could be expected if local concurrency were not taken into
-account.  
-
-The aforementioned algorithm used a protocol that worked
-asynchronously, leveraging its peer-to-peer capabilities; in general
-the design of concurrent EAs has to take into account the
-communication/synchronization 
-between processes, which nowadays will be mainly threads. Although the
-paper above was original in its approach, other authors targeted
+up the experiment to up to 188 parallel machines, reporting speed-ups up to $960\times$, nearly four times the expected linear growth in the number of machines (when local concurrency were not taken into account). Other authors have addressed
 explicitly multi-core architectures, such as Tagawa
 \cite{Tagawa201212} which used shared memory and a clever mechanism to
-avoid deadlock. Other authors \cite{kerdprasop2012concurrent} actually
-use a message-based architecture based in the concurrent functional
-language Erlang, which separates GA populations as different
-processes, although all communication takes place with a common
+avoid deadlock. Similarly, \cite{kerdprasop2012concurrent}
+used a message-based architecture developed in Erlang, separating GA populations as different
+processes, although all communication tooking place with a common
 central thread. 
 
-In our previous papers 
+%%% SR: Again, below paragraphs replicated in Evo*. I re-wrote/summarised
+
+% In our previous papers 
+% \cite{Merelo:2018:MEA:3205651.3208317:anon,Garcia-Valdez:2018:MEA:3205651.3205719:anon},
+% we presented the proof of concept and initial results with this kind
+% of stateless evolutionary algorithms, implemented in the Perl 6
+% language. These evolutionary algorithms use a single channel where
+% whole populations are sent. The (stateless) functions read a single
+% population from the channel, run an evolutionary algorithm for a fixed
+% number of generations, which we call the {\em generation gap} or
+% simply {\em gap}, and send the population in the final generation back
+% to the channel. Several populations are created initially, and a
+% concurrent {\em mixer} is run which takes populations in couples,
+% mixes them leaving only a single population with the best individuals
+% selected from the two merged populations.
+%  This {\em
+%   gap} is then conceptually, if not functionally, similar to the {\em
+%   time to migration} in parallel evolutionary algorithms (with which
+% concurrent evolutionary algorithms have a big resemblance).
+% 
+% We did some initial exploration of the parameter space in
+% \cite{merelo:WEA:anon}. In these initial explorations we realized
+% that the parameters we used had an influence at the algorithmic level,
+% but also at the implementation level, changing the wallclock
+% performance of the algorithm.
+
+In previous papers 
 \cite{Merelo:2018:MEA:3205651.3208317:anon,Garcia-Valdez:2018:MEA:3205651.3205719:anon},
-we presented the proof of concept and initial results with this kind
-of stateless evolutionary algorithms, implemented in the Perl 6
-language. These evolutionary algorithms use a single channel where
-whole populations are sent. The (stateless) functions read a single
-population from the channel, run an evolutionary algorithm for a fixed
-number of generations, which we call the {\em generation gap} or
-simply {\em gap}, and send the population in the final generation back
-to the channel. Several populations are created initially, and a
-concurrent {\em mixer} is run which takes populations in couples,
-mixes them leaving only a single population with the best individuals
-selected from the two merged populations.
- This {\em
-  gap} is then conceptually, if not functionally, similar to the {\em
-  time to migration} in parallel evolutionary algorithms (with which
-concurrent evolutionary algorithms have a big resemblance).
+we presented a proof of concept of the implementation 
+of stateless evolutionary algorithms using Perl 6, based on a single channel model communicating threads for population evolving and mixing. In addition, we studied the effect of running parameters such as {\em generation gap} (similar to the concept of {\em
+  time to migration} in parallel evolutionary algorithms) and population size, realizing that the choice of parameters may have a strong influence at the algorithmic level,
+but also at the implementation level, in fact affecting the actual wallclock
+performance of the EA.
 
-We did some initial exploration of the parameter space in
-\cite{merelo:WEA:anon}. In these initial explorations we realized
-that the parameters we used had an influence at the algorithmic level,
-but also at the implementation level, changing the wallclock
-performance of the algorithm.
+%%% SR: I suggest to eliminate the paragraph below
 
-In this paper we will explore the parameter space systematically
-looking particularly at two parameters that have a very important
-influence on performance: population size and generation gap. Our
-intention is to create a rule of thumb for setting them in this kind
-of algorithms, so that they are able to achieve the best
-performance. 
+% In this paper we will explore the parameter space systematically
+% looking particularly at two parameters that have a very important
+% influence on performance: population size and generation gap. Our
+% intention is to create a rule of thumb for setting them in this kind
+% of algorithms, so that they are able to achieve the best
+% performance. 
+% 
+% We will present the experimental setup next.
 
-We will present the experimental setup next.
+\section{Experimental setup}
+\label{sec:exp}
 
-\section{Experimental setup and results}
-\label{sec:res}
-In principle, we will work with two threads, one for
-mixing the populations and another for evolution. This setup, while
-being concurrent, allows us to focus more on the basic features of the
-algorithm, which is what we are exploring in this paper. 
+\begin{figure}[h!tb]
+  \centering
+\includegraphics[width=0.95\columnwidth]{../figure/popmixer}
+\caption{General scheme of operation of channels and thread groups. }
+\label{fig:scheme}
+\end{figure}
+%
 
-What we want to find out in these set of experiments is what is the
+\begin{figure}[h!tb]
+  \centering
+  
+\begin{sequencediagram}
+
+\newthread[red]{E}{Evolver} 
+
+\tikzstyle{inststyle}+=[rounded corners=3mm] 
+\newinst{C}{Channel}
+
+\tikzstyle{inststyle}+=[rounded corners=0]
+\newthread[blue]{M}{Mixer}
+
+\begin{call}{E}{evolve()}{E}{}\end{call}
+
+\setthreadbias{east}
+\begin{messcall}{E}{$pop_1$}{C} 
+\mess{C}{$pop_1$}{M}
+\end{messcall}
+
+\prelevel\prelevel
+\begin{call}{E}{evolve()}{E}{}\end{call}
+
+\setthreadbias{east}
+\begin{messcall}{E}{$pop_2$}{C}  
+\mess{C}{$pop_2$}{M}
+\end{messcall}
+
+\prelevel\prelevel
+\begin{call}{M}{mix()}{M}{}\end{call}
+
+\postlevel\postlevel
+\setthreadbias{west}
+\begin{messcall}{M}{\shortstack{ \{\ $mixpop_1$,\\ $mixpop_2$,\\ \vdots \\ $mixpop_k$ \} }}{C}
+
+\mess{C}{$mixpop_1$}{E} 
+\begin{call}{E}{evolve()}{E}{}\end{call}
+
+\setthreadbias{east}
+\begin{messcall}{E}{$pop_3$}{C} 
+\postlevel
+\mess{C}{$mixpop_2$}{E} 
+%\prelevel
+\mess{C}{$pop_3$}{M}
+\end{messcall}
+
+\prelevel\prelevel
+\begin{call}{E}{evolve()}{E}{}\end{call}
+
+\setthreadbias{east}
+\begin{messcall}{E}{$pop_4$}{C}
+\mess{C}{$pop_4$}{M}
+\end{messcall}
+
+\setthreadbias{west}
+\prelevel
+\mess{C}{$mixpop_k$}{E}%\end{messcall}
+
+\end{messcall}
+
+\prelevel\prelevel
+\begin{call}{M}{mix()}{M}{\vdots}\end{call}
+\prelevel
+\begin{call}{E}{evolve()}{E}{\vdots}\end{call}
+
+\end{sequencediagram}
+
+\caption{Schematic of communication between threads and channels for
+  concurrent EAs. The two central bars represent the channel, and
+  color corresponds to the {\em main} function they perform; blue for
+  mixer, red for evolver. As the figure shows, the evolver threads
+  always read from the mixer channel, and always write to the evolver
+  channel.}
+\label{fig:schematic}
+\end{figure}
+
+
+The baselinwe we are coming from is similar to the one used in previous experiments
+\cite{Merelo:2018:MEA:3205651.3208317:anon}. Our intention was to
+create a system that was not functionally equivalent to a sequential
+evolutionary algorithms, and that followed the principle of
+communicating sequential processes. In this kind of methodology, we
+will have processes (or threads) communicating state through
+channels. Every process itself will be stateless, reacting to the
+presence of messages in the channels it is listening to and sending
+result back to them, without changing state.
+
+As in the previous papers, \cite{merelo:WEA:anon}, we will use two
+groups of threads and two channels. We will see them in turns.
+
+The two groups of threads perform the following
+functions:\begin{itemize}
+\item The {\em evolutionary} threads will be the ones that will be in
+  principle running the evolutionary algorithm.
+\item The {\em mixing} threads will {\em mix} populations, and create
+  new ones as a mixture of them.
+\end{itemize}
+
+The two channels carry messages that are equivalent to populations,
+but they do so in a different way:\begin{itemize}
+  
+\item The {\em evolutionary} channel will be used for carrying
+  non-evolved, or generated, populations.
+\item The {\em mixer} channel will carry, {\em in pairs}, evolved
+  populations. 
+\end{itemize}
+
+These will be connected as shown in Figure \ref{fig:scheme}. The
+evolutionary group of threads will read only from the evolutionary channel,
+evolve for a number of generations, and place result in the mixer
+channel; the mixer group of threads will read only from the mixer
+channel, in pairs. From every pair, a random element is put back into
+the mixer channel, and a new population is generated and sent back to
+the evolutionary channel. The main objective of using two channels is
+to avoid deadlocks; the fact that one population is written always
+back to the mixer channel avoids starvation in the channel. How this
+runs in practice is shown in Figure \ref{fig:schematic}, where the
+timeline of the interchange of messages between the evolver and mixer
+threads and evolver and mixer channels is clarified.
+
+One of the problems of the baseline configuration was that
+communication took a great amount of time, adding some overhead to the
+algorithm. The {\em message} consisted of the whole population, and
+the size increased with population size, obviously. This tipped the
+balance between communication and computation towards communication,
+so that the more threads, the more communication was taking place. Our
+first intention in this paper was to slim down messages so that they
+took less bandwith (or memory) and less time to send and process. In
+general, this strategy also can be framed in the context of migration
+strategies, since that is the most similar thing in the context of
+parallel algorithms. In parallel algorithms, an adequate selection of
+migration strategies, balancing exploration and exploitation, is the
+key to achieving high performance, as indicated in
+\cite{Cantu-Paz:1999:MPT:2933923.2934003}.
+In the context of concurrent evolutionary algorithms we will talk
+about {\em population messages}, but their effect is going to be
+similar. For this paper, we introduced two different messaging strategies: \begin{itemize}
+  
+\item One we have called {\em EDA}, or estimation of distribution
+  algorithm, whose basic idea is that the population message will
+  contain the probability distribution over each gene. In this sense,
+  this strategy is similar to the one presented by de la Ossa et
+  al. in \cite{10.1007/978-3-540-30217-9_25}. Not being an estimation
+  of distribution algorithm {\em per se}, since the evolutionary
+  thread runs a canonical genetic algorith, when the message is being
+  composed, every (binary) gene of the 25\% best individuals in the
+  population is examined, and an array with the
+  probabilities for each gene is sent to the mixer thread. The {\em
+    mixer} thread, in turn, just takes randomly one probability from
+  each of the two {\em populations} (actually, distributions), instead
+  of working on individuals. While in the baseline strategy the
+  selection took place in the mixer thread, that eliminated half the
+  population, in this case the selection takes place when composing
+  the message, since just the 25\% best individuals are selected to
+  compute the probability distribution of genes. When the evolver
+  thread reads the message, it rebuilds the population based on this
+  distribution.
+\item The second is called {\em compress}, and it simply bit-packs the
+  population, without the fitness, into a message which uses 1 bit per
+  individual, and then 64 bits, or simply 8 bytes, to transmit a
+  single individual in the population. This strategy is equivalent to
+  the baseline, except it introduces an additional step of evaluating
+  the population when mixing and receiving it from the evolutionary
+  channel. It is hoped that this additional evaluation overhead does
+  compensates the communication overhead that is eliminated.
+\end{itemize}
+
+
+In the same way we did in our previous papers, first we will have to
+evaluate these new strategies compared with baseline; since the
+overhead will be different depending on the computation time, which in
+this case is regulated by the number of generations that are going to
+be performed by every thread, we will first perform an experiment
+changing that. We will call this parameter the {\em generation gap},
+implying that's the gap between receiving a message and activating the
+thread and sending it, deactivating it. Besides, what we want to find
+out in these set of experiments is what is the 
 generation gap that gives the best performance in terms of raw time to
 find a solution, as well as the best number of evaluations per
-second. In order to do that, we prepared an experiment using the
-OneMax function with 64 bits, a concurrent evolutionary algorithm such
-as the one described in \cite{Merelo:2018:MEA:3205651.3208317:anon},
-which is based in the free Perl 6 evolutionary algorithm library {\tt
-  Algorithm::Evolutionary::Simple}, and run the experiments in a
-machine with Ubuntu 18.04, an AMD Ryzen 7 2700X Eight-Core Processor
-at 2195MHz. The Rakudo version was 6.d, which had recently been
-released with many improvements to the concurrent core of the
-language. All scripts, as well as processing scripts and data obtained
-in the experiments are available, under a free license, from our GitHub
-repository.
+second.
 
+Additionally, it is impossible to know from first principles if this
+setup is the only possible. We have to heuristically explore other
+possibilities; in this case, we will explore another messaging
+strategy called {\em no writeback}, or {\sf nw}, where the mixer
+thread, instead of sending one of the individuals back again to the
+mixer thread, sends it to the evolver channel, where it will undergo
+an additional round of evolution. The main difference between these
+two strategies is twofold:\begin{itemize}
+\item The mixer channel can be empty for some time, since it is not
+  always holding at least one population message (written back every
+  time it is activated). This might lead to {\em starvation} of the
+  mixer thread, but in fact it will not take long since it is going to
+  be processed immediately by the evolver thread.
+\item Every population is mixed just once, which might lead to
+  improvements in the algorithm.
+\end{itemize}
+
+
+\section{Experimental results}
+\label{sec:exp}
+
+The experiments have been prepared by using OneMax function with 64
+bits. This function was chosen primarily since it was the one used in
+previous experiments, but also because it is a classical benchmark, it
+can be easily programmed in Perl 6, and allowed us to focus in what we
+are interested in, the design of the concurrent evolutionary algorithm
+itself. We used the open source {\tt Algorithm::Evolutionary::Simple}
+Perl 6 module for the evolutionary part, and wrote the different
+scripts in the same language. The latest version, compiled from
+source, of Perl 6 was used, and experiments were performed in a
+Intel(R) Core(TM) i7-4770 CPU at 3.40GHz running Ubuntu 14.04 server.
+All scripts have a free license and have been released in GitHub,
+where the data generated by every single experiment is also hosted.
+
+\begin{table}
+  \centering
+  \caption{Parameters used to explore the generation gap}
+  \label{tab:gens}
+  \begin{tabular}{lr}
+    \toprule
+    Parameter & Value\\
+    \midrule
+Evolver threads & 2 \\
+    Mixer threads & 1 \\
+    Generations & 8,16,32 \\
+    Population size & 256 \\
+    Initial populations & 3 \\
+    Bits & 64 \\
+  \bottomrule
+  \end{tabular}
+\end{table}
 %
-%  Figure with Plots goes here
+In these experiments, the parameters used are shown in Table
+\ref{tab:gens}. Two evolver threads are needed, at least, to avoid
+starvation of the mixer thread. The generation gap was checked for
+those values in all cases, although in some cases we extended it to 4
+and 64 generations. The population was sized in previous papers using
+the bisection method, and the number of initial populations created
+and sent to the evolver channel was also designed to avoid starvation;
+that way, as soon as the first two populations are evaluated
+simultaneously by the two threads and sent to the mixer channel, this
+channel will always hold a population that will combine with a fresh
+one coming from either of the mixer threads.
+
+\begin{figure*}[h!tb]
+  \centering
+<<gens, cache=FALSE,echo=FALSE,fig.height=4>>=
+ggplot(data.generations,aes(x=gap,y=evaluations,group=strategy, color=strategy))+ stat_summary(fun.y="mean", geom="line", size=2)+geom_point()+scale_y_log10()+scale_x_continuous(trans='log10',name="Generations",breaks=c(4,8,16,32,64))+theme_tufte()+labs(x="Generations",y="Evaluations")
+@ 
+\caption{Number of evaluations vs. generation gap for the baseline
+  strategy (in pink) and the EDA and compress messaging strategies,
+  with or without writeback (WB). Lines run over the average value;
+  every point represents the number of evaluations in individual
+  experiments. Smaller, in this case, is better. Please note that both
+axes are logarithmic.}
+\label{fig:evals}
+\end{figure*}
+%
+\begin{figure}[h!tb]
+  \centering
+<<gens2, cache=FALSE,echo=FALSE,fig.height=4>>=
+ggplot(data.generations,aes(x=gap,y=evaluations/time,group=strategy, color=strategy))+geom_point()+ stat_summary(fun.y="mean", geom="line", size=2)+scale_y_log10()+scale_x_log10(name="Generations",breaks=c(4,8,16,32,64))+theme_tufte()+labs(x="Generations",y="Evaluations/second")
+@ 
+\caption{Number of evaluations per second vs. generation gap for the baseline
+  strategy (in pink) and the EDA and compress messaging strategies,
+  with or without writeback (WB). Higher is better. Axes are logarithmic.}
+\label{fig:evals2}
+\end{figure}
+
+Since we are exploring the parameter space, we will first try
+to find out the generation gap and strategy that obtains the smaller
+number of evaluations, indicating it is the best algorithmic
+strategy. These are shown in Figure \ref{fig:evals}, where the two
+messaging strategies, EDA and compress, with or without writeback, are
+plotted and compared with the baseline strategy, which uses the full,
+evaluated population as a message. The first observation is that, in
+general, the number of evaluations increases with the generation
+gap. More evolution without interchange with other populations implies
+more exploitation, and then the possibility of stagnation. For 8
+generations the results are very similar, but they diverge with the
+generation gap. Clearly, the baseline strategy achieves the lowest
+number of evaluations, for two reasons: it does not need to
+re-evaluate the population when the message is received, but also, in
+the case of EDA, the population is rebuilt from its statistical
+description, so the exact individual (with the possible highest
+fitness) is not kept. The lowest number of evaluations, although not
+significatively so, is achieved for the EDA strategy with no writeback.
+
+This chart can also be used to check the performance of the {\em
+  no-writeback} strategies. In principle, since they use more evolved
+populations, they should be better. As a matter of fact, since they
+are injecting an additional population that is actually evolved, they
+use more evaluations. So in principle these strategies will be
+discarded.
+
+Additionaly, we evaluate the raw performance, in evaluations per
+second, of all strategies, since at the end of the day, working with
+concurrent evolutionary algorithms pursue higher speed. This is shown
+in Figure \ref{fig:evals2}, which shows in the $y$ axis the number of
+evaluations per second. In this case, the EDA strategy is clearly
+superior to the rest, beating them significantly for all generation
+gaps. In this case, generation gap == 8 will be chosen, since it
+achieves the best combination of algorithmic and wallclock
+performance.
+
+Our initial intention in this paper was to design a communication
+strategy that improves the speed of the algorith, and with the EDA
+strategy we have achieved just that. However, there are two parts in
+this strategy: using significantly smaller messages, and moving
+selection strategy from the mixer to the evolver (when computing the
+probability distribution). In fact, 1/4 of the population is used to
+compute the distribution, as opposed to the baseline mixer (labeled
+``Full''), which takes the better half of the pair of populations for
+mixing. This is undoubtedly a factor that contributes to balance the
+number of additional evaluations needed for the new, rebuilt,
+populations. However, the increase of speed must be entirely due to
+the compactness of the messages used by this strategy.
+
+\begin{figure*}[h!tb]
+  \centering
+\includegraphics[width=0.95\textwidth]{../figure/screenshot}
+\caption{Screenshot using the htop utility of the used machine running
+  two experiments at the same time. As it can be seen, all processors
+  are kept busy, with a very high load average. }
+\label{fig:screenshot}
+\end{figure*}
 %
 
-We used a population size of 256, as well as generation gaps
-increasing from 8 to 64. Many experiments were run for every
-configuration, up to 150 in some cases. We logged the upper bound of
-the number of evaluations needed (by multiplying the number of
-messages by the number of generations and number of individuals
-evaluated; this means that this number will be an upper bound, and not
-the exact number of evaluations until a solution is reached). We will
-first look at the general picture by plotting the wallclock time in seconds
-(measured by taking the time of the starting of the algorithm and the
-last message and subtracting the latter from the former) vs the
-number of evaluations that have been performed. The result is shown in
-Figure \ref{fig:evals}. Experiments with different generation gaps are
-shown with different colors (where available) and shapes, and they
-spread in an angle which is roughly bracketed by the experiments with
-a generation gap of 8, which need the most time for the same number of
-evaluations, and the experiments with a gap of 16, which usually need
-the least. The experiments with gaps = 32 or 64 are somewhere in
-between.
-
-In that same chart it can also be observed that the number of
-evaluations needed to find the 64 bit OneMax solution is quite
-different. We make a boxplot of the number of evaluations vs the
-generation gap in Figure \ref{fig:evals:bp}. This figure shows an
-increasing number of evaluations per gap size. Differences are
-significant between every generation gap and the next. This
-increasing number of evaluations per generation gap is probably due to
-the fact that the increasing number of isolated generations makes the
-population lose diversity, making finding the solution increasingly
-difficult. This is the same effect observed in parallel algorithms, as
-reported in \cite{Cantu-Paz:1999:MPT:2933923.2934003}, so it is not
-unexpected. What is unexpected is the combination of generation gap
-size and the concurrent algorithm, since it is impossible to know in
-advance what is the optimal computation to communication balance.
-% Here it would be interesting to describe why is unexpected? - Juanlu
-% done - JJ
-
-We plot the number of evaluations per second in Figure
-\ref{fig:evals:avg}. These show a big difference for a generation gap
-of 16, with a number of evaluations which is almost 50\% higher than
-for the rest of the generation gaps, where the difference is not so
-high. 
-
-
-The number of evaluation per second does not follow a clear trend. It
-falls and remains flat for a generation gap higher than 16; it is also slightly higher than for the minimum
-generation gap that has been evaluated, 8. This generation gap,
-however, presents also the lowest number of evaluations to solution,
-which means that, on average, the solution will be found faster with a
-generation gap of 8 or 16. This is shown in Figure \ref{fig:time}.
-% I don't feel confortable modifying this paragraph, but I find it a bit twisted - Juanlu
-% Rewritten - JJ
 
 \section{Conclusions}
 \label{sec:conclusions}
