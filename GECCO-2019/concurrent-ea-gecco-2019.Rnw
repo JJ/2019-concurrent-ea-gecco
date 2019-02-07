@@ -116,22 +116,40 @@ data.generations <- data.frame(
   
 
 \begin{abstract}
-  Communication is an integral part of concurrent algorithms, so some attention must
-be devoted to its design. Concurrent, stateless evolutionary algorithm
+Concurrent algorithms use channels for communication, which implies
+that communication is an integral part of them, so some attention must
+be devoted to its design. 
+%... part of them. Therefore, when designing a concurrent algorithm, 
+% some attention must be devoted to the layout of the communication
+% architecture in order to gain performance and achieve an efficient 
+% design. - Juanlu
+Concurrent, stateless evolutionary algorithms
+% I will supress "stateless" here. It's gonna be distracting at
+% this point to the audience. So just leave "Concurrent evolutionary algorithms..." - Juanlu
 will use threads for performing different types of tasks like evolving
 and mixing populations and these threads communicate via messages. In
 this paper we will explore the design of these messages and how it
 influences scaling and the performance of the algorithm itself. The
 evolutionary algorithm will use a concurrent language, and leverage
-its capabilities. Eventually, we will try to prove how concurrent
-version of algorithms offer a good option to leverage the
+its capabilities. 
+% ... itself. The evolutionary algorithm is implemented using a concurrent 
+% programming language in order to fully exploit the algorithm's capabilities. - Juanlu
+Eventually, we will try to prove 
+% try to prove -> show. (either we prove or we don't, so I think show is more accurate) - Juanlu
+how concurrent version of algorithms 
+offer a good option to leverage the
 multi-threaded and multi-core capabilities of modern computers.
 In order to do this, we will explore the performance of the system by
 increasing the number of threads in order to find out the limits of
+% the limits of -> upper bounds for - Juanlu
 the speed up and the causes why they are reached. Results show that
 concurrency is achieved, but there the interaction between
 communication, the number of threads and the algorithm parameters is
 very important, opening new possibilities of algorithm design.
+% @JJ: After reading this last line, I definetely think that we should
+% go for a sensitivity analysis. - Juanlu
+% Results show that an efficient concurrency can be achieved, but there
+% 
 
 \end{abstract}
 
