@@ -723,7 +723,10 @@ unlike in previous papers, we must find a version of the algorithm
 that speeds up with the number of threads. We will settle on the
 communication strategy, EDA, that has been proved to work before, and
 the population size (256) and generation gap (8) that has been proved
-to work previously. However, we need to devise a strategy that
+to work previously. The number of initial populations was set to the
+number of threads plus one, as the minimum required to avoid
+starvation. 
+However, we need to devise a strategy that
 actually makes scaling possible and profitable.
 After many tests, eventually the scaling strategy was simply to divide
 the total population by the number of threads. Initially we had two
@@ -742,7 +745,15 @@ show how the program is replicated in several processor, thus
 leveraging their full power. Please check also the number of threads
 that are actually running at the same time.
 
-
+\begin{figure}[h!tb]
+  \centering
+<<threads1, cache=FALSE,echo=FALSE,fig.height=4>>=
+data.freqs.ap.threads <- read.csv('../data/gecco-2019-freqs-ap-threads.csv')
+ggplot(data.freqs.ap.threads,aes(x=Threads,y=Evaluations,group=Threads)) + geom_boxplot(fill='green',notch=TRUE)+theme_tufte()+scale_x_continuous(name="Threads",breaks=c(2,4,6,8))+labs(x="Threads",y="Evaluations",title="Adaptive population")
+@ 
+\caption{Number of evaluations vs. number of threads. Higher is better}
+\label{fig:evals2}
+\end{figure}
 
 \section{Conclusions}
 \label{sec:conclusions}
