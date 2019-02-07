@@ -229,3 +229,4 @@ concurrent-evosoft-2018.tex
 *.ps
 *.zip
 
+.Rhistory
