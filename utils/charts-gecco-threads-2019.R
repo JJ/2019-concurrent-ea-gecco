@@ -1,0 +1,9 @@
+library(ggplot2)
+library(ggthemes)
+
+
+data.freqs.ap.threads <- read.csv('../data/gecco-2019-freqs-ap-threads.csv')
+
+ggplot(data.freqs.ap.threads,aes(x=Threads,y=Evaluations,group=Threads))+geom_boxplot()+theme_tufte()+scale_x_continuous(name="Threads",breaks=c(2,4,6,8))+labs(x="Threads",y="Evaluations",title="Adaptive population")
+ggplot(data.freqs.ap.threads,aes(x=Threads,y=Time,group=Threads))+geom_boxplot()+theme_tufte()+labs(x="Generation.Gap",y="Time",title="Adaptive population")
+ggplot(data.freqs.ap.threads,aes(x=Threads,y=Evaluations/Time,group=Threads))+geom_boxplot()+theme_tufte()+labs(x="Generation.Gap",y="Evaluation/time",title="Generation gap = 8")

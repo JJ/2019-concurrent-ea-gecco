@@ -717,6 +717,31 @@ the compactness of the messages used by this strategy.
 \label{fig:screenshot}
 \end{figure*}
 %
+However, the intention of concurrent evolutionary algorithms is to
+leverage the power of all threads and processors in a computer, so
+unlike in previous papers, we must find a version of the algorithm
+that speeds up with the number of threads. We will settle on the
+communication strategy, EDA, that has been proved to work before, and
+the population size (256) and generation gap (8) that has been proved
+to work previously. However, we need to devise a strategy that
+actually makes scaling possible and profitable.
+After many tests, eventually the scaling strategy was simply to divide
+the total population by the number of threads. Initially we had two
+threads and total population equal to 512, so our strategy, called AP
+for adaptive population, was to divide the number of total individuals
+between the threads, so that 4 threads, for instance, get 128
+individuals each. 
+
+In this case, experients were run on a different machine with the
+Ubuntu 18.04 OS and an AMD Ryzen 7 2700X Eight-Core Processor
+at 3.7GHz. Figure \ref{fig:screenshot} shows the utility htop with an
+experiment running; the top of the screen shows the rate at which all
+cores are working, showing all of them occupied; of course, the
+program was not running exclusively, but the list of processes below
+show how the program is replicated in several processor, thus
+leveraging their full power. Please check also the number of threads
+that are actually running at the same time.
+
 
 
 \section{Conclusions}
