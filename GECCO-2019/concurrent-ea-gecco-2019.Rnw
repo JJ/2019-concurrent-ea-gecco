@@ -821,7 +821,46 @@ Experiments show that no matter what the communication or messaging strategy is,
 
 These experiments also yielded the EDA strategy as the fastest, with a relatively low impact in the number of evaluations. The fact that messages are the most compact is probably the main reason, but the fact that it uses a higher selective pressure is probably also a factor that should be taken into account.
 
-Finally, this paper has proved for the first time the good scaling behavior of this kind of concurrent evolutionary algorithms. 
+Finally, this paper has proved for the first time the good scaling
+behavior of this kind of concurrent evolutionary
+algorithms. Simultaneous threads running an evolutionary algorithm do
+increase the number of simultaneous evaluations, although since this
+scaling is achieved via population splitting, the actual time achieved
+reaches its lowest peak with just 4 threads. As a matter of fact, and
+probably due to hardware limitations, the number of simultaneous
+evaluations seems to reach a plateau with 8 threads. At any rate, this
+new concurrent evolutionary algorithm is achieving results that are
+much better than what the equivalent, single thread, evolutionary
+algorithm would achieve. It should be noted that the base algorithm
+used for comparison uses 3 threads already: two evolutionary threads
+and a mixing thread; thus, the scaled-up version would use a total of
+9 threads (8 evolutionary + 1 for mixing).
+
+Although the good performance of this concurrent evolutionary
+algorithm has been well established in this paper, several lines of
+research are open. The first one is to continue exploring the
+algorithm itself trying to find out a scaling strategy that does not
+have a negative influence in the number of evaluations, so that actual
+increasing in the number of simultaneous evaluations achieved the
+equivalent speedup. The second like would be to find out what is the
+maximum number of simultaneous evaluations that can be achieved, so
+that an optimum number of threads can be advised, if possible
+independently of the problem and depending only on the physical number
+of threads available.
+
+The messaging strategies proposed here can be used only if the problem
+can be represented via a binary data structure. New strategies will
+have to be explored for floating-point representation, or more
+complicated data structures. There are general-purpose strategies for
+compressing messages, for instance, and they could be used in this
+case. Estimation of distribution algorithms can also be extended to
+other types of data, so this is is something that can be also explored.
+
+Finally, we are using the same kind of algorithm in all
+threads. Nothing prevents us from using a different algorithm per
+thread, or using different parameters per thread. This opens a vast
+space of possibilities, but the payoff might be worth it.
+
 
 
 \begin{acks}
