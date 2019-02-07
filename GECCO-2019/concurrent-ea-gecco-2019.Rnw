@@ -124,6 +124,7 @@ evolutionary algorithm will use a concurrent language, and leverage
 its capabilities. Eventually, we will try to prove how concurrent
 version of algorithms offer a good option to leverage the
 multi-threaded and multi-core capabilities of modern computers.
+% we can expand this abstrct, it's too short.
 
 \end{abstract}
 
