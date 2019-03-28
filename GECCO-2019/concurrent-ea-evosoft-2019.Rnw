@@ -378,16 +378,12 @@ of stateless evolutionary algorithms using Perl 6, based on a single channel mod
 but also at the implementation level, in fact affecting the actual wallclock
 performance of the EA.
 
-%%% SR: I suggest to eliminate the paragraph below
+\section{An evolutionary algorith library in Perl 6}
 
-% In this paper we will explore the parameter space systematically
-% looking particularly at two parameters that have a very important
-% influence on performance: population size and generation gap. Our
-% intention is to create a rule of thumb for setting them in this kind
-% of algorithms, so that they are able to achieve the best
-% performance. 
-% 
-% We will present the experimental setup next.
+Perl 6 is a concurrent, functional language
+\cite{DBLP:journals/corr/abs-1809-01427} which was conceived with the
+intention of providing a solid conceptual framework for multi-paradigm
+computing, including thread-based concurrency and asynchrony.
 
 \section{Experimental setup}
 \label{sec:exp}
@@ -812,7 +808,6 @@ confirms, however, that we are actually using all threads for
 evaluations, and if only we could find a strategy that didn't need
 more evaluations we should be able to get a big boost in computation
 time that scales gracefully to a high number of processors.
-
 
 
 \section{Conclusions}
