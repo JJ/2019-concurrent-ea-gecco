@@ -260,7 +260,7 @@ statistics.
 
 The problem of communication/synchronization
 between processes, which nowadays is accomplished by means of threads, has been the subject of long-standing study. One of the best efforts to formalize
-and simplify that matter is Hoare’s {\em Communicating Sequential
+and simplify that matter is Hoare's {\em Communicating Sequential
   Processes} \cite{Hoare:1978:CSP:359576.359585}, that proposes an interaction
 description language which is the theoretical support for many libraries and
 modern programming languages. In such model, concurrent programs communicate on the basis of {\em channels}, a sort of pipe buffer used to interchange messages between the
@@ -536,7 +536,7 @@ key to achieving high performance, as indicated in
 \cite{Cantu-Paz:1999:MPT:2933923.2934003}.
 In the context of concurrent evolutionary algorithms we will talk
 about {\em population messages}, but their effect is going to be
-similar. For this paper, we introduced two different messaging strategies: \begin{itemize}
+similar. In this paper we use two different messaging strategies: \begin{itemize}
   
 \item One we have called {\em EDA}, or estimation of distribution
   algorithm, whose basic idea is that the population message will
@@ -602,6 +602,9 @@ two strategies is twofold:\begin{itemize}
 \section{Experimental results}
 \label{sec:exp}
 
+
+% I am going to use Royal Road too  here, basically for scaling, but
+% I'm trying to establish the population size via bisection - JJ
 The experiments have been prepared by using OneMax function with 64
 bits. This function was chosen primarily since it was the one used in
 previous experiments, but also because it is a classical benchmark, it
