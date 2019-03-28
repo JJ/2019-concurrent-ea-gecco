@@ -64,12 +64,7 @@ data.generations <- data.frame(
 
 @
 
-\title{Improving the algorithmic efficiency and performance of channel-based evolutionary algorithms}
-\title{Exploring concurrent and stateless evolutionary algorithms in Perl 6}
-
-% Same title as EvoApp paper? - Juanlu
-% I hadn't realized that... 
-% I propose that the subtitle becomes the title and the subtitle becomes something like: "The case of a Perl6-based implementation" -  Juanlu
+\title{Concurrency in evolutionary algorithms}
 
   \author{Anonymous Author 1}
   \orcid{1234-5678-9012}
@@ -118,31 +113,25 @@ data.generations <- data.frame(
   
 
 \begin{abstract}
-Concurrent algorithms use channels for communication, which implies
-that communication is an integral part of them.  Therefore, when designing a concurrent algorithm some attention must be devoted to the layout of the communication
-architecture in order to gain performance and achieve an efficient 
- design.
-Concurrent evolutionary algorithms
-will use threads for performing different types of tasks like evolving
-and mixing populations and these threads communicate via messages. In
-this paper we will explore the design of these messages and how it
-influences scaling and the performance of the algorithm itself. The
-evolutionary algorithm is implemented using a concurrent 
-programming language in order to fully exploit the algorithm's capabilities.
-Eventually, we will show
-how concurrent version of algorithms 
-offer a good option to leverage the
-multi-threaded and multi-core capabilities of modern computers.
-In order to do this, we will explore the performance of the system by
-increasing the number of threads in order to find out the upper bounds for
-the speed up and the causes why they are reached. Results show that
-concurrency is achieved, but there the interaction between
+Concurrent algorithms must be designed around the concept of channel,
+used to convey state to the different processes that are running
+concurrently, which is why their design is one of the main challenges.
+Concurrent evolutionary algorithms will use threads, communicating via
+messages, for performing different types of tasks like evolving and
+mixing populations. In this paper we will explore the design of these
+messages and how it influences scaling and the performance of the
+algorithm itself. The evolutionary algorithm is implemented using a
+concurrent programming language in order to fully exploit the
+algorithm's capabilities.  Eventually, we will show how concurrent
+version of algorithms offer a good option to leverage the
+multi-threaded and multi-core capabilities of modern computers.  In
+order to do this, we will explore the performance of the system by
+increasing the number of threads in order to find out the upper bounds
+for the speed up and the causes why they are reached. Results show
+that concurrency is achieved, but there the interaction between
 communication, the number of threads and the algorithm parameters is
 very important, opening new possibilities of algorithm design.
-% @JJ: After reading this last line, I definetely think that we should
-% go for a sensitivity analysis. - Juanlu
-% Results show that an efficient concurrency can be achieved, but there
-% 
+
 
 \end{abstract}
 
