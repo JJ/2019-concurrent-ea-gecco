@@ -113,7 +113,7 @@ data.generations <- data.frame(
   
 
 \begin{abstract}
-Concurrent algorithms must be designed around the concept of channel,
+Concurrent algorithms must be designed around the concept of channel, a structure
 used to convey state to the different processes that are running
 concurrently, which is why their design is one of the main challenges.
 Concurrent evolutionary algorithms will use threads, communicating via
@@ -174,11 +174,6 @@ evaluation, algorithm design}
 \section{Introduction}
 
 
-%% Despite the emphasis on algorithmic techniques whose foundation is on
-%% software techniques that have an ultimate basis on newer hardware
-%% features,
-% The sentence is too large and somehow not clear enough. - Juanlu
-% What about this one: 
 Despite the emphasis on leveraging newer hardware features
 with best-suited software techniques
  there are not many papers \cite{Xia2010} dealing with 
@@ -266,10 +261,6 @@ description language which is the theoretical support for many libraries and
 modern programming languages. In such model, concurrent programs communicate on the basis of {\em channels}, a sort of pipe buffer used to interchange messages between the
 different processes or threads, either asynchronously or synchronously. Languages such as Go and Perl 6 implement this concurrency model (the latter including additional mechanisms such as {\em promises} or low-level access to the creation of threads).
 
-% SR: I suggest to eliminate the paragraph below, as it has been covered in the Introduction section
-
-%, this one. Another, different, approach is actor-based concurrency, \cite{schippers2009towards}. This actor model bans shared state, with different {\em actors} communicating through messages \cite{erb2012concurrent}. 
-
 
 The fact that messages have to be processed without secondary effects
 and that actors do not share any kind of state makes concurrent
@@ -301,36 +292,6 @@ iterable data structures, to explicit concurrency using threads. These
 both types of concurrency will be considered in this study whilst using 
 the {\tt Algorithm::Evolutionary::Simple}, a Perl 6 library introduced in last year's version of this very same conference \cite{DBLP:conf/gecco/GuervosV18}.
 
-%%% SR: Two paragraphs below are replicated from Evo* paper. I rewrote/summarised them
-
-% For instance, the EvAg model \cite{evag:gpem} is a locally concurrent and globally
-% parallel evolutionary algorithm that leaves the management of the
-% different agents (i.e. threads) to the underlying platform scheduler
-% and displays an interesting feature: the model is able to scale
-% seamlessly and take full advantage of CPU threads. In a first attempt
-% to measure the scalability of the approach experiments were conducted
-% in \cite{wcci:evoag} for a single and a dual-core processor showing
-% that, for cost functions passing some milliseconds of computing
-% time, the model was able to achieve near linear speed-ups . This study
-% was later on extended in \cite{DBLP:conf/evoW/LaredoBMG12} by scaling
-% up the experimentation to up to 188 parallel machines. The
-% reported speed-up was $\times 960$ which is beyond the linear $\times
-% 188$ that could be expected if local concurrency were not taken into
-% account.  
-% The aforementioned algorithm used a protocol that worked
-% asynchronously, leveraging its peer-to-peer capabilities; in general
-% the design of concurrent EAs has to take into account the
-% communication/synchronization 
-% between processes, which nowadays will be mainly threads. Although the
-% paper above was original in its approach, other authors targeted
-% explicitly multi-core architectures, such as Tagawa
-% \cite{Tagawa201212} which used shared memory and a clever mechanism to
-% avoid deadlock. Other authors \cite{kerdprasop2012concurrent} actually
-% use a message-based architecture based in the concurrent functional
-% language Erlang, which separates GA populations as different
-% processes, although all communication takes place with a common
-% central thread. 
-
 Earlier efforts to study the issues of concurrency in EA are worth mentioning. For instance, the EvAg model \cite{evag:gpem} resorts to the underlying platform scheduler to manage the different threads of execution of the evolving agents; in this way the model scaled-up 
 seamlessly to take full advantage of CPU cores. In the same avenue of measuring scalability,  experiments were conducted
 in \cite{wcci:evoag} comparing single and a dual-core processor concurrency 
@@ -344,31 +305,6 @@ used a message-based architecture developed in Erlang, separating GA populations
 processes, although all communication taking place with a common
 central thread. 
 
-%%% SR: Again, below paragraphs replicated in Evo*. I re-wrote/summarised
-
-% In our previous papers 
-% \cite{Merelo:2018:MEA:3205651.3208317:anon,Garcia-Valdez:2018:MEA:3205651.3205719:anon},
-% we presented the proof of concept and initial results with this kind
-% of stateless evolutionary algorithms, implemented in the Perl 6
-% language. These evolutionary algorithms use a single channel where
-% whole populations are sent. The (stateless) functions read a single
-% population from the channel, run an evolutionary algorithm for a fixed
-% number of generations, which we call the {\em generation gap} or
-% simply {\em gap}, and send the population in the final generation back
-% to the channel. Several populations are created initially, and a
-% concurrent {\em mixer} is run which takes populations in couples,
-% mixes them leaving only a single population with the best individuals
-% selected from the two merged populations.
-%  This {\em
-%   gap} is then conceptually, if not functionally, similar to the {\em
-%   time to migration} in parallel evolutionary algorithms (with which
-% concurrent evolutionary algorithms have a big resemblance).
-% 
-% We did some initial exploration of the parameter space in
-% \cite{merelo:WEA:anon}. In these initial explorations we realized
-% that the parameters we used had an influence at the algorithmic level,
-% but also at the implementation level, changing the wallclock
-% performance of the algorithm.
 
 In previous papers 
 \cite{Merelo:2018:MEA:3205651.3208317:anon,Garcia-Valdez:2018:MEA:3205651.3205719:anon},
