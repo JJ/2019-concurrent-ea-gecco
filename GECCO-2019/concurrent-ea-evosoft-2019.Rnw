@@ -286,11 +286,10 @@ implementing a functional evolutionary algorithm framework.
 
 On the
 other hand, Perl 6 \cite{Tang:2007:PRI:1190216.1190218,lenzperl} uses different
-concurrency models, varying from implicit concurrency using a
-particular function that automatically parallelizes operations on
-iterable data structures, to explicit concurrency using threads. These
-both types of concurrency will be considered in this study whilst using 
-the {\tt Algorithm::Evolutionary::Simple}, a Perl 6 library introduced in last year's version of this very same conference \cite{DBLP:conf/gecco/GuervosV18}.
+concurrency models, varying from implicit concurrency using the {\tt hyper} and {\tt race} functions, that automatically parallelize operations on
+iterable data structures, to explicit concurrency using threads. The {\tt Algorithm::Evolutionary::Simple} library introduced last year
+%\cite{DBLP:conf/gecco/GuervosV18}
+
 
 Earlier efforts to study the issues of concurrency in EA are worth mentioning. For instance, the EvAg model \cite{evag:gpem} resorts to the underlying platform scheduler to manage the different threads of execution of the evolving agents; in this way the model scaled-up 
 seamlessly to take full advantage of CPU cores. In the same avenue of measuring scalability,  experiments were conducted
