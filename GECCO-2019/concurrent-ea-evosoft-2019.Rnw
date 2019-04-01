@@ -236,12 +236,14 @@ statistics of the population.
 \section{State of the Art}
 
 The problem of communication/synchronization
-between processes or threads, has been the subject of long-standing study, 
-in order to to fully leverage multiple processors 
-on a given machine \cite{Lalwani2019}.
+between processes or threads, has been the subject of 
+long-standing study, in order to to fully leverage multiple
+processors on a given machine \cite{Lalwani2019}. In the 
+literature, most works are concerned with process-based  
+concurrency, using for instance a Message Passing Interface 
+(MPI) \cite{gropp1999using}, or a hybrid approach with fine-grain
+parallization using libraries such as OpenMP \cite{dagum1998openmp,jin2011high}.
 
-In the literature, most works are concerned with process-based  
-concurrency, using for instance a Message Passing Interface (MPI) \cite{gropp1999using}.
 
 
 % I think there could be confusion between the general "process" part 
