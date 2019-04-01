@@ -95,21 +95,21 @@ data.rr <- read.csv('../data/royal-road-evosoft.csv')
   % The default list of authors is too long for headers.
   \renewcommand{\shortauthors}{A. Author et al.}
 
-  
+
 
 \begin{abstract}
-One of the ways concurrent algorithms are designed is around the concept of channel, a structure
-% They must use channels? What about actors? - Mario 
-% so right. Changed - JJ
-used to convey state to the different processes that are running
+One of the ways multi-threaded concurrent algorithms are designed 
+is around the concept of a channel, a structure
+used to convey state to the different threads that are running
 concurrently, which is why their design is one of the main challenges.
 Concurrent evolutionary algorithms will use threads, communicating via
 messages, for performing different types of tasks like evolving and
 mixing populations. In this paper we will explore the design of these
-messages in a communicating sequential processes context and with a concurrent language and how it influences scaling and the performance of the
+messages in a communicating sequential processes context and with a 
+concurrent language and how it influences scaling and the performance of the
 algorithm itself. Eventually, we will show how a concurrent
 version of algorithms offer a good option to leverage the
-multi-threaded and multi-core capabilities of modern computers.  In
+multi-threaded and multi-core capabilities of modern computers. In
 order to do this, we will explore the performance of the system by
 increasing the number of threads in order to find out the upper bounds
 for the speed up and the causes why they are reached. Results show
