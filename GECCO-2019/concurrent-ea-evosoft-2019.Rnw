@@ -113,17 +113,16 @@ data.generations <- data.frame(
   
 
 \begin{abstract}
-Concurrent algorithms must be designed around the concept of channel, a structure
+One of the ways concurrent algorithms are designed is around the concept of channel, a structure
 % They must use channels? What about actors? - Mario 
+% so right. Changed - JJ
 used to convey state to the different processes that are running
 concurrently, which is why their design is one of the main challenges.
 Concurrent evolutionary algorithms will use threads, communicating via
 messages, for performing different types of tasks like evolving and
 mixing populations. In this paper we will explore the design of these
-messages and how it influences scaling and the performance of the
-algorithm itself. The evolutionary algorithm is implemented using a
-concurrent programming language in order to fully exploit the
-algorithm's capabilities.  Eventually, we will show how a concurrent
+messages in a communicating sequential processes context and with a concurrent language and how it influences scaling and the performance of the
+algorithm itself. Eventually, we will show how a concurrent
 version of algorithms offer a good option to leverage the
 multi-threaded and multi-core capabilities of modern computers.  In
 order to do this, we will explore the performance of the system by
@@ -132,7 +131,6 @@ for the speed up and the causes why they are reached. Results show
 that concurrency is achieved, but there the interaction between
 communication, the number of threads and the algorithm parameters is
 very important, opening new possibilities of algorithm design.
-
 
 \end{abstract}
 
