@@ -615,6 +615,40 @@ ggplot(data.rr,aes(x=Threads,y=Evaluations/Time,group=Threads,alpha=n))+geom_box
 \label{fig:threads:rr:3}
 \end{figure}
 
+The next figures chart the results obtained for the Royal Road
+function. We run the experiment as above, but in this case there were
+some runs in which the solution was not found within the time limit of
+800 seconds; in the first case, for two threads, this is indicated
+with a lighter shade corresponding to the number of instances where it
+did found the solution, 6 out of 15. The number of evaluations needed
+to find the solution is shown as a boxplot in Figure
+\ref{fig:threads:rr:1}; the total time in Figure
+\ref{fig:threads:rr:2} and the number of evaluations per second in
+Figure \ref{fig:threads:rr:3}.
+
+The pattern these charts follow is very similar to the one for
+OneMax. The performance scales up to a certain range, and then it
+plateaus, scaling only in speed, but not in wallclock time. From 2 to
+6 threads speed increases 2x, due to an increase in speed with a
+slight decrease in the number of evaluations needed to find the
+solution; besides, success rate goes up from 2 to 4 threads, going
+from finding the solution 6 out of 15 times to finding it every
+time. This is basically due to the cap in the time allowed to run,
+which is 800 seconds; it is likely that if more time had been allowed,
+solution had been found. However, the fact is that we again find the
+same effect of increase in performance, up to an optimal number of
+threads, which is 6 in this case. This is slightly better than it was
+for onemax, which reached an optimal performance for 4 threads. The
+fact that the optimal population in Royal Road is 4x that needed for
+OneMax will probably have an influence in that fact; as a rule of
+thumb, performance will only increase to the point that population
+size will make the algorithm worsen in the opposite
+direction. However, it also proves that the peak performance is mainly
+due to algorithmic, not the physical number of threads (which should
+be around 16 for this machine). Finding an algorithmic solution to
+this problem would allow us to leverage the number of threads
+available in a machine even more.
+
 \section{Conclusions}
 \label{sec:conclusions}
 
