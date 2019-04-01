@@ -157,7 +157,6 @@ evaluation, algorithm design}
 
 \section{Introduction}
 
-
 Despite the emphasis on leveraging newer hardware features
 with best-suited software techniques
  there are not many papers \cite{Xia2010} dealing with 
@@ -179,7 +178,7 @@ implemented in them concurrency-oriented programming or simply
 concurrent programming \cite{Armstrong2003}. 
 
 These languages are characterized by the presence of
-programming constructs that manage processes like first class
+programming constructs that manage threads like first class
 objects; that means that the language includes  operators for acting upon them and the
 possibility of using them like parameters or function's result
 values. This changes the coding of concurrent algorithms due to the
@@ -196,8 +195,8 @@ high-level interface that allows the user to program modules of code to
 be executed in parallel threads \cite{andrews1991concurrent}.
 
 Different languages offer different concurrency strategies depending on how they deal with shared state,
-that is, data structures that could be accessed from several
-processes. In this regard, there are two major fields and other, less well known models using, for instance, tuple
+that is, data structures that could be accessed from several processes or
+threads. In this regard, there are two major fields and other, less well known models using, for instance, tuple
   spaces \cite{gelernter1985generative}:
 \begin{itemize}
 \item Actor-based concurrency \cite{schippers2009towards}
@@ -227,12 +226,12 @@ In previous papers
 \cite{Merelo:2018:MEA:3205651.3208317:anon,merelo:WEA:anon} we
 designed an evolutionary algorithm that fits well this architecture
 and explored its possibilities. That initial exploration showed that
-a critical factor within this algorithmic model is communication between threads; therefore designing
-efficient messages is high-priority to obtain a good algorithmic
+a critical factor within this algorithmic model is the communication between threads; therefore designing
+efficient messages is high-priority to obtain good algorithmic
 performance and scaling. In this paper, we will test several
 communication strategies: a lossless one that compresses the population,
-and a lossy one that sends a representation of population gene-wise
-statistics.
+and a lossy one that sends a representation of gene-wise
+statistics of the population.
 
 \section{State of the Art}
 
