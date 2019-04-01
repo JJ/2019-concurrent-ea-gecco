@@ -114,6 +114,7 @@ data.generations <- data.frame(
 
 \begin{abstract}
 Concurrent algorithms must be designed around the concept of channel, a structure
+% They must use channels? What about actors? - Mario 
 used to convey state to the different processes that are running
 concurrently, which is why their design is one of the main challenges.
 Concurrent evolutionary algorithms will use threads, communicating via
@@ -122,7 +123,7 @@ mixing populations. In this paper we will explore the design of these
 messages and how it influences scaling and the performance of the
 algorithm itself. The evolutionary algorithm is implemented using a
 concurrent programming language in order to fully exploit the
-algorithm's capabilities.  Eventually, we will show how concurrent
+algorithm's capabilities.  Eventually, we will show how a concurrent
 version of algorithms offer a good option to leverage the
 multi-threaded and multi-core capabilities of modern computers.  In
 order to do this, we will explore the performance of the system by
@@ -179,8 +180,9 @@ with best-suited software techniques
  there are not many papers \cite{Xia2010} dealing with 
 creating concurrent evolutionary algorithms that work in a single
 computing node or that extend seamlessly from single to many
-computers. However, concurrent programming seems to be the best option
-if we are dealing with a multi-core processor architecture where many processes and threads can coexists at the same time.
+computers. However, concurrent programming seems to be the best 
+option if we are dealing with a multi-core processor architecture 
+where many processes and threads can coexists at the same time. #
  This eventually means that many
 processes (heavy or lightweight) can be leveraged to take full
 advantage of the processor capabilities.
@@ -199,6 +201,7 @@ objects; that means that the language includes  operators for acting upon them a
 possibility of using them like parameters or function's result
 values. This changes the coding of concurrent algorithms due to the
 direct mapping between patterns of communications and processes with
+% patterns of communication between processes? - Mario 
 language expressions; on the one hand it becomes simpler since the
 language provides an abstraction for communication, on the other hand
 it changes the paradigm for implementing algorithms, since these new
@@ -254,12 +257,30 @@ statistics.
 \section{State of the Art}
 
 The problem of communication/synchronization
-between processes, which nowadays is accomplished by means of threads, has been the subject of long-standing study. One of the best efforts to formalize
-and simplify that matter is Hoare's {\em Communicating Sequential
-  Processes} \cite{Hoare:1978:CSP:359576.359585}, that proposes an interaction
-description language which is the theoretical support for many libraries and
-modern programming languages. In such model, concurrent programs communicate on the basis of {\em channels}, a sort of pipe buffer used to interchange messages between the
-different processes or threads, either asynchronously or synchronously. Languages such as Go and Perl 6 implement this concurrency model (the latter including additional mechanisms such as {\em promises} or low-level access to the creation of threads).
+between processes, which nowadays is accomplished by means of 
+threads, has been the subject of long-standing study.
+% I think there could be confusion between the general "process" part 
+% of an algorithm (from Process calculi), and an OS process (an instance of a program).a   
+% So there is inter-process comunication/synchronization and
+% inter-thread comunication/synchronization. For instance, Python can
+% do a real parallel execution using processes and they can communicate 
+% between them (RPC, RMI, Shared memory, message queues, etc.)
+% Here, I think we are dealing only with communication between 
+% threads. Python on the other hand cannot use two threads at the
+% same time. - Mario
+
+One of the 
+best efforts to formalize and simplify that matter 
+is Hoare's {\em Communicating Sequential Processes} \cite{Hoare:1978:CSP:359576.359585},
+that proposes an interaction description language which is the 
+theoretical support for many libraries and modern programming 
+languages. In such model, concurrent programs communicate on 
+the basis of {\em channels}, a sort of pipe buffer used to
+interchange messages between the different processes or threads, 
+either asynchronously or synchronously. 
+Languages such as Go and Perl 6 implement this concurrency model 
+(the latter including additional mechanisms such as 
+{\em promises} or low-level access to the creation of threads).
 
 
 The fact that messages have to be processed without secondary effects
@@ -268,7 +289,8 @@ programming specially fit for functional languages or languages with
 functional features; this has made this paradigm specially popular for
 late cloud computing implementations; however, its presence in the EA
 world is not so widespread, although some efforts have lately revived
-the interest for this kind of paradigm \cite{swan2015research}. Several years ago it was used in Genetic Programming
+the interest for this kind of paradigm \cite{swan2015research}.
+Several years ago it was used in Genetic Programming
 \cite{Briggs:2008:FGP:1375341.1375345,Huelsbergen:1996:TSE:1595536.1595579,walsh:1999:AFSFESIHLP}
 and recently in neuroevolution \cite{Sher2013} but its occurrence in EA,
 despite being scarce in the previous years
@@ -280,37 +302,52 @@ program synthesis using the functional programming features of the Erlang langua
 Regarding functional languages, Erlang and Scala have
 embraced the actor model of concurrency and get excellent results in
 many application domains; Clojure is another one with concurrent
-features such as promises/futures, Software Transaction Memory and
-agents; Kotlin \cite{simson2017open} has been recently used for
+features such as promises/futures, software transactional memory (STM) 
+and agents; Kotlin \cite{simson2017open} has been recently used for
 implementing a functional evolutionary algorithm framework.  
 
 On the
-other hand, Perl 6 \cite{Tang:2007:PRI:1190216.1190218,lenzperl} uses different
-concurrency models, varying from implicit concurrency using the {\tt hyper} and {\tt race} functions, that automatically parallelize operations on
-iterable data structures, to explicit concurrency using threads. The {\tt Algorithm::Evolutionary::Simple} library introduced last year
+other hand, Perl 6 \cite{Tang:2007:PRI:1190216.1190218,lenzperl} 
+uses different concurrency models, varying from implicit concurrency 
+using the {\tt hyper} and {\tt race} functions, that automatically 
+parallelize operations on iterable data structures, to explicit 
+concurrency using threads. 
+The {\tt Algorithm::Evolutionary::Simple} library introduced last year
 %\cite{DBLP:conf/gecco/GuervosV18}
 
 
-Earlier efforts to study the issues of concurrency in EA are worth mentioning. For instance, the EvAg model \cite{evag:gpem} resorts to the underlying platform scheduler to manage the different threads of execution of the evolving agents; in this way the model scaled-up 
-seamlessly to take full advantage of CPU cores. In the same avenue of measuring scalability,  experiments were conducted
-in \cite{wcci:evoag} comparing single and a dual-core processor concurrency 
-achieving near linear speed-ups . The latter
+Earlier efforts to study the issues of concurrency in EA are worth 
+mentioning. For instance, the EvAg model \cite{evag:gpem} resorts to 
+the underlying platform scheduler to manage the different threads of 
+execution of the evolving agents; in this way the model scaled-up 
+seamlessly to take full advantage of CPU cores. In the same avenue 
+of measuring scalability,  experiments were conducted
+in \cite{wcci:evoag} comparing single and a dual-core processor 
+concurrency achieving near linear speed-ups . The latter
 was later on extended in \cite{DBLP:conf/evoW/LaredoBMG12} by scaling
-up the experiment to up to 188 parallel machines, reporting speed-ups up to $960\times$, nearly four times the expected linear growth in the number of machines (when local concurrency were not taken into account). Other authors have addressed
-explicitly multi-core architectures, such as Tagawa
-\cite{Tagawa201212} which used shared memory and a clever mechanism to
-avoid deadlock. Similarly, \cite{kerdprasop2012concurrent}
-used a message-based architecture developed in Erlang, separating GA populations as different
-processes, although all communication taking place with a common
+up the experiment to up to 188 parallel machines, reporting speed-ups 
+up to $960\times$, nearly four times the expected linear growth 
+in the number of machines (when local concurrency were not taken 
+into account). Other authors have addressed explicitly multi-core 
+architectures, such as Tagawa \cite{Tagawa201212} which used 
+shared memory and a clever mechanism to avoid deadlocks. Similarly,
+\cite{kerdprasop2012concurrent} used a message-based architecture 
+developed in Erlang, separating GA populations as different
+processes, although all communication was taking place with a common
 central thread. 
 
 
 In previous papers 
 \cite{Merelo:2018:MEA:3205651.3208317:anon,Garcia-Valdez:2018:MEA:3205651.3205719:anon},
-we presented a proof of concept of the implementation 
-of stateless evolutionary algorithms using Perl 6, based on a single channel model communicating threads for population evolving and mixing. In addition, we studied the effect of running parameters such as {\em generation gap} (similar to the concept of {\em
-  time to migration} in parallel evolutionary algorithms) and population size, realizing that the choice of parameters may have a strong influence at the algorithmic level,
-but also at the implementation level, in fact affecting the actual wallclock
+we presented a proof of concept of the implementation of a stateless 
+evolutionary algorithms using Perl 6, based on a single 
+channel model communicating threads for population evolving and 
+mixing. In addition, we studied the effect of running parameters 
+such as the {\em generation gap} (similar to the concept of {\em
+time to migration} in parallel evolutionary algorithms) and 
+population size, realizing that the choice of parameters may have 
+a strong influence at the algorithmic level, but also at the 
+implementation level, in fact affecting the actual wallclock
 performance of the EA.
 
 \section{An evolutionary algorith library in Perl 6}
