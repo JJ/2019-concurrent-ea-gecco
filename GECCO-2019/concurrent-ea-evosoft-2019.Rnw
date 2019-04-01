@@ -45,8 +45,10 @@
 <<setup, cache=FALSE,echo=FALSE>>=
 library(ggplot2)
 library(ggthemes)
+library(dplyr)
 data.om <- read.csv('../data/gecco-2019-freqs-ap-threads.csv')
 data.rr <- read.csv('../data/royal-road-evosoft.csv')
+data.rr <- data.rr %>% group_by(data.rr$Threads) %>% add_tally()
 @
 
 \title{Concurrency in evolutionary algorithms}
@@ -99,8 +101,6 @@ data.rr <- read.csv('../data/royal-road-evosoft.csv')
 
 \begin{abstract}
 One of the ways concurrent algorithms are designed is around the concept of channel, a structure
-% They must use channels? What about actors? - Mario 
-% so right. Changed - JJ
 used to convey state to the different processes that are running
 concurrently, which is why their design is one of the main challenges.
 Concurrent evolutionary algorithms will use threads, communicating via
@@ -539,10 +539,9 @@ that are actually running at the same time, a few of which are being used by our
 \begin{figure}[h!tb]
   \centering
 <<threads1, cache=FALSE,echo=FALSE,fig.height=4,message=FALSE>>=
-data.om <- read.csv('../data/gecco-2019-freqs-ap-threads.csv')
 ggplot(data.om,aes(x=Threads,y=Evaluations,group=Threads)) + geom_boxplot(fill='green',notch=TRUE)+theme_tufte()+scale_x_continuous(name="Threads",breaks=c(2,4,6,8))+labs(x="Threads",y="Evaluations",title="Scaling")
 @ 
-\caption{Number of evaluations vs. number of threads. Higher is better.}
+\caption{Onemax: Number of evaluations vs. number of threads. Higher is better.}
 \label{fig:threads1}
 \end{figure}
 %
@@ -551,7 +550,7 @@ ggplot(data.om,aes(x=Threads,y=Evaluations,group=Threads)) + geom_boxplot(fill='
 <<threads2, cache=FALSE,echo=FALSE,fig.height=4,message=FALSE>>=
 ggplot(data.om,aes(x=Threads,y=Time,group=Threads))+geom_boxplot(fill='blue',notch=TRUE)+theme_tufte()+scale_x_continuous(name="Threads",breaks=c(2,4,6,8))+labs(x="Generation.Gap",y="Time",title="Scaling")
 @ 
-\caption{Total time vs. number of threads. Lower is better.}
+\caption{Onemax: Total time vs. number of threads. Lower is better.}
 \label{fig:threads2}
 \end{figure}
 %
@@ -571,7 +570,7 @@ the number of generations will have to be explored further.
 <<threads3, cache=FALSE,echo=FALSE,fig.height=4,message=FALSE>>=
 ggplot(data.om,aes(x=Threads,y=Evaluations/Time,group=Threads))+geom_boxplot(fill='yellow',notch=TRUE)+theme_tufte()+scale_x_continuous(name="Threads",breaks=c(2,4,6,8))+labs(x="Generation.Gap",y="Evaluation/time",title="Scaling")
 @ 
-\caption{Evaluations per second vs. number of threads. Higher is better.}
+\caption{Onemax: Evaluations per second vs. number of threads. Higher is better.}
 \label{fig:threads3}
 \end{figure}
 %
@@ -589,6 +588,32 @@ evaluations, and if only we could find a strategy that didn't need
 more evaluations we should be able to get a big boost in computation
 time that scales gracefully to a high number of processors.
 
+\begin{figure}[h!tb]
+  \centering
+<<threads-rr1, cache=FALSE,echo=FALSE,fig.height=4,message=FALSE>>=
+ggplot(data.rr,aes(x=Threads,y=Evaluations,group=Threads,alpha=n)) + geom_boxplot(fill="green",notch=TRUE)+theme_tufte()+scale_x_continuous(name="Threads",breaks=c(2,4,6,8,10,12))+labs(x="Threads",y="Evaluations",title="Royal Road 64 bits")
+@ 
+\caption{Royal Road: Number of evaluations vs. number of threads. Higher is better.}
+\label{fig:threads:rr:1}
+\end{figure}
+%
+\begin{figure}[h!tb]
+  \centering
+<<threads-rr2, cache=FALSE,echo=FALSE,fig.height=4,message=FALSE>>=
+ggplot(data.rr,aes(x=Threads,y=Time,group=Threads,alpha=n))+geom_boxplot(fill='blue',notch=TRUE)+theme_tufte()+scale_x_continuous(name="Threads",breaks=c(2,4,6,8,10,12))+labs(x="Threads",y="Time",title="Royal Road 64 bits")
+@ 
+\caption{Royal Road: Total time vs. number of threads. Lower is better.}
+\label{fig:threads:rr:2}
+\end{figure}
+%
+\begin{figure}[h!tb]
+  \centering
+<<threads-rr3, cache=FALSE,echo=FALSE,fig.height=4,message=FALSE>>=
+ggplot(data.rr,aes(x=Threads,y=Evaluations/Time,group=Threads,alpha=n))+geom_boxplot(fill='yellow',notch=TRUE)+theme_tufte()+scale_x_continuous(name="Threads",breaks=c(2,4,6,8,10,12))+labs(x="Threads",y="Evaluation/time",title="Royal Road 64 bits")
+@ 
+\caption{Royal Road: Evaluations per second vs. number of threads. Higher is better.}
+\label{fig:threads:rr:3}
+\end{figure}
 
 \section{Conclusions}
 \label{sec:conclusions}
