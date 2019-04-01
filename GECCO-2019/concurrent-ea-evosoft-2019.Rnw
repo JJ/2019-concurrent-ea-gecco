@@ -45,23 +45,8 @@
 <<setup, cache=FALSE,echo=FALSE>>=
 library(ggplot2)
 library(ggthemes)
-
-data.freqs.nw.gens <- read.csv('../data/gecco-2019-freqs-noweb-generations.csv')
-data.compress.nw.gens <- read.csv('../data/gecco-2019-compress-noweb-generations.csv')
-data.freqs.generations <- read.csv('../data/gecco-2019-freqs-generations.csv')
-data.compress.generations <- read.csv('../data/gecco-2019-compress-generations.csv')
-data.evostar <- read.csv("../data/evostar2019.csv")
-
-data.generations <- data.frame(
-    strategy=c(rep("Compress",length(data.compress.generations$Generation.Gap)),
-               rep("CompressNW",length(data.compress.nw.gens$Generation.Gap)),
-               rep("EDA",length(data.freqs.generations$Generation.Gap)),
-               rep("EDANW",length(data.freqs.nw.gens$Generation.Gap)),
-               rep("Full",length(data.evostar$gap))),
-    gap=c(data.compress.generations$Generation.Gap,data.compress.nw.gens$Generation.Gap,data.freqs.generations$Generation.Gap,data.freqs.nw.gens$Generation.Gap,data.evostar$gap),
-    evaluations=c(data.compress.generations$Evaluations,data.compress.nw.gens$Evaluations,data.freqs.generations$Evaluations,data.freqs.nw.gens$Evaluation,data.evostar$evaluations),
-    time=c(data.compress.generations$Time,data.compress.nw.gens$Time,data.freqs.generations$Time,data.freqs.nw.gens$Time,data.evostar$time) )
-
+data.om <- read.csv('../data/gecco-2019-freqs-ap-threads.csv')
+data.rr <- read.csv('../data/royal-road-evosoft.csv')
 @
 
 \title{Concurrency in evolutionary algorithms}
@@ -554,8 +539,8 @@ that are actually running at the same time, a few of which are being used by our
 \begin{figure}[h!tb]
   \centering
 <<threads1, cache=FALSE,echo=FALSE,fig.height=4,message=FALSE>>=
-data.freqs.ap.threads <- read.csv('../data/gecco-2019-freqs-ap-threads.csv')
-ggplot(data.freqs.ap.threads,aes(x=Threads,y=Evaluations,group=Threads)) + geom_boxplot(fill='green',notch=TRUE)+theme_tufte()+scale_x_continuous(name="Threads",breaks=c(2,4,6,8))+labs(x="Threads",y="Evaluations",title="Scaling")
+data.om <- read.csv('../data/gecco-2019-freqs-ap-threads.csv')
+ggplot(data.om,aes(x=Threads,y=Evaluations,group=Threads)) + geom_boxplot(fill='green',notch=TRUE)+theme_tufte()+scale_x_continuous(name="Threads",breaks=c(2,4,6,8))+labs(x="Threads",y="Evaluations",title="Scaling")
 @ 
 \caption{Number of evaluations vs. number of threads. Higher is better.}
 \label{fig:threads1}
@@ -564,7 +549,7 @@ ggplot(data.freqs.ap.threads,aes(x=Threads,y=Evaluations,group=Threads)) + geom_
 \begin{figure}[h!tb]
   \centering
 <<threads2, cache=FALSE,echo=FALSE,fig.height=4,message=FALSE>>=
-ggplot(data.freqs.ap.threads,aes(x=Threads,y=Time,group=Threads))+geom_boxplot(fill='blue',notch=TRUE)+theme_tufte()+scale_x_continuous(name="Threads",breaks=c(2,4,6,8))+labs(x="Generation.Gap",y="Time",title="Scaling")
+ggplot(data.om,aes(x=Threads,y=Time,group=Threads))+geom_boxplot(fill='blue',notch=TRUE)+theme_tufte()+scale_x_continuous(name="Threads",breaks=c(2,4,6,8))+labs(x="Generation.Gap",y="Time",title="Scaling")
 @ 
 \caption{Total time vs. number of threads. Lower is better.}
 \label{fig:threads2}
@@ -584,7 +569,7 @@ the number of generations will have to be explored further.
 \begin{figure}[h!tb]
   \centering
 <<threads3, cache=FALSE,echo=FALSE,fig.height=4,message=FALSE>>=
-ggplot(data.freqs.ap.threads,aes(x=Threads,y=Evaluations/Time,group=Threads))+geom_boxplot(fill='yellow',notch=TRUE)+theme_tufte()+scale_x_continuous(name="Threads",breaks=c(2,4,6,8))+labs(x="Generation.Gap",y="Evaluation/time",title="Scaling")
+ggplot(data.om,aes(x=Threads,y=Evaluations/Time,group=Threads))+geom_boxplot(fill='yellow',notch=TRUE)+theme_tufte()+scale_x_continuous(name="Threads",breaks=c(2,4,6,8))+labs(x="Generation.Gap",y="Evaluation/time",title="Scaling")
 @ 
 \caption{Evaluations per second vs. number of threads. Higher is better.}
 \label{fig:threads3}
