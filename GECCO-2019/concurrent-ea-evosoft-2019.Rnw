@@ -180,7 +180,7 @@ creating concurrent evolutionary algorithms that work in a single
 computing node or that extend seamlessly from single to many
 computers. However, concurrent programming seems to be the best 
 option if we are dealing with a multi-core processor architecture 
-where many processes and threads can coexists at the same time. #
+where many processes and threads can coexists at the same time. 
  This eventually means that many
 processes (heavy or lightweight) can be leveraged to take full
 advantage of the processor capabilities.
