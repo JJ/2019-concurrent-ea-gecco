@@ -574,7 +574,7 @@ We are first interested in the number of evaluations needed to find
 the solution, which are plotted in Fig. \ref{fig:threads1}. It
 increases slightly and not significantly from 2 to 4 threads, but it
 does increase significantly for 6 and 8 threads, indicating that the
-algorithm is performing significantly worse when we increase the number
+algorithm's performance  is worse when we increase the number
 of threads. This is probably due to the fact that we are
 simultaneously decreasing the population size, leading to earlier
 convergence for the number of generations (8) it is being used. This
@@ -613,17 +613,7 @@ set of configuration decisions that must be taken into account at the algorithm 
 at the parameter level. Thus, the main intention in this paper was to
 explore the parameter space in a concurrent evolutionary algorithm
 looking for the combination that yields the best performance in terms
-of time, without sacrificing the algorithmic performance. Since the
-biggest obstacle to scaling and high performance was the size of
-messages interchanged within the channel, in this paper we decided to
-redesign this communication either in an algorithmic specific way:
-using the distribution of probabilities as a representation of the
-population; or in a data structure specific way: compressing the
-bitstring to actual bits in a binary message. We also tested different messaging strategies.
-
-Experiments show that no matter what the communication or messaging strategy is, we need to keep the number of generations that the population undergoes to a small number, which resulted to be 8 in this case. This is equivalent to 2048 evaluations: a number which is likely dependent on the problem and the data structure we are evolving. We would need to investigate this number further, and find a methodology to set it in advance, avoiding heuristics. That is left as a future line of work, but meanwhile our conclusion would be the importance of this generation gap in stateless evolutionary algorithms and the need to follow an experimental strategy to establish its value for particular problems or implementations. 
-
-These experiments also yielded the EDA strategy as the fastest, with a relatively low impact in the number of evaluations. The fact that messages are the most compact is probably the main reason, but the fact that it uses a higher selective pressure is probably also a factor that should be taken into account.
+of time, without sacrificing the algorithmic performance. 
 
 Finally, this paper has shown for the first time the good scaling
 behavior of this kind of concurrent evolutionary
@@ -636,7 +626,7 @@ evaluations seems to reach a plateau with 8 threads. At any rate, this
 new concurrent evolutionary algorithm is achieving results that are
 much better than what the equivalent, single thread, evolutionary
 algorithm would achieve. It should be noted that the base algorithm
-used for comparison uses 3 threads already: two evolutionary threads
+used for comparison uses 3 OS threads already: two evolutionary threads
 and a mixing thread; thus, the scaled-up version would use a total of
 9 threads (8 evolutionary + 1 for mixing).
 
