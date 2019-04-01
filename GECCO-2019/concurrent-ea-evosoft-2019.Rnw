@@ -236,8 +236,14 @@ statistics of the population.
 \section{State of the Art}
 
 The problem of communication/synchronization
-between processes, which nowadays is accomplished by means of 
-threads, has been the subject of long-standing study.
+between processes or threads, has been the subject of long-standing study, 
+in order to to fully leverage multiple processors 
+on a given machine \cite{Lalwani2019}.
+
+In the literature, most works are concerned with process-based  
+concurrency, using for instance a Message Passing Interface (MPI) \cite{gropp1999using}.
+
+
 % I think there could be confusion between the general "process" part 
 % of an algorithm (from Process calculi), and an OS process (an instance of a program).a   
 % So there is inter-process comunication/synchronization and
@@ -258,6 +264,7 @@ the basis of {\em channels}, a sort of pipe buffer used to
 interchange messages between the different processes or threads, 
 either asynchronously or synchronously. 
 Languages such as Go and Perl 6 implement this concurrency model 
+as an abstraction for their multi-threading capabilities. 
 (the latter including additional mechanisms such as 
 {\em promises} or low-level access to the creation of threads).
 
