@@ -255,8 +255,12 @@ their multi-threading capabilities. (the latter including additional mechanisms 
 interpreted languages with a global interpreter lock, such as Python also
 have included {\em promises} and {\em futures} in their latest versions,
 to laverage multi-threding capabilities for IO intensive tasks.
-
-
+The theoretical support used by these implementations is based 
+on Hoare's {\em Communicating Sequential Processes} (CSP) \cite{Hoare:1978:CSP:359576.359585}.
+In CSP, concurrent programs communicate on 
+the basis of {\em channels}, a sort of pipe buffer used to
+interchange messages between the different processes or threads, 
+either asynchronously or synchronously.  
 
 % I think there could be confusion between the general "process" part 
 % of an algorithm (from Process calculi), and an OS process (an instance of a program).a   
@@ -268,17 +272,15 @@ to laverage multi-threding capabilities for IO intensive tasks.
 % threads. Python on the other hand cannot use two threads at the
 % same time. - Mario
 
-One of the 
-best efforts to formalize and simplify that matter 
-is Hoare's {\em Communicating Sequential Processes} \cite{Hoare:1978:CSP:359576.359585},
-that proposes an interaction description language which is the 
-theoretical support for many libraries and modern programming 
-languages. In such model, concurrent programs communicate on 
-the basis of {\em channels}, a sort of pipe buffer used to
-interchange messages between the different processes or threads, 
-either asynchronously or synchronously. 
-
-
+%One of the 
+%best efforts to formalize and simplify that matter 
+%is Hoare's {\em Communicating Sequential Processes} \cite{Hoare:1978:CSP:359576.359585},
+%that proposes an interaction description language which is the 
+%theoretical support for many libraries and modern programming 
+%languages. In such model, concurrent programs communicate on 
+%the basis of {\em channels}, a sort of pipe buffer used to
+%interchange messages between the different processes or threads, 
+%either asynchronously or synchronously. 
 
 The fact that messages have to be processed without secondary effects
 and that actors do not share any kind of state makes concurrent
