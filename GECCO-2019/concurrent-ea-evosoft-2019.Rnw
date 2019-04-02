@@ -248,7 +248,7 @@ that offer multi-threading capabilities \cite{jin2011high}. Recent trends
 in software development have motivated the inclusion of new 
 constructs to programming languages with the intention of simplifying 
 the development of multi-threaded programs. The theoretical support 
-used by these implementations is based CSP. Languages such as Go 
+used by these implementations is based on CSP. Languages such as Go 
 and Perl 6 implement this concurrency model as an abstraction for 
 their multi-threading capabilities. (the latter including additional mechanisms such as 
 {\em promises} or low-level access to the creation of threads). Even 
