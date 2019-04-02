@@ -572,11 +572,22 @@ ggplot(data.om,aes(x=Threads,y=Time,group=Threads))+geom_boxplot(fill='blue',not
 \end{figure}
 %
 We are first interested in the number of evaluations needed to find
-the solution, which are plotted in Fig. \ref{fig:threads1}. It
+the solution, which are plotted in Fig. \ref{fig:threads1}, since, as
+indicated from the beginning, there is going to be an interaction
+between the performance of the algorithm and the way it is
+implemented, spreading it over different threads. In this case, and
+looking at the similarity with island-based parallel EAs, population
+does have an influence on the number of evaluations, with bigger
+populations tipping the balance in favor of exploration and thus
+making more evaluations to achieve the same result; the same happens
+with smaller populations, they tend to reach local minima and thus
+also increase exploration. Figure \ref{fig:threads1} shows how the
+overall number of populations
 increases slightly and not significantly from 2 to 4 threads, but it
 does increase significantly for 6 and 8 threads, indicating that the
-algorithm's performance  is worse when we increase the number
-of threads. This is probably due to the fact that we are
+algorithm's performance is worse when we increase the number
+of threads, and consequently we need more evaluations to achieve the
+same result. This is probably due to the fact that we are
 simultaneously decreasing the population size, leading to earlier
 convergence for the number of generations (8) it is being used. This
 interplay between the degree of concurrency, the population size and
@@ -632,8 +643,11 @@ ggplot(data.rr,aes(x=Threads,y=Evaluations/Time,group=Threads,alpha=n))+geom_box
 \label{fig:threads:rr:3}
 \end{figure}
 
-The next figures chart the results obtained for the Royal Road
-function. We run the experiment as above, but in this case there were
+But we were interested also in checking whether the same kind of
+patterns are found for other fitness functions, with a different
+landscape, and also how much further scaling with the number of
+threads could go; that is why we set up another experiment with the
+Royal Road function. The next figures starting with \ref{fig:threads:rr:1} chart the results obtained for it. We run the experiment as above, but in this case there were
 some runs in which the solution was not found within the time limit of
 800 seconds; in the first case, for two threads, this is indicated
 with a lighter shade corresponding to the number of instances where it
