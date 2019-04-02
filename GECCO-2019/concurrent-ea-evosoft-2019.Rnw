@@ -226,7 +226,7 @@ and explored its possibilities. That initial exploration showed that
 a critical factor within this algorithmic model is the communication between threads; therefore designing
 efficient messages is high-priority to obtain good algorithmic
 performance and scaling. In this paper, we will test several
-communication strategies: a lossless one that compresses the population,
+communication strategies: a loss-less one that compresses the population,
 and a lossy one that sends a representation of gene-wise
 statistics of the population.
 
@@ -235,16 +235,16 @@ statistics of the population.
 The problem of communication/synchronization
 between processes or threads, has been the subject of 
 long-standing study, in order to to fully leverage multiple
-processors and cores on a given machine. The paralellization of nature-based 
+processors and cores on a given machine. The parallelization of nature-based 
 optimization algorithms has been an active field, allowing researchers
-to solve complex optimization problems having a high computanional 
+to solve complex optimization problems having a high computational 
 cost \cite{Lalwani2019}. In the literature, most works are concerned 
 with process-based concurrency, using for instance a Message Passing Interface 
 (MPI) \cite{gropp1999using}, or hybrids with fine-grain
-parallization by using libraries such as OpenMP \cite{dagum1998openmp}
+parallelization by using libraries such as OpenMP \cite{dagum1998openmp}
 that offer multi-threading capabilities \cite{jin2011high}. Recent trends
 in software development have motivated the inclusion of new 
-constructs to programing languages with the intention of simplifying 
+constructs to programming languages with the intention of simplifying 
 the development of multi-threaded programs. The theoretical support 
 used by these implementations is based CSP. Languages such as Go 
 and Perl 6 implement this concurrency model as an abstraction for 
@@ -252,9 +252,9 @@ their multi-threading capabilities. (the latter including additional mechanisms 
 {\em promises} or low-level access to the creation of threads). Even 
 interpreted languages with a global interpreter lock, such as Python also
 have included {\em promises} and {\em futures} in their latest versions,
-to laverage multi-threding capabilities for IO intensive tasks.
-Using these native capabalities give developers the advantage of
-having less error-prone implementations which are more readable and consice
+to leverage multi-threading capabilities for IO intensive tasks.
+Using these native capabilities give developers the advantage of
+having less error-prone implementations which are more readable and consistently
 following the language conventions. 
 
 
@@ -361,7 +361,7 @@ languages, although with some room for improvement.
 
 The {\tt Algorithm::Evolutionary::Simple} Perl 6 module was published
 in the ecosystem a year ago, and got recently into version 0.0.7. It
-is a straightforward implementatin of a canonical evolutionary
+is a straightforward implementation of a canonical evolutionary
 algorithm with binary representation, and includes building blocks for
 a generational genetic algorithm, as well as some fitness functions
 used generally as benchmarks.
@@ -542,7 +542,7 @@ OneMax, Royal Road and Leading Ones, all of them with 64 bits.
 However, the intention of concurrent evolutionary algorithms is to
 leverage the power of all threads and processors in a computer so we must find out how it scales for different fitness functions. We are setting the number of initial populations was set to the
 number of threads plus one, as the minimum required to avoid
-starvation, and we are using a single mixing thread. As proved in our previous paper (hidden for anonimity), we are dividing the total population by the number of threads. The initial population will be 1024 for OneMax, 8192 for Royal Road and 4096 Leading Ones. These quantities were found heuristically by applying the bisection method on a selectorrecombinative algorith, which doubles the population until one that is able to find the solution 95\% of the time is found.
+starvation, and we are using a single mixing thread. As proved in our previous paper (hidden for anonymity), we are dividing the total population by the number of threads. The initial population will be 1024 for OneMax, 8192 for Royal Road and 4096 Leading Ones. These quantities were found heuristically by applying the bisection method on a selectorrecombinative algorithm, which doubles the population until one that is able to find the solution 95\% of the time is found.
 
 Experiments were run on a machine with the
 Ubuntu 18.04 OS and an AMD Ryzen 7 2700X Eight-Core Processor
@@ -553,14 +553,14 @@ cores are working, showing all of them occupied; of course, the
 program was not running exclusively, but the list of processes below
 show how the program is replicated in several processor, thus
 leveraging their full power. Please check also the number of threads
-that are actually running at the same time, a few of which are being used by our application; these are not, however, physical but operating system threads; the OS is able to accomodate many more threads that are physically available if the code using them is idle. 
+that are actually running at the same time, a few of which are being used by our application; these are not, however, physical but operating system threads; the OS is able to accommodate many more threads that are physically available if the code using them is idle. 
 
 \begin{figure}[h!tb]
   \centering
 <<threads1, cache=FALSE,echo=FALSE,fig.height=4,message=FALSE>>=
 ggplot(data.om,aes(x=Threads,y=Evaluations,group=Threads)) + geom_boxplot(fill='green',notch=TRUE)+theme_tufte()+scale_x_continuous(name="Threads",breaks=c(2,4,6,8))+labs(x="Threads",y="Evaluations",title="Scaling")
 @ 
-\caption{Onemax: Number of evaluations vs. number of threads. Higher is better.}
+\caption{OneMax: Number of evaluations vs. number of threads. Higher is better.}
 \label{fig:threads1}
 \end{figure}
 %
@@ -569,7 +569,7 @@ ggplot(data.om,aes(x=Threads,y=Evaluations,group=Threads)) + geom_boxplot(fill='
 <<threads2, cache=FALSE,echo=FALSE,fig.height=4,message=FALSE>>=
 ggplot(data.om,aes(x=Threads,y=Time,group=Threads))+geom_boxplot(fill='blue',notch=TRUE)+theme_tufte()+scale_x_continuous(name="Threads",breaks=c(2,4,6,8))+labs(x="Generation.Gap",y="Time",title="Scaling")
 @ 
-\caption{Onemax: Total time vs. number of threads. Lower is better.}
+\caption{OneMax: Total time vs. number of threads. Lower is better.}
 \label{fig:threads2}
 \end{figure}
 %
@@ -600,7 +600,7 @@ the number of generations will have to be explored further.
 <<threads3, cache=FALSE,echo=FALSE,fig.height=4,message=FALSE>>=
 ggplot(data.om,aes(x=Threads,y=Evaluations/Time,group=Threads))+geom_boxplot(fill='yellow',notch=TRUE)+theme_tufte()+scale_x_continuous(name="Threads",breaks=c(2,4,6,8))+labs(x="Generation.Gap",y="Evaluation/time",title="Scaling")
 @ 
-\caption{Onemax: Evaluations per second vs. number of threads. Higher is better.}
+\caption{OneMax: Evaluations per second vs. number of threads. Higher is better.}
 \label{fig:threads3}
 \end{figure}
 %
@@ -719,7 +719,6 @@ taking into account other system programs, this is probably due to a
 physical limit. Anyway, peak performance is reached for 6 processors,
 so we need to reconsider the problem again in order to be able to
 reach this limit.
-
 
 
 Although the good performance of this concurrent evolutionary
