@@ -235,18 +235,18 @@ statistics of the population.
 \section{State of the Art}
 
 The problem of communication/synchronization
-between processes or threads, has been the subject of 
-long-standing study, in order to to fully leverage multiple
-processors and cores on a given machine. The parallelization of nature-based 
-optimization algorithms has been an active field, allowing researchers
+between processes or threads has been the subject of long-standing study,
+to fully leverage the multiple
+processors and cores on a given machine. The parallelization of nature-based
+optimization algorithms has been an active field, allowing researchers 
 to solve complex optimization problems having a high computational 
 cost \cite{Lalwani2019}. In the literature, most works are concerned 
-with process-based concurrency, using for instance a Message Passing Interface 
+with process-based concurrency, using, for instance, a Message Passing Interface 
 (MPI) \cite{gropp1999using}, or hybrids with fine-grain
 parallelization by using libraries such as OpenMP \cite{dagum1998openmp}
 that offer multi-threading capabilities \cite{jin2011high}. Recent trends
 in software development have motivated the inclusion of new 
-constructs to programming languages with the intention of simplifying 
+constructs to programming languages to simplify
 the development of multi-threaded programs. The theoretical support 
 used by these implementations is based on CSP. Languages such as Go 
 and Perl 6 implement this concurrency model as an abstraction for 
@@ -256,8 +256,8 @@ interpreted languages with a global interpreter lock, such as Python also
 have included {\em promises} and {\em futures} in their latest versions,
 to leverage multi-threading capabilities for IO intensive tasks.
 Using these native capabilities give developers the advantage of
-having less error-prone implementations which are more readable and consistently
-following the language conventions. 
+having less error-prone implementations which are more readable, concise, and
+following language conventions. 
 
 
 
@@ -284,12 +284,12 @@ following the language conventions.
 %either asynchronously or synchronously. 
 
 The fact that messages have to be processed without secondary effects
-and that actors do not share any kind of state makes concurrent
-programming specially fit for functional languages or languages with
+and that actors do not share state makes concurrent
+programming specially fit for languages with
 functional features; this has made this paradigm specially popular for
 late cloud computing implementations; however, its presence in the EA
 world is not so widespread, although some efforts have lately revived
-the interest for this kind of paradigm \cite{swan2015research}.
+the interest for this paradigm \cite{swan2015research}.
 Several years ago it was used in Genetic Programming
 \cite{Briggs:2008:FGP:1375341.1375345,Huelsbergen:1996:TSE:1595536.1595579,walsh:1999:AFSFESIHLP}
 and recently in neuroevolution \cite{Sher2013} but its occurrence in EA,
