@@ -269,6 +269,7 @@ either asynchronously or synchronously.
 % threads. Python on the other hand cannot use two threads at the
 % same time. - Mario
 
+
 %One of the 
 %best efforts to formalize and simplify that matter 
 %is Hoare's {\em Communicating Sequential Processes} \cite{Hoare:1978:CSP:359576.359585},
@@ -310,7 +311,7 @@ parallelize operations on iterable data structures, to explicit
 concurrency using threads. 
 The {\tt Algorithm::Evolutionary::Simple} library introduced last year
 %\cite{DBLP:conf/gecco/GuervosV18}
-
+.
 
 Earlier efforts to study the issues of concurrency in EA are worth 
 mentioning. For instance, the EvAg model \cite{evag:gpem} resorts to 
@@ -655,7 +656,13 @@ did found the solution, 6 out of 15. The number of evaluations needed
 to find the solution is shown as a boxplot in Figure
 \ref{fig:threads:rr:1}; the total time in Figure
 \ref{fig:threads:rr:2} and the number of evaluations per second in
-Figure \ref{fig:threads:rr:3}.
+Figure \ref{fig:threads:rr:3}. Since the Royal Road function is
+slightly heavier than onemax, this number reaches a peak that is
+approximately 25\% lower than for onemax. Comparing also Figures
+\ref{threads1} with \ref{fig:threads:rr:2} we see that that Royal Road
+needs one order of magnitude more evaluations than OneMax to find the
+solution. Since we cap the running time at 800 seconds, this causes
+the lack of success in some cases for the lowest number of threads.
 
 The pattern these charts follow is very similar to the one for
 OneMax. The performance scales up to a certain range, and then it
