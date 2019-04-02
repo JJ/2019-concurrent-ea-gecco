@@ -238,11 +238,23 @@ statistics of the population.
 The problem of communication/synchronization
 between processes or threads, has been the subject of 
 long-standing study, in order to to fully leverage multiple
-processors on a given machine \cite{Lalwani2019}. In the 
-literature, most works are concerned with process-based  
-concurrency, using for instance a Message Passing Interface 
-(MPI) \cite{gropp1999using}, or a hybrid approach with fine-grain
-parallization using libraries such as OpenMP \cite{dagum1998openmp,jin2011high}.
+processors on a given machine. The paralellization of nature-based 
+optimization algorithms has been an active field, allowing researchers
+to solve complex optimization problems having a high computanional 
+cost \cite{Lalwani2019}. In the literature, most works are concerned 
+with process-based concurrency, using for instance a Message Passing Interface 
+(MPI) \cite{gropp1999using}, or hybrids with fine-grain
+parallization by using libraries such as OpenMP \cite{dagum1998openmp}
+that offer multi-threading capabilities \cite{jin2011high}. Recent trends
+in software development have motivated the inclusion of new 
+constructs to programing languages with the intention of simplifying 
+the development of multi-threaded programs. Languages such as Go 
+and Perl 6 implement this concurrency model as an abstraction for 
+their multi-threading capabilities. (the latter including additional mechanisms such as 
+{\em promises} or low-level access to the creation of threads). Even 
+interpreted languages with a global interpreter lock, such as Python also
+have included {\em promises} and {\em futures} in their latest versions,
+to laverage multi-threding capabilities for IO intensive tasks.
 
 
 
@@ -265,10 +277,7 @@ languages. In such model, concurrent programs communicate on
 the basis of {\em channels}, a sort of pipe buffer used to
 interchange messages between the different processes or threads, 
 either asynchronously or synchronously. 
-Languages such as Go and Perl 6 implement this concurrency model 
-as an abstraction for their multi-threading capabilities. 
-(the latter including additional mechanisms such as 
-{\em promises} or low-level access to the creation of threads).
+
 
 
 The fact that messages have to be processed without secondary effects
