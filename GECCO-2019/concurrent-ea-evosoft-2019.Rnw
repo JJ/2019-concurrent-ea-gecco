@@ -540,9 +540,10 @@ leverage the power of all threads and processors in a computer so we must find o
 number of threads plus one, as the minimum required to avoid
 starvation, and we are using a single mixing thread. As proved in our previous paper (hidden for anonimity), we are dividing the total population by the number of threads. The initial population will be 1024 for OneMax, 8192 for Royal Road and 4096 Leading Ones. These quantities were found heuristically by applying the bisection method on a selectorrecombinative algorith, which doubles the population until one that is able to find the solution 95\% of the time is found.
 
-In this case, experiments were run on a different machine with the
+Experiments were run on a machine with the
 Ubuntu 18.04 OS and an AMD Ryzen 7 2700X Eight-Core Processor
-at 3.7GHz, which theoretically has 8 x 16 = 128 physical threads. Figure \ref{fig:screenshot} shows the utility htop with an 
+at 3.7GHz, which theoretically has 8 x 16 = 128 physical
+threads. Figure \ref{fig:screenshot} shows the utility  {\tt htop} with an 
 experiment running; the top of the screen shows the rate at which all
 cores are working, showing all of them occupied; of course, the
 program was not running exclusively, but the list of processes below
