@@ -685,25 +685,34 @@ available in a machine even more.
 
 Designing a concurrent, stateless evolutionary algorithm brings a new
 set of configuration decisions that must be taken into account at the algorithm and
-at the parameter level. Thus, the main intention in this paper was to
-explore the parameter space in a concurrent evolutionary algorithm
-looking for the combination that yields the best performance in terms
-of time, without sacrificing the algorithmic performance. 
+at the parameter level. In previous papers we have established
+strategies that have allowed us to take advantage of processor threads
+to achieve better wallclock performance through the design of messages
+and channels to interchange between threads and a procedure to divide
+the population between them. In this paper we wanted to focus on the
+software tool that we have used for performing these experiments, as
+well as to check what kind of scaling we can achieve on different
+types of problems. 
 
-Finally, this paper has shown for the first time the good scaling
-behavior of this kind of concurrent evolutionary
-algorithms. Simultaneous threads running an evolutionary algorithm do
-increase the number of simultaneous evaluations, although since this
-scaling is achieved via population splitting, the actual time achieved
-reaches its lowest peak with just 4 threads. As a matter of fact, and
-probably due to hardware limitations, the number of simultaneous
-evaluations seems to reach a plateau with 8 threads. At any rate, this
-new concurrent evolutionary algorithm is achieving results that are
-much better than what the equivalent, single thread, evolutionary
-algorithm would achieve. It should be noted that the base algorithm
-used for comparison uses 3 OS threads already: two evolutionary threads
-and a mixing thread; thus, the scaled-up version would use a total of
-9 threads (8 evolutionary + 1 for mixing).
+
+What we have observed is that, since OneMax is a simple problem which
+needs a small population to find the solution, scaling is very limited
+and only means a real improvement if we use four threads instead of
+two, getting no further improvement. That is why we experimented with
+the Royal Road function with the same length, which showed an
+interesting behavior in the sense that it scaled in success rate and
+speed from 2 to 4 threads, and then again in speed through 6
+threads. In this experiment we measured up to 12 threads, and we
+noticed that the number of evaluations per second also reaches a
+plateau at around 6k evaluations. For 8 threads, our program uses
+actually 9 threads since there is another one for mixing. Since the
+computer only has 16 physical threads (2 threads x 8 cores), and
+taking into account other system programs, this is probably due to a
+physical limit. Anyway, peak performance is reached for 6 processors,
+so we need to reconsider the problem again in order to be able to
+reach this limit.
+
+
 
 Although the good performance of this concurrent evolutionary
 algorithm has been well established in this paper, several lines of
