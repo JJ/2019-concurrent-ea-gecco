@@ -356,15 +356,15 @@ Perl 6 is a concurrent, functional language
 \cite{DBLP:journals/corr/abs-1809-01427} which was conceived with the
 intention of providing a solid conceptual framework for multi-paradigm
 computing, including thread-based concurrency and asynchrony. It's got
-a heuristic optimization model, which literally optimizes code as it
+a heuristic optimization model, which optimizes code as it
 runs. Its speed has been improving by a factor of 100x in the last few
 years, with a performance that is in the same scale than interpreted
 languages, although with some room for improvement.
 
 The {\tt Algorithm::Evolutionary::Simple} Perl 6 module was published
-in the ecosystem a year ago, and got recently into version 0.0.7. It
+in the ecosystem a year ago and got recently into version 0.0.7. It
 is a straightforward implementation of a canonical evolutionary
-algorithm with binary representation, and includes building blocks for
+algorithm with binary representation and includes building blocks for
 a generational genetic algorithm, as well as some fitness functions
 used generally as benchmarks.
 
@@ -461,9 +461,10 @@ The baseline we are coming from is similar to the one used in previous experimen
 \cite{Merelo:2018:MEA:3205651.3208317:anon}. Our intention was to
 create a system that was not functionally equivalent to a sequential
 evolutionary algorithms, and that followed the principle of
-communicating sequential processes. In this kind of methodology, we
-will have processes (or threads) communicating state through
+CSP. In this kind of methodology, we
+will have threads communicating state through
 channels. Every process itself will be stateless, reacting to the
+% Please consider for other papers: Every 'subroutine' itself will be stateless, reacting to the... - Mario
 presence of messages in the channels it is listening to and sending
 result back to them, without changing state.
 
@@ -489,13 +490,13 @@ but they do so in a different way:\begin{itemize}
 
 These will be connected as shown in Figure \ref{fig:scheme}. The
 evolutionary thread group will read only from the evolutionary channel,
-evolve for a number of generations, and place result in the mixer
+evolve for a number of generations, and place the result in the mixer
 channel; the mixer group of threads will read only from the mixer
 channel, in pairs. From every pair, a random element is put back into
 the mixer channel, and a new population is generated and sent back to
 the evolutionary channel. The main objective of using two channels is
 to avoid deadlocks; the fact that one population is written always
-back to the mixer channel avoids starvation in the channel. How this
+back to the mixer channel avoids starvation of the channel. How this
 runs in practice is shown in Figure \ref{fig:schematic}, where the
 timeline of the interchange of messages between the evolver and mixer
 threads and evolver and mixer channels is clarified.
@@ -514,8 +515,8 @@ will incur in a lob of overhead, we use a strategy that is similar to {\em EDA},
   probabilities for each gene is sent to the mixer thread. The {\em
     mixer} thread, in turn, just takes randomly one probability from
   each of the two {\em populations} (actually, distributions), instead
-  of working on individuals. While in the baseline strategy the
-  selection took place in the mixer thread, that eliminated half the
+  of working directly on individuals. While in the baseline strategy the
+  selection took place in the mixer thread, eliminating half the
   population, in this case the selection takes place when composing
   the message, since just the 25\% best individuals are selected to
   compute the probability distribution of genes. When the evolver
