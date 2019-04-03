@@ -98,15 +98,14 @@ data.generations <- data.frame(
   }
   \email{2aa@ai2.com}
 
-  \author{Anonymous Author 4}
+  \author{Mario Garc\'ia Valdez}
   \affiliation{%
-    \institution{Anonymous institute 2}
-    \streetaddress{P.O. Box 1212}
-    \city{Dublin}
-    \state{Ohio}
-    \postcode{43017-6221}
+    \institution{Tecnol\'ogico Nacional de M\'exico}
+    \city{Tijuana}
+    \state{M\'exico}
+    \postcode{22414}
   }
-  \email{2aa@ai2.com}
+  \email{mario@tectijuana.edu.mx}
   
   % The default list of authors is too long for headers.
   \renewcommand{\shortauthors}{A. Author et al.}
@@ -639,7 +638,7 @@ and a mixing thread; thus, the scaled-up version would use a total of
 \begin{acks}
 This paper has been supported in part by
 \href{http://geneura.wordpress.com}{GeNeura Team}, 
-projects DeepBio (TIN2017-85727-C4-2-P) and ....
+projects DeepBio (TIN2017-85727-C4-2-P) and TecNM Project 5654.19-P. 
 \end{acks}
 
 \bibliographystyle{ACM-Reference-Format}
