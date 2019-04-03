@@ -354,7 +354,7 @@ Perl 6 is a concurrent, functional language
 intention of providing a solid conceptual framework for multi-paradigm
 computing, including thread-based concurrency and asynchrony. It's got
 a heuristic layer that optimizes code during execution time. In the last few
-years, performance of programs written in Perl 6 has been speeded-up by a 100x factor, approaching the same scale of other interpreted
+years, performance of programs written in Perl 6 has been sped-up by a 100x factor, approaching the same scale of other interpreted
 languages, although still with some room for improvement.
 
 The {\tt Algorithm::Evolutionary::Simple} Perl 6 module was published
@@ -641,7 +641,7 @@ ggplot(data.rr,aes(x=Threads,y=Evaluations/Time,group=Threads,alpha=n))+geom_box
 \begin{figure}[h!tb]
   \centering
 <<threads-lo1, cache=FALSE,echo=FALSE,fig.height=4,message=FALSE>>=
-ggplot(data.lo,aes(x=Threads,y=Evaluations,group=Threads,alpha=n)) + geom_boxplot(fill="green",notch=TRUE)+theme_tufte()+scale_x_continuous(name="Threads",breaks=c(2,4,6,8,10,12))+labs(x="Threads",y="Evaluations",title="Royal Road 64 bits")
+ggplot(data.lo,aes(x=Threads,y=Evaluations,group=Threads,alpha=n)) + geom_boxplot(fill="green",notch=TRUE)+theme_tufte()+scale_x_continuous(name="Threads",breaks=c(2,4,6,8,10,12))+labs(x="Threads",y="Evaluations",title="Leading ones 48 bits")
 @ 
 \caption{Leading ones: Number of evaluations vs. number of threads. Higher is better.}
 \label{fig:lo:1}
@@ -650,7 +650,7 @@ ggplot(data.lo,aes(x=Threads,y=Evaluations,group=Threads,alpha=n)) + geom_boxplo
 \begin{figure}[h!tb]
   \centering
 <<threads-lo2, cache=FALSE,echo=FALSE,fig.height=4,message=FALSE>>=
-ggplot(data.lo,aes(x=Threads,y=Time,group=Threads,alpha=n))+geom_boxplot(fill='blue',notch=TRUE)+theme_tufte()+scale_x_continuous(name="Threads",breaks=c(2,4,6,8,10,12))+labs(x="Threads",y="Time",title="Royal Road 64 bits")
+ggplot(data.lo,aes(x=Threads,y=Time,group=Threads,alpha=n))+geom_boxplot(fill='blue',notch=TRUE)+theme_tufte()+scale_x_continuous(name="Threads",breaks=c(2,4,6,8,10,12))+labs(x="Threads",y="Time",title="Leading ones 48 bits")
 @ 
 \caption{Leading ones: Total time vs. number of threads. Lower is better.}
 \label{fig:lo:2}
@@ -659,7 +659,7 @@ ggplot(data.lo,aes(x=Threads,y=Time,group=Threads,alpha=n))+geom_boxplot(fill='b
 \begin{figure}[h!tb]
   \centering
 <<threads-lo3, cache=FALSE,echo=FALSE,fig.height=4,message=FALSE>>=
-ggplot(data.lo,aes(x=Threads,y=Evaluations/Time,group=Threads,alpha=n))+geom_boxplot(fill='yellow',notch=TRUE)+theme_tufte()+scale_x_continuous(name="Threads",breaks=c(2,4,6,8,10,12))+labs(x="Threads",y="Evaluation/time",title="Royal Road 64 bits")
+ggplot(data.lo,aes(x=Threads,y=Evaluations/Time,group=Threads,alpha=n))+geom_boxplot(fill='yellow',notch=TRUE)+theme_tufte()+scale_x_continuous(name="Threads",breaks=c(2,4,6,8,10,12))+labs(x="Threads",y="Evaluation/time",title="Leading ones 48 bits")
 @ 
 \caption{Leading ones: Evaluations per second vs. number of threads. Higher is better.}
 \label{fig:lo:3}
@@ -778,18 +778,27 @@ physical limit. Anyway, peak performance is reached for 6 processors,
 so we need to reconsider the problem again in order to be able to
 reach this limit.
 
+The fact that in some cases, like in the case of Leading Ones, peak
+performance is reached for the minimum number of threads leads us to
+reconsider, in the most general case, the migration strategy (which
+losses what could be vital information), as well as the population
+adaptation strategy (dividing the population into the existing number of
+threads might not always be the best option).
 
-Although the good performance of this concurrent evolutionary
-algorithm has been well established in this paper, several lines of
-research are open. The first one is to continue exploring the
-algorithm itself trying to find out a scaling strategy that does not
-have a negative influence in the number of evaluations, so that actual
-increasing in the number of simultaneous evaluations achieved the
-equivalent speedup. The second one would be to find out what is the
-maximum number of simultaneous evaluations that can be achieved, so
-that an optimum number of threads can be advised, if possible
-independently of the problem and depending only on the physical number
-of cores available.
+The experiments clearly show that creating a concurrent version of an
+algorithm, including evolutionary algorithms, is never
+straightforward, and includes challenges such as designing the best
+communication strategy (including frequency and message formats) and
+distributing the algorithm workload, in this case the population,
+among the different threads; in both cases, physical features such as
+message size and real number of threads must be taken into account.
+
+All this opens several possible future lines of research. The first
+one is to continue exploring the 
+algorithm itself trying to find out a scaling strategy that
+consistently has a positive  influence in the number of evaluations so
+that speedup is extended at least up to the physical number of
+threads.
 
 The messaging strategies proposed here can be used only if the problem
 can be represented via a binary data structure. New strategies will
@@ -797,14 +806,15 @@ have to be explored for floating-point representation, or more
 complicated data structures. There are general-purpose strategies for
 compressing messages, for instance, and they could be used in this
 case. Estimation of distribution algorithms can also be extended to
-other types of data, so this is is something that can be also explored.
+other types of data, so this is is something that can be also
+explored; in the case of lossy messages such as this one, they could
+be complemented with the best individual, although this does carry its
+own perils.
 
-Finally, we are using the same kind of algorithm in all
+Finally, we are using the same kind of algorithm and parametrization in all
 threads. Nothing prevents us from using a different algorithm per
 thread, or using different parameters per thread. This opens a vast
 space of possibilities, but the payoff might be worth it.
-
-
 
 \begin{acks}
 Acknowledgements taking\\
