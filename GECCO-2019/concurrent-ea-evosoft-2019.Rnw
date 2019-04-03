@@ -100,7 +100,7 @@ data.rr <- data.rr %>% group_by(data.rr$Threads) %>% add_tally()
 
 
 \begin{abstract}
-One of the core ideas behind the design of multi-threaded concurrent algorithms, is the concept of \emph{channel}, a computational device used to convey state to the different threads of processes that are executed concurrently. In the case of concurrent evolutionary algorithms, threads can be designed to perform different tasks within the evolutionary loop such as genetic operations or mixing of populations, and therefore they will need to communicate by passing messages across channels. In this paper we study to what extent the design of these messages in a communicating sequential processes context, may influence scaling and performance of concurrent evolutionary algorithms. For this aim, we designed a version of an algorithm and a communication model that is able to effectively solve different benchmark binary problems (e.g. OneMax, LeadingOnes, RoyalRoad), showing that it provides a good basis to leverage the multi-threaded and multi-core capabilities of modern computers. Although our results indicate that concurrency is advantageous to scale-up the performance of evolutionary algorithms, they also highlight how the trade--off between concurrency, communication and evolutionary parameters affect the outcome of the evolved solutions, opening-up new opportunities for algorithm design.
+One of the core ideas behind the design of multi-threaded concurrent algorithms, is the concept of \emph{channel}, a computational device used to convey state to the different threads of processes that are executed concurrently. In the case of concurrent evolutionary algorithms, threads can be designed to perform different tasks within the evolutionary loop such as genetic operations or mixing of populations, and therefore they will need to communicate by passing messages across channels. In this paper we study to what extent the design of these messages in a communicating sequential processes context, may influence scaling and performance of concurrent evolutionary algorithms. For this aim, we designed a channel-based concurrent evolutionary algorithm that is able to effectively solve different benchmark binary problems (e.g. OneMax, LeadingOnes, RoyalRoad), showing that it provides a good basis to leverage the multi-threaded and multi-core capabilities of modern computers. Although our results indicate that concurrency is advantageous to scale-up the performance of evolutionary algorithms, they also highlight how the trade--off between concurrency, communication and evolutionary parameters affect the outcome of the evolved solutions, opening-up new opportunities for algorithm design.
 
 % One of the ways multi-threaded concurrent algorithms are designed 
 % is around the concept of a channel, a structure
@@ -350,16 +350,16 @@ a strong influence at the algorithmic level, but also at the
 implementation level, in fact affecting the actual wallclock
 performance of the EA.
 
-\section{Setting up the experiments using an evolutionary algorithm library in Perl 6}
+%\section{Setting up the experiments using an evolutionary algorithm library in Perl 6}
+\section{Design of a concurrent evolutionary algorithm in Perl6}
 
 Perl 6 is a concurrent, functional language
 \cite{DBLP:journals/corr/abs-1809-01427} which was conceived with the
 intention of providing a solid conceptual framework for multi-paradigm
 computing, including thread-based concurrency and asynchrony. It's got
-a heuristic optimization model, which optimizes code as it
-runs. Its speed has been improving by a factor of 100x in the last few
-years, with a performance that is in the same scale than interpreted
-languages, although with some room for improvement.
+a heuristic layer that optimizes code during execution time. In the last few
+years, performance of programs written in Perl 6 has been speeded-up by a 100x factor, approaching the same scale of other interpreted
+languages, although still with some room for improvement.
 
 The {\tt Algorithm::Evolutionary::Simple} Perl 6 module was published
 in the ecosystem a year ago and got recently into version 0.0.7. It
@@ -457,12 +457,11 @@ evolutionary algorithm using it.
 \end{figure}
 
 
-The baseline we are coming from is similar to the one used in previous experiments
+The baseline we are building upon, is similar to the one used in previous experiments
 \cite{Merelo:2018:MEA:3205651.3208317:anon}. Our intention was to
 create a system that was not functionally equivalent to a sequential
-evolutionary algorithms, and that followed the principle of
-CSP. In this kind of methodology, we
-will have threads communicating state through
+evolutionary algorithms, that also follows the principle of
+CSP. We decided to allow the algorithm to implement several threads communicating state through
 channels. Every process itself will be stateless, reacting to the
 % Please consider for other papers: Every 'subroutine' itself will be stateless, reacting to the... - Mario
 presence of messages in the channels it is listening to and sending
@@ -473,13 +472,12 @@ groups of threads and two channels. We will see them in turns.
 
 The two groups of threads perform the following
 functions:\begin{itemize}
-\item The {\em evolutionary} threads will be the ones that will be in
-  principle running the evolutionary algorithm.
-\item The {\em mixing} thread will {\em mix} populations, and create
+\item The {\em evolutionary} threads will be the ones performing the operations of the evolutionary algorithm.
+\item The {\em mixing} thread will take existing populations, to create
   new ones as a mixture of them.
 \end{itemize}
 
-The two channels carry messages that are equivalent to populations,
+The two channels carry messages consisting of populations,
 but they do so in a different way:\begin{itemize}
   
 \item The {\em evolutionary} channel will be used for carrying
@@ -490,37 +488,33 @@ but they do so in a different way:\begin{itemize}
 
 These will be connected as shown in Figure \ref{fig:scheme}. The
 evolutionary thread group will read only from the evolutionary channel,
-evolve for a number of generations, and place the result in the mixer
+evolve for a number of generations, and send the result to the mixer
 channel; the mixer group of threads will read only from the mixer
 channel, in pairs. From every pair, a random element is put back into
 the mixer channel, and a new population is generated and sent back to
 the evolutionary channel. The main objective of using two channels is
 to avoid deadlocks; the fact that one population is written always
-back to the mixer channel avoids starvation of the channel. How this
-runs in practice is shown in Figure \ref{fig:schematic}, where the
+back to the mixer channel avoids starvation of the channel. Figure \ref{fig:schematic} illustrates this operation, where the
 timeline of the interchange of messages between the evolver and mixer
 threads and evolver and mixer channels is clarified.
 
 The state of the algorithm will be transmitted via messages that
 contain data about one population. Since using the whole population
-will incur in a lob of overhead, we use a strategy that is similar to {\em EDA}, or estimation of distribution
-  algorithm, whose basic idea is that the population message will
-  contain the probability distribution over each gene. In this sense,
+will incur in a lob of overhead, we use a strategy that is similar to {\em EDA}, or estimation of distribution algorithm: basically, instead of transmitting the entire population, the message sent to the channel will consist of a prototype array containing the probability distribution across each gene in the population. In this sense,
   this strategy is similar to the one presented by de la Ossa et
   al. in \cite{10.1007/978-3-540-30217-9_25}. Not being an estimation
   of distribution algorithm {\em per se}, since the evolutionary
-  thread runs a canonical genetic algorithm, when the message is being
-  composed, every (binary) gene of the 25\% best individuals in the
+  thread internally runs a canonical genetic algorithm, when the message is being
+  composed the 25\% best individuals in the
   population is examined, and an array with the
-  probabilities for each gene is sent to the mixer thread. The {\em
-    mixer} thread, in turn, just takes randomly one probability from
+  probability distribution for each gene (computed with frequentist rules) is sent to the mixer thread. The {\em mixer} thread, in turn, just chooses randomly one probability for every gene from
   each of the two {\em populations} (actually, distributions), instead
   of working directly on individuals. While in the baseline strategy the
   selection took place in the mixer thread, eliminating half the
-  population, in this case the selection takes place when composing
+  population, in this new design the selection takes place when composing
   the message, since just the 25\% best individuals are selected to
   compute the probability distribution of genes. When the evolver
-  thread reads the message, it rebuilds the population based on this
+  thread reads the message, it rebuilds the population based on the mixed 
   distribution.
 
 \section{Experimental results}
