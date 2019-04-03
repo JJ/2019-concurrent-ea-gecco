@@ -708,6 +708,44 @@ be around 16 for this machine). Finding an algorithmic solution to
 this problem would allow us to leverage the number of threads
 available in a machine even more.
 
+Besides, not all problems behave in the same way and scaling in
+performance and success rate is strongly problem-dependent. To
+illustrate that fact, we used another benchmark function, {\em
+  LeadingOnes}, which counts the leading number of ones in a
+string. Despite its superficial similarity to OneMax, it's in practice
+a more difficult problem, since it has got long plateaus with no
+increment in fitness. It is thus a more difficult problem which is why
+we had to increase the number of generations per thread to 16 and
+decrease the length of the chromosome to 48, as well as the time
+budget to 1200 seconds. Even so, results were quite different. They
+are shown in Figures \ref{fig:lo:1}, \ref{fig:lo:2},
+\ref{fig:lo:3}. Although we tested with up to 8 threads, only the ones
+for which the solution was actually found, 2 and 4, are shown. The
+situation is inverted with respect to the other problems. Although, as
+shown in Figure \ref{fig:lo:3}, the number of evaluations increases
+with the number of threads (and is actually higher than for Royal
+Road), the success rate {\em decreases} (shown with increasing
+transparency) and the time to solution does the same.
+
+This might be due, in part, to the intrinsic difficulty of the
+problem, with a flat fitness landscape that only changes if a single
+bit (among all of them) changes when it should; this might make the
+short periods of evolution before sending the message inadequate for
+this problem. But, additionally, the message only sends a statistical
+representation of the population. If there are not many
+representatives with the latest bits set, it can happen (and indeed it
+does) that the best solution in the previous evolution run is lost,
+and sometimes is not retrieved in the 16 generations it runs before
+communicating again. This gets worse with the increasing number of
+threads, since the population size decreases. As indicated at the
+beginning, balancing exploration and exploitation needs a population
+with the right size, and tipping the balance to too much exploitation
+might be as negative (in terms of success rate) as too much exploration.
+
+At any rate, this new experiment helps us understand better the nature
+of the interaction between the implementation and the algorithm
+itself. 
+
 \section{Conclusions}
 \label{sec:conclusions}
 
