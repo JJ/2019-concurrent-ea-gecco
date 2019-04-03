@@ -33,12 +33,6 @@
 %\acmArticle{4}
 \acmPrice{15.00}
 
-% These commands are optional
-%\acmBooktitle{Transactions of the ACM Woodstock conference}
-%\editor{Jennifer B. Sartor}
-%\editor{Theo D'Hondt}
-%\editor{Wolfgang De Meuter}
-
 \hypersetup{draft} 
 \begin{document}
 
@@ -48,7 +42,9 @@ library(ggthemes)
 library(dplyr)
 data.om <- read.csv('../data/gecco-2019-freqs-ap-threads.csv')
 data.rr <- read.csv('../data/royal-road-evosoft.csv')
+data.lo <- read.csv('../data/leading-ones-evosoft-2.csv')
 data.rr <- data.rr %>% group_by(data.rr$Threads) %>% add_tally()
+data.lo <- data.lo %>% group_by(data.lo$Threads) %>% add_tally()
 @
 
 \title{Concurrency in evolutionary algorithms}
@@ -641,7 +637,34 @@ ggplot(data.rr,aes(x=Threads,y=Evaluations/Time,group=Threads,alpha=n))+geom_box
 \caption{Royal Road: Evaluations per second vs. number of threads. Higher is better.}
 \label{fig:threads:rr:3}
 \end{figure}
-
+%
+\begin{figure}[h!tb]
+  \centering
+<<threads-lo1, cache=FALSE,echo=FALSE,fig.height=4,message=FALSE>>=
+ggplot(data.lo,aes(x=Threads,y=Evaluations,group=Threads,alpha=n)) + geom_boxplot(fill="green",notch=TRUE)+theme_tufte()+scale_x_continuous(name="Threads",breaks=c(2,4,6,8,10,12))+labs(x="Threads",y="Evaluations",title="Royal Road 64 bits")
+@ 
+\caption{Leading ones: Number of evaluations vs. number of threads. Higher is better.}
+\label{fig:lo:1}
+\end{figure}
+%
+\begin{figure}[h!tb]
+  \centering
+<<threads-lo2, cache=FALSE,echo=FALSE,fig.height=4,message=FALSE>>=
+ggplot(data.lo,aes(x=Threads,y=Time,group=Threads,alpha=n))+geom_boxplot(fill='blue',notch=TRUE)+theme_tufte()+scale_x_continuous(name="Threads",breaks=c(2,4,6,8,10,12))+labs(x="Threads",y="Time",title="Royal Road 64 bits")
+@ 
+\caption{Leading ones: Total time vs. number of threads. Lower is better.}
+\label{fig:lo:2}
+\end{figure}
+%
+\begin{figure}[h!tb]
+  \centering
+<<threads-lo3, cache=FALSE,echo=FALSE,fig.height=4,message=FALSE>>=
+ggplot(data.lo,aes(x=Threads,y=Evaluations/Time,group=Threads,alpha=n))+geom_boxplot(fill='yellow',notch=TRUE)+theme_tufte()+scale_x_continuous(name="Threads",breaks=c(2,4,6,8,10,12))+labs(x="Threads",y="Evaluation/time",title="Royal Road 64 bits")
+@ 
+\caption{Leading ones: Evaluations per second vs. number of threads. Higher is better.}
+\label{fig:lo:3}
+\end{figure}
+%
 But we were interested also in checking whether the same kind of
 patterns are found for other fitness functions, with a different
 landscape, and also how much further scaling with the number of
@@ -657,7 +680,7 @@ to find the solution is shown as a boxplot in Figure
 Figure \ref{fig:threads:rr:3}. Since the Royal Road function is
 slightly heavier than onemax, this number reaches a peak that is
 approximately 25\% lower than for onemax. Comparing also Figures
-\ref{threads1} with \ref{fig:threads:rr:2} we see that that Royal Road
+\ref{fig:threads1} with \ref{fig:threads:rr:2} we see that that Royal Road
 needs one order of magnitude more evaluations than OneMax to find the
 solution. Since we cap the running time at 800 seconds, this causes
 the lack of success in some cases for the lowest number of threads.
