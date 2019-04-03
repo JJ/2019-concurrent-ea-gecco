@@ -253,7 +253,7 @@ and can thus be implemented easily in this kind of languages. We have chosen Per
 other languages such as Go, are feasible alternatives.
 
 In previous papers
-\cite{Merelo:2018:MEA:3205651.3208317:anon,merelo:WEA:anon} we
+\cite{Merelo:2018:MEA:3205651.3208317,merelo:WEA} we
 designed an evolutionary algorithm that fits well this architecture
 and explored its possibilities. That initial exploration showed that
 a critical factor within this algorithmic model is communication between threads; therefore designing
@@ -265,14 +265,6 @@ statistics.
 
 \section{Experimental setup}
 \label{sec:exp}
-
-\begin{figure}[h!tb]
-  \centering
-\includegraphics[width=0.95\columnwidth]{../figure/popmixer}
-\caption{General scheme of operation of channels and thread groups. }
-\label{fig:scheme}
-\end{figure}
-%
 
 \begin{figure}[h!tb]
   \centering
@@ -352,7 +344,7 @@ statistics.
 
 
 The baseline we are coming from is similar to the one used in previous experiments
-\cite{Merelo:2018:MEA:3205651.3208317:anon}. Our intention was to
+\cite{Merelo:2018:MEA:3205651.3208317}. Our intention was to
 create a system that was not functionally equivalent to a sequential
 evolutionary algorithms, and that followed the principle of
 communicating sequential processes. In this kind of methodology, we
@@ -361,7 +353,7 @@ channels. Every process itself will be stateless, reacting to the
 presence of messages in the channels it is listening to and sending
 result back to them, without changing state.
 
-As in the previous papers, \cite{merelo:WEA:anon}, we will use two
+As in the previous papers, \cite{merelo:WEA}, we will use two
 groups of threads and two channels. We will see them in turns.
 
 The two groups of threads perform the following
@@ -520,31 +512,6 @@ simultaneously by the two threads and sent to the mixer channel, this
 channel will always hold a population that will combine with a fresh
 one coming from either of the mixer threads.
 
-\begin{figure*}[h!tb]
-  \centering
-<<gens, cache=FALSE,echo=FALSE,fig.height=4>>=
-ggplot(data.generations,aes(x=gap,y=evaluations,group=strategy, color=strategy))+ stat_summary(fun.y="mean", geom="line", size=2)+geom_point()+scale_y_log10()+scale_x_continuous(trans='log10',name="Generations",breaks=c(4,8,16,32,64))+theme_tufte()+labs(x="Generations",y="Evaluations")
-@ 
-\caption{Number of evaluations vs. generation gap for the baseline
-  strategy (in pink) and the EDA and compress messaging strategies,
-  with or without writeback (WB). Lines run over the average value;
-  every point represents the number of evaluations in individual
-  experiments. Smaller, in this case, is better. Please note that both
-axes are logarithmic.}
-\label{fig:evals}
-\end{figure*}
-%
-\begin{figure}[h!tb]
-  \centering
-<<gens2, cache=FALSE,echo=FALSE,fig.height=4>>=
-ggplot(data.generations,aes(x=gap,y=evaluations/time,group=strategy, color=strategy))+geom_point()+ stat_summary(fun.y="mean", geom="line", size=2)+scale_y_log10()+scale_x_log10(name="Generations",breaks=c(4,8,16,32,64))+theme_tufte()+labs(x="Generations",y="Evaluations/second")
-@ 
-\caption{Number of evaluations per second vs. generation gap for the baseline
-  strategy (in pink) and the EDA and compress messaging strategies,
-  with or without writeback (WB). Higher is better. Axes are logarithmic.}
-\label{fig:evals2}
-\end{figure}
-
 Since we are exploring the parameter space, we will first try
 to find out the generation gap and strategy that obtains the smaller
 number of evaluations, indicating it is the best algorithmic
@@ -594,15 +561,6 @@ number of additional evaluations needed for the new, rebuilt,
 populations. However, the increase of speed must be entirely due to
 the compactness of the messages used by this strategy.
 
-\begin{figure*}[h!tb]
-  \centering
-\includegraphics[width=0.95\textwidth]{../figure/screenshot}
-\caption{Screenshot using the htop utility of the used machine running
-  two experiments at the same time. As it can be seen, all processors
-  are kept busy, with a very high load average. }
-\label{fig:screenshot}
-\end{figure*}
-%
 However, the intention of concurrent evolutionary algorithms is to
 leverage the power of all threads and processors in a computer, so
 unlike in previous papers, we must find a version of the algorithm
@@ -630,16 +588,6 @@ program was not running exclusively, but the list of processes below
 show how the program is replicated in several processor, thus
 leveraging their full power. Please check also the number of threads
 that are actually running at the same time, a few of which are being used by our application. 
-
-\begin{figure}[h!tb]
-  \centering
-<<threads1, cache=FALSE,echo=FALSE,fig.height=4,message=FALSE>>=
-data.freqs.ap.threads <- read.csv('../data/gecco-2019-freqs-ap-threads.csv')
-ggplot(data.freqs.ap.threads,aes(x=Threads,y=Evaluations,group=Threads)) + geom_boxplot(fill='green',notch=TRUE)+theme_tufte()+scale_x_continuous(name="Threads",breaks=c(2,4,6,8))+labs(x="Threads",y="Evaluations",title="Scaling")
-@ 
-\caption{Number of evaluations vs. number of threads. Higher is better.}
-\label{fig:threads1}
-\end{figure}
 %
 \begin{figure}[h!tb]
   \centering
@@ -661,15 +609,6 @@ convergence for the number of generations (8) it is being used. This
 interplay between the degree of concurrency, the population size and
 the number of generations will have to be explored further.
 
-\begin{figure}[h!tb]
-  \centering
-<<threads3, cache=FALSE,echo=FALSE,fig.height=4,message=FALSE>>=
-ggplot(data.freqs.ap.threads,aes(x=Threads,y=Evaluations/Time,group=Threads))+geom_boxplot(fill='yellow',notch=TRUE)+theme_tufte()+scale_x_continuous(name="Threads",breaks=c(2,4,6,8))+labs(x="Generation.Gap",y="Evaluation/time",title="Scaling")
-@ 
-\caption{Evaluations per second vs. number of threads. Higher is better.}
-\label{fig:threads3}
-\end{figure}
-%
 But we were also interested in the actual wallclock time, plotted in
 Fig. \ref{fig:threads2}. The picture shows that it decreases
 significantly when we go from 2 (the baseline) to 4 threads, since we
@@ -721,42 +660,10 @@ used for comparison uses 3 threads already: two evolutionary threads
 and a mixing thread; thus, the scaled-up version would use a total of
 9 threads (8 evolutionary + 1 for mixing).
 
-Although the good performance of this concurrent evolutionary
-algorithm has been well established in this paper, several lines of
-research are open. The first one is to continue exploring the
-algorithm itself trying to find out a scaling strategy that does not
-have a negative influence in the number of evaluations, so that actual
-increasing in the number of simultaneous evaluations achieved the
-equivalent speedup. The second one would be to find out what is the
-maximum number of simultaneous evaluations that can be achieved, so
-that an optimum number of threads can be advised, if possible
-independently of the problem and depending only on the physical number
-of cores available.
-
-The messaging strategies proposed here can be used only if the problem
-can be represented via a binary data structure. New strategies will
-have to be explored for floating-point representation, or more
-complicated data structures. There are general-purpose strategies for
-compressing messages, for instance, and they could be used in this
-case. Estimation of distribution algorithms can also be extended to
-other types of data, so this is is something that can be also explored.
-
-Finally, we are using the same kind of algorithm in all
-threads. Nothing prevents us from using a different algorithm per
-thread, or using different parameters per thread. This opens a vast
-space of possibilities, but the payoff might be worth it.
-
-
 \begin{acks}
 This paper has been supported in part by
 \href{http://geneura.wordpress.com}{GeNeura Team}, 
 projects DeepBio (TIN2017-85727-C4-2-P) and ....
-\end{acks}
-
-Acknowledgements taking\\
-this much\\
-space
-
 \end{acks}
 
 \bibliographystyle{ACM-Reference-Format}
