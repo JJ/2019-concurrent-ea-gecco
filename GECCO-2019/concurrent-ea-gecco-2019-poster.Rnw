@@ -69,7 +69,7 @@ data.generations <- data.frame(
 % I hadn't realized that... 
 % I propose that the subtitle becomes the title and the subtitle becomes something like: "The case of a Perl6-based implementation" -  Juanlu
 
-  \author{Juan-Julián Merelo Guervós}
+  \author{Juan-Juli\'an Merelo Guerv\'os}
 %  \orcid{1234-5678-9012}
   \affiliation{%
     \institution{Universidad de Granada/CITIC}
@@ -114,31 +114,13 @@ data.generations <- data.frame(
   
 
 \begin{abstract}
-Concurrent algorithms use channels for communication, which implies
-that communication is an integral part of them.  Therefore, when designing a concurrent algorithm some attention must be devoted to the layout of the communication
-architecture in order to gain performance and achieve an efficient 
- design.
-Concurrent evolutionary algorithms
-will use threads for performing different types of tasks like evolving
-and mixing populations and these threads communicate via messages. In
-this paper we will explore the design of these messages and how it
-influences scaling and the performance of the algorithm itself. The
-evolutionary algorithm is implemented using a concurrent 
-programming language in order to fully exploit the algorithm's capabilities.
-Eventually, we will show
-how concurrent version of algorithms 
-offer a good option to leverage the
-multi-threaded and multi-core capabilities of modern computers.
-In order to do this, we will explore the performance of the system by
-increasing the number of threads in order to find out the upper bounds for
-the speed up and the causes why they are reached. Results show that
-concurrency is achieved, but there the interaction between
-communication, the number of threads and the algorithm parameters is
-very important, opening new possibilities of algorithm design.
-% @JJ: After reading this last line, I definetely think that we should
-% go for a sensitivity analysis. - Juanlu
-% Results show that an efficient concurrency can be achieved, but there
-% 
+Concurrent evolutionary algorithms use threads that  communicate via
+messages. Parametrizing how much work is done in every thread and the
+way they communicate result is the main challenge in its design. In
+this paper we work with concurrent evolutionary algorithms implemented
+in Perl 6, and explore different options of single-thread evolution
+parameters, communication and mixing of results, and eventually
+scaling achieved in a multi-core environment.
 
 \end{abstract}
 
@@ -159,11 +141,6 @@ very important, opening new possibilities of algorithm design.
 <concept_desc>Computing methodologies~Genetic algorithms</concept_desc>
 <concept_significance>500</concept_significance>
 </concept>
-<concept>
-<concept_id>10002944.10011123.10011674</concept_id>
-<concept_desc>General and reference~Performance</concept_desc>
-<concept_significance>300</concept_significance>
-</concept>
 </ccs2012>
 
 \end{CCSXML}
@@ -172,8 +149,7 @@ very important, opening new possibilities of algorithm design.
 \ccsdesc[500]{Computing methodologies~Genetic algorithms}
 \ccsdesc[300]{General and reference~Performance}
 
-\keywords{Concurrency, Concurrent evolutionary algorithms, performance
-evaluation, algorithm design}
+\keywords{Concurrent evolutionary algorithms, performance evaluation}
 
 
 \maketitle
