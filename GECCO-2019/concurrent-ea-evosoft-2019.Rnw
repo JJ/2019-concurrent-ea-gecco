@@ -96,26 +96,26 @@ data.lo <- data.lo %>% group_by(data.lo$Threads) %>% add_tally()
 
 
 \begin{abstract}
-One of the core ideas behind the design of multi-threaded concurrent algorithms, is the concept of \emph{channel}, a computational device used to convey state to the different threads of processes that are executed concurrently. In the case of concurrent evolutionary algorithms, threads can be designed to perform different tasks within the evolutionary loop such as genetic operations or mixing of populations, and therefore they will need to communicate by passing messages across channels. In this paper we study to what extent the design of these messages in a communicating sequential processes context, may influence scaling and performance of concurrent evolutionary algorithms. For this aim, we designed a channel-based concurrent evolutionary algorithm that is able to effectively solve different benchmark binary problems (e.g. OneMax, LeadingOnes, RoyalRoad), showing that it provides a good basis to leverage the multi-threaded and multi-core capabilities of modern computers. Although our results indicate that concurrency is advantageous to scale-up the performance of evolutionary algorithms, they also highlight how the trade--off between concurrency, communication and evolutionary parameters affect the outcome of the evolved solutions, opening-up new opportunities for algorithm design.
-
-% One of the ways multi-threaded concurrent algorithms are designed 
-% is around the concept of a channel, a structure
-% used to convey state to the different threads that are running
-% concurrently, which is why their design is one of the main challenges.
-% Concurrent evolutionary algorithms will use threads, communicating via
-% messages, for performing different types of tasks like evolving and
-% mixing populations. In this paper we will explore the design of these
-% messages in a communicating sequential processes context and with a 
-% concurrent language and how it influences scaling and the performance of the
-% algorithm itself. Eventually, we will show how a concurrent
-% version of algorithms offer a good option to leverage the
-% multi-threaded and multi-core capabilities of modern computers. In
-% order to do this, we will explore the performance of the system by
-% increasing the number of threads in order to find out the upper bounds
-% for the speed up and the causes why they are reached. Results show
-% that concurrency is achieved, but there the interaction between
-% communication, the number of threads and the algorithm parameters is
-% very important, opening new possibilities of algorithm design.
+One of the core ideas behind the design of multi-threaded concurrent
+algorithms is the concept of \emph{channel}, a computational device
+used to convey state to the different threads of processes that are
+executed concurrently. In the case of concurrent evolutionary
+algorithms, threads can be designed to perform different tasks within
+the evolutionary loop such as genetic operations or mixing of
+populations, and therefore they will need to communicate by passing
+messages across channels. In this paper we study to what extent the
+design of these messages in a communicating sequential processes
+context may influence scaling and performance of concurrent
+evolutionary algorithms. For this aim, we designed a channel-based
+concurrent evolutionary algorithm that is able to effectively solve
+different benchmark binary problems (e.g. OneMax, LeadingOnes,
+RoyalRoad), showing that it provides a good basis to leverage the
+multi-threaded and multi-core capabilities of modern
+computers. Although our results indicate that concurrency is
+advantageous to scale-up the performance of evolutionary algorithms,
+they also highlight how the trade--off between concurrency,
+communication and evolutionary parameters affect the outcome of the
+evolved solutions, opening-up new opportunities for algorithm design. 
 
 \end{abstract}
 
@@ -145,7 +145,7 @@ One of the core ideas behind the design of multi-threaded concurrent algorithms,
 \ccsdesc[300]{General and reference~Performance}
 
 \keywords{Concurrency, Concurrent evolutionary algorithms, performance
-evaluation, algorithm design}
+evaluation, algorithm design, distributed evolutionary algorithm}
 
 
 \maketitle
