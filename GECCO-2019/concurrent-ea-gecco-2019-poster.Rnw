@@ -106,6 +106,15 @@ data.generations <- data.frame(
     \postcode{22414}
   }
   \email{mario@tectijuana.edu.mx}
+
+  \author{Sergio Rojas-Galeano}
+  \affiliation{%
+    \institution{{\small Universidad Distrital Francisco Jos\'e de Caldas}}
+    \city{Bogot\'a}
+    \state{Colombia}
+    \postcode{111311}
+  }
+  \email{srojas@udistrital.edu.co}
   
   % The default list of authors is too long for headers.
   \renewcommand{\shortauthors}{A. Author et al.}
@@ -241,9 +250,9 @@ statistics.
 \section{Experimental setup}
 \label{sec:exp}
 
-\begin{figure}[h!tb]
+\begin{figure}[tb]
   \centering
-  
+\scalebox{.8}[.55]{
 \begin{sequencediagram}
 
 \newthread[red]{E}{Evolver} 
@@ -307,6 +316,7 @@ statistics.
 \begin{call}{E}{evolve()}{E}{\vdots}\end{call}
 
 \end{sequencediagram}
+}
 
 \caption{Schematic of communication between threads and channels for
   concurrent EAs. The two central bars represent the channel, and
