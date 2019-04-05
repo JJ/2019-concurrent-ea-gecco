@@ -78,15 +78,12 @@ data.generations <- data.frame(
   }
   \email{aa1@ai1.com}
   
-  \author{Anonymous Author 2}
+  \author{Juan Luis Jim\'enez Laredo}
   \affiliation{%
-    \institution{Anonymous institute 2}
-    \streetaddress{P.O. Box 1212}
-    \city{Dublin}
-    \state{Ohio}
-    \postcode{43017-6221}
+    \institution{Ri2C-LITIS, Universit\'e Le Havre}
+    \city{Le Havre, France}
   }
-  \email{2aa@ai2.com}
+  \email{juanlu.jimenez@univ-lehavre.fr}
 
   \author{Anonymous Author 3}
   \affiliation{%
