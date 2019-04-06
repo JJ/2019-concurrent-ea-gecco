@@ -76,7 +76,7 @@ data.generations <- data.frame(
     \city{Granada,Spain}
     \postcode{18071}
   }
-  \email{aa1@ai1.com}
+  \email{jjmerelo@gmail.com}
   
   \author{Juan Luis Jim\'enez Laredo}
   \affiliation{%
@@ -85,15 +85,13 @@ data.generations <- data.frame(
   }
   \email{juanlu.jimenez@univ-lehavre.fr}
 
-  \author{Anonymous Author 3}
+  \author{Pedro A. Castillo}
   \affiliation{%
-    \institution{Anonymous institute 2}
-    \streetaddress{P.O. Box 1212}
-    \city{Dublin}
-    \state{Ohio}
-    \postcode{43017-6221}
+    \institution{Universidad de Granada/CITIC}
+    \city{Granada,Spain}
+    \postcode{18071}
   }
-  \email{2aa@ai2.com}
+  \email{pacv@ugr.es}
 
   \author{Mario Garc\'ia Valdez}
   \affiliation{%
