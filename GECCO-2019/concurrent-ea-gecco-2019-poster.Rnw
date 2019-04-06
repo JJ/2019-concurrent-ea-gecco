@@ -165,35 +165,40 @@ scaling achieved in a multi-core environment.
 %% features,
 % The sentence is too large and somehow not clear enough. - Juanlu
 % What about this one: 
-Despite the emphasis on leveraging newer hardware features
-with best-suited software techniques
- there are not many papers \cite{Xia2010} dealing with 
-creating concurrent evolutionary algorithms that work in a single
-computing node or that extend seamlessly from single to many
-computers. However, concurrent programming seems to be the best option
-if we are dealing with a multi-core processor architecture where many processes and threads can coexists at the same time.
- This eventually means that many
-processes (heavy or lightweight) can be leveraged to take full
-advantage of the processor capabilities.
 
-These capabilities must be matched at an abstract level by languages
-that build on them so that high-level algorithms can use them without
-worrying about the low-level mechanisms of creation or destruction of
-threads, or how data is shared or communicated among them. These
-languages are called concurrent, and the programming paradigm
-implemented in them concurrency-oriented programming or simply
-concurrent programming \cite{Armstrong2003}. 
+%Despite the emphasis on leveraging newer hardware features
+%with best-suited software techniques
+%there are not many papers \cite{Xia2010} dealing with 
+%creating concurrent evolutionary algorithms that work in a single
+%computing node or that extend seamlessly from single to many
+%computers. 
+Nowadays, concurrent programming is the best option if we are dealing 
+with a multi-core processor architecture where many processes 
+and threads can coexists at the same time.
+This eventually means that many processes (heavy or lightweight) 
+can be leveraged to take full advantage of the processor capabilities.
 
-These languages are characterized by the presence of
-programming constructs that manage processes like first class
-objects; that means that the language includes  operators for acting upon them and the
-possibility of using them like parameters or function's result
-values. This changes the coding of concurrent algorithms due to the
-direct mapping between patterns of communications and processes with
-language expressions; on the one hand it becomes simpler since the
-language provides an abstraction for communication, on the other hand
-it changes the paradigm for implementing algorithms, since these new
-communication constructs have to be taken into account. 
+These capabilities must be matched at an abstract level by concurrent languages 
+that are characterized by the presence of programming constructs that manage processes.
+The language provides an abstraction for communication using new communication constructs.
+
+%that build on them so that high-level algorithms can use them without
+%worrying about the low-level mechanisms of creation or destruction of
+%threads, or how data is shared or communicated among them. These
+%languages are called concurrent, and the programming paradigm
+%implemented in them concurrency-oriented programming or simply
+%concurrent programming \cite{Armstrong2003}. 
+
+%These languages are characterized by the presence of
+%programming constructs that manage processes like first class
+%objects; that means that the language includes  operators for acting upon them and the
+%possibility of using them like parameters or function's result
+%values. This changes the coding of concurrent algorithms due to the
+%direct mapping between patterns of communications and processes with
+%language expressions; on the one hand it becomes simpler since the
+%language provides an abstraction for communication, on the other hand
+%it changes the paradigm for implementing algorithms, since these new
+%communication constructs have to be taken into account. 
 
 Moreover, concurrent programming adds a layer of abstraction over the parallel
 facilities of processors and operating systems, offering a
@@ -201,46 +206,46 @@ high-level interface that allows the user to program modules of code to
 be executed in parallel threads \cite{andrews1991concurrent}.
 
 Different languages offer different concurrency strategies depending on how they deal with shared state,
-that is, data structures that could be accessed from several
-processes. In this regard, there are two major fields (with some other
-variations): 
-\begin{itemize}
-\item Actor-based concurrency \cite{schippers2009towards}
-totally eliminates shared state by introducing a series of data
-structures called {\em actors} that
-store state and can mutate it locally. 
-\item Process calculi or process algebra is a framework to describe
-  systems that work with independent
-  processes that interact between them using channels. One of the best
-  known is called the {\em communicating sequential processes} (CSP)
-methodology \cite{Hoare:1978:CSP:359576.359585}, which is effectively
-stateless, with different processes reacting to a channel input without
-changing state, and writing to these channels. Unlike actor based
-concurrency, which keeps state local, in this case per-process state is totally
-eliminated, with all computation state managed as messages in a channel.
-\item Other, less well known models using, for instance, tuple
-  spaces \cite{gelernter1985generative}.
-\end{itemize}
+that is, data structures that could be accessed from several processes. 
 
-Most modern languages, however, follow the CSP abstraction, and it has
-become popular since it fits well other programming paradigms, like
-reactive and functional programming, and allows for a more efficient
-implementation, with less overhead, and with well-defined
-primitives. This is why we will use it in this paper for creating new
-evolutionary algorithms that live {\em natively} in these environments
-and can thus be implemented easily in this kind of languages. We have chosen Perl 6, although 
-other languages such as Go, are feasible alternatives.
+%In this regard, there are two major fields (with some other variations): 
+%\begin{itemize}
+%\item Actor-based concurrency \cite{schippers2009towards}
+%totally eliminates shared state by introducing a series of data
+%structures called {\em actors} that
+%store state and can mutate it locally. 
+%\item Process calculi or process algebra is a framework to describe
+%  systems that work with independent
+%  processes that interact between them using channels. One of the best
+%  known is called the {\em communicating sequential processes} (CSP)
+%methodology \cite{Hoare:1978:CSP:359576.359585}, which is effectively
+%stateless, with different processes reacting to a channel input without
+%changing state, and writing to these channels. Unlike actor based
+%concurrency, which keeps state local, in this case per-process state is totally
+%eliminated, with all computation state managed as messages in a channel.
+%\item Other, less well known models using, for instance, tuple
+%  spaces \cite{gelernter1985generative}.
+%\end{itemize}
 
-In previous papers
-\cite{Merelo:2018:MEA:3205651.3208317,merelo:WEA} we
-designed an evolutionary algorithm that fits well this architecture
-and explored its possibilities. That initial exploration showed that
-a critical factor within this algorithmic model is communication between threads; therefore designing
-efficient messages is high-priority to obtain a good algorithmic
-performance and scaling. In this paper, we will test several
-communication strategies: a lossless one that compresses the population,
-and a lossy one that sends a representation of population gene-wise
-statistics.
+%Most modern languages, however, follow the CSP abstraction, and it has
+%become popular since it fits well other programming paradigms, like
+%reactive and functional programming, and allows for a more efficient
+%implementation, with less overhead, and with well-defined
+%primitives. This is why we will use it in this paper for creating new
+%evolutionary algorithms that live {\em natively} in these environments
+%and can thus be implemented easily in this kind of languages. We have chosen Perl 6, although 
+%other languages such as Go, are feasible alternatives.
+
+In previous papers \cite{Merelo:2018:MEA:3205651.3208317,merelo:WEA} we
+designed an evolutionary algorithm based on using a stateless architecture, 
+with different processes reacting to a channel input without changing state, and writing to the channel,
+and explored its possibilities. 
+%That initial exploration showed that a critical factor within 
+%this algorithmic model is communication between threads; therefore designing
+%efficient messages is high-priority to obtain a good algorithmic performance and scaling. 
+In this paper, we will test several communication strategies: 
+a lossless one that compresses the population, and a lossy one 
+that sends a representation of population gene-wise statistics.
 
 \section{Experimental setup}
 \label{sec:exp}
