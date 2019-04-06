@@ -676,24 +676,32 @@ Different messaging strategies has been also tested.
 %bitstring to actual bits in a binary message. 
 %We also tested different messaging strategies.
 
-Experiments show that no matter what the communication or messaging strategy is, we need to keep the number of generations that the population undergoes to a small number, which resulted to be 8 in this case. This is equivalent to 2048 evaluations: a number which is likely dependent on the problem and the data structure we are evolving. We would need to investigate this number further, and find a methodology to set it in advance, avoiding heuristics. That is left as a future line of work, but meanwhile our conclusion would be the importance of this generation gap in stateless evolutionary algorithms and the need to follow an experimental strategy to establish its value for particular problems or implementations. 
+Experiments show that the number of generations that the population undergoes must be keep to a small number.
+Experiments also yielded the EDA strategy as the fastest, with a relatively low impact in the number of evaluations, as the messages are the most compact.
+Finally, obtained results have shown that simultaneous threads running 
+an evolutionary algorithm via population splitting do increase the number of simultaneous evaluations,
+leading the new concurrent evolutionary algorithm to achieve results that are
+much better than those that the equivalent, single thread evolutionary algorithm would achieve.
 
-These experiments also yielded the EDA strategy as the fastest, with a relatively low impact in the number of evaluations. The fact that messages are the most compact is probably the main reason, but the fact that it uses a higher selective pressure is probably also a factor that should be taken into account.
+%Experiments show that no matter what the communication or messaging strategy is, we need to keep the number of generations that the population undergoes to a small number, which resulted to be 8 in this case. This is equivalent to 2048 evaluations: a number which is likely dependent on the problem and the data structure we are evolving. 
+%We would need to investigate this number further, and find a methodology to set it in advance, avoiding heuristics. That is left as a future line of work, but meanwhile our conclusion would be the importance of this generation gap in stateless evolutionary algorithms and the need to follow an experimental strategy to establish its value for particular problems or implementations. 
 
-Finally, this paper has shown for the first time the good scaling
-behavior of this kind of concurrent evolutionary
-algorithms. Simultaneous threads running an evolutionary algorithm do
-increase the number of simultaneous evaluations, although since this
-scaling is achieved via population splitting, the actual time achieved
-reaches its lowest peak with just 4 threads. As a matter of fact, and
-probably due to hardware limitations, the number of simultaneous
-evaluations seems to reach a plateau with 8 threads. At any rate, this
-new concurrent evolutionary algorithm is achieving results that are
-much better than what the equivalent, single thread, evolutionary
-algorithm would achieve. It should be noted that the base algorithm
-used for comparison uses 3 threads already: two evolutionary threads
-and a mixing thread; thus, the scaled-up version would use a total of
-9 threads (8 evolutionary + 1 for mixing).
+%These experiments also yielded the EDA strategy as the fastest, with a relatively low impact in the number of evaluations. The fact that messages are the most compact is probably the main reason, but the fact that it uses a higher selective pressure is probably also a factor that should be taken into account.
+
+%Finally, this paper has shown for the first time the good scaling
+%behavior of this kind of concurrent evolutionary
+%algorithms. Simultaneous threads running an evolutionary algorithm do
+%increase the number of simultaneous evaluations, although since this
+%scaling is achieved via population splitting, the actual time achieved
+%reaches its lowest peak with just 4 threads. As a matter of fact, and
+%probably due to hardware limitations, the number of simultaneous
+%evaluations seems to reach a plateau with 8 threads. At any rate, this
+%new concurrent evolutionary algorithm is achieving results that are
+%much better than what the equivalent, single thread, evolutionary
+%algorithm would achieve. It should be noted that the base algorithm
+%used for comparison uses 3 threads already: two evolutionary threads
+%and a mixing thread; thus, the scaled-up version would use a total of
+%9 threads (8 evolutionary + 1 for mixing).
 
 
 %----------------------------------------------------------------
