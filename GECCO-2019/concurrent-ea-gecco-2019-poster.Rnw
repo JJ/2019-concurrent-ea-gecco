@@ -64,6 +64,7 @@ data.generations <- data.frame(
 
 @
 
+%----------------------------------------------------------------
 \title{Improving the algorithmic efficiency and performance of channel-based evolutionary algorithms}
 % Same title as EvoApp paper? - Juanlu
 % I hadn't realized that... 
@@ -115,7 +116,7 @@ data.generations <- data.frame(
   \renewcommand{\shortauthors}{A. Author et al.}
 
   
-
+%----------------------------------------------------------------
 \begin{abstract}
 Concurrent evolutionary algorithms use threads that  communicate via
 messages. Parametrizing how much work is done in every thread and the
@@ -157,8 +158,8 @@ scaling achieved in a multi-core environment.
 
 \maketitle
 
+%----------------------------------------------------------------
 \section{Introduction}
-
 
 %% Despite the emphasis on algorithmic techniques whose foundation is on
 %% software techniques that have an ultimate basis on newer hardware
@@ -247,6 +248,7 @@ In this paper, we will test several communication strategies:
 a lossless one that compresses the population, and a lossy one 
 that sends a representation of population gene-wise statistics.
 
+%----------------------------------------------------------------
 \section{Experimental setup}
 \label{sec:exp}
 
@@ -332,25 +334,28 @@ The baseline we are coming from is similar to the one used in previous experimen
 \cite{Merelo:2018:MEA:3205651.3208317}. Our intention was to
 create a system that was not functionally equivalent to a sequential
 evolutionary algorithms, and that followed the principle of
-communicating sequential processes. In this kind of methodology, we
-will have processes (or threads) communicating state through
-channels. Every process itself will be stateless, reacting to the
-presence of messages in the channels it is listening to and sending
-result back to them, without changing state.
+communicating sequential processes. 
+%In this kind of methodology, we
+%will have processes (or threads) communicating state through
+%channels. Every process itself will be stateless, reacting to the
+%presence of messages in the channels it is listening to and sending
+%result back to them, without changing state.
 
 As in the previous papers, \cite{merelo:WEA}, we will use two
-groups of threads and two channels. We will see them in turns.
+groups of threads and two channels:  %. We will see them in turns.
 
-The two groups of threads perform the following
-functions:\begin{itemize}
+%The two groups of threads perform the following functions:
+
+\begin{itemize}
 \item The {\em evolutionary} threads will be the ones that will be in
   principle running the evolutionary algorithm.
 \item The {\em mixing} threads will {\em mix} populations, and create
   new ones as a mixture of them.
-\end{itemize}
 
-The two channels carry messages that are equivalent to populations,
-but they do so in a different way:\begin{itemize}
+%\end{itemize}
+%
+%The two channels carry messages that are equivalent to populations, but they do so in a different way:
+%\begin{itemize}
   
 \item The {\em evolutionary} channel will be used for carrying
   non-evolved, or generated, populations.
@@ -358,98 +363,116 @@ but they do so in a different way:\begin{itemize}
   populations. 
 \end{itemize}
 
-These will be connected as shown in Figure \ref{fig:scheme}. The
-evolutionary group of threads will read only from the evolutionary channel,
+The proposed system is described in detail in Figure \ref{fig:schematic}.
+%These will be connected as shown in Figure \ref{fig:schematic}.
+The evolutionary group of threads will read only from the evolutionary channel,
 evolve for a number of generations, and place result in the mixer
 channel; the mixer group of threads will read only from the mixer
 channel, in pairs. From every pair, a random element is put back into
 the mixer channel, and a new population is generated and sent back to
-the evolutionary channel. The main objective of using two channels is
+the evolutionary channel. 
+The main objective of using two channels is
 to avoid deadlocks; the fact that one population is written always
-back to the mixer channel avoids starvation in the channel. How this
-runs in practice is shown in Figure \ref{fig:schematic}, where the
-timeline of the interchange of messages between the evolver and mixer
-threads and evolver and mixer channels is clarified.
+back to the mixer channel avoids starvation in the channel. 
+%How this runs in practice is shown in Figure \ref{fig:schematic}, where the
+%timeline of the interchange of messages between the evolver and mixer
+%threads and evolver and mixer channels is clarified.
 
-One of the problems of the baseline configuration was that
-communication took a great amount of time, adding some overhead to the
-algorithm. The {\em message} consisted of the whole population, and
-the size increased with population size, obviously. This tipped the
-balance between communication and computation towards communication,
-so that the more threads, the more communication was taking place. Our
-first intention in this paper was to slim down messages so that they
-took less bandwidth (or memory) and less time to send and process. In
-general, this strategy also can be framed in the context of migration
-strategies, since that is the most similar thing in the context of
-parallel algorithms. In parallel algorithms, an adequate selection of
-migration strategies, balancing exploration and exploitation, is the
-key to achieving high performance, as indicated in
-\cite{Cantu-Paz:1999:MPT:2933923.2934003}.
-In the context of concurrent evolutionary algorithms we will talk
-about {\em population messages}, but their effect is going to be
-similar. For this paper, we introduced two different messaging strategies: \begin{itemize}
-  
-\item One we have called {\em EDA}, or estimation of distribution
-  algorithm, whose basic idea is that the population message will
-  contain the probability distribution over each gene. In this sense,
-  this strategy is similar to the one presented by de la Ossa et
-  al. in \cite{10.1007/978-3-540-30217-9_25}. Not being an estimation
-  of distribution algorithm {\em per se}, since the evolutionary
-  thread runs a canonical genetic algorithm, when the message is being
-  composed, every (binary) gene of the 25\% best individuals in the
-  population is examined, and an array with the
-  probabilities for each gene is sent to the mixer thread. The {\em
-    mixer} thread, in turn, just takes randomly one probability from
-  each of the two {\em populations} (actually, distributions), instead
-  of working on individuals. While in the baseline strategy the
-  selection took place in the mixer thread, that eliminated half the
-  population, in this case the selection takes place when composing
-  the message, since just the 25\% best individuals are selected to
-  compute the probability distribution of genes. When the evolver
-  thread reads the message, it rebuilds the population based on this
-  distribution.
-\item The second is called {\em compress}, and it simply bit-packs the
-  population, without the fitness, into a message which uses 1 bit per
-  individual, and then 64 bits, or simply 8 bytes, to transmit a
-  single individual in the population. This strategy is equivalent to
-  the baseline, except it introduces an additional step of evaluating
-  the population when mixing and receiving it from the evolutionary
-  channel. It is hoped that this additional evaluation overhead does
-  compensates the communication overhead that is eliminated.
-\end{itemize}
+%One of the problems of the baseline configuration was that
+%communication took a great amount of time, adding some overhead to the
+%algorithm. The {\em message} consisted of the whole population, and
+%the size increased with population size, obviously. This tipped the
+%balance between communication and computation towards communication,
+%so that the more threads, the more communication was taking place. Our
+%first intention in this paper was to slim down messages so that they
+%took less bandwidth (or memory) and less time to send and process. In
+%general, this strategy also can be framed in the context of migration
+%strategies, since that is the most similar thing in the context of
+%parallel algorithms. In parallel algorithms, an adequate selection of
+%migration strategies, balancing exploration and exploitation, is the
+%key to achieving high performance, as indicated in
+%\cite{Cantu-Paz:1999:MPT:2933923.2934003}.
+%In the context of concurrent evolutionary algorithms we will talk
+%about {\em population messages}, but their effect is going to be similar. 
 
+In the baseline configuration the communication took a great amount of time. 
+The {\em message} consisted of the whole population and the size increased with population size.
+This strategy also can be framed in the context of migration strategies, since that is the most similar thing in the context of parallel algorithms.
 
-In the same way we did in our previous papers, first we will have to
-evaluate these new strategies compared with baseline; since the
-overhead will be different depending on the computation time, which in
-this case is regulated by the number of generations that are going to
-be performed by every thread, we will first perform an experiment
-changing that. We will call this parameter the {\em generation gap},
-implying that's the gap between receiving a message and activating the
-thread and sending it, deactivating it. Besides, what we want to find
-out in these set of experiments is what is the 
-generation gap that gives the best performance in terms of raw time to
-find a solution, as well as the best number of evaluations per
-second.
+For this paper, we introduced two different messaging strategies (i.e. migration strategies):  
+{\em EDA}, in which the population message will contain the probability distribution over each gene,
+and {\em compress}, that simply bit-packs the population without the fitness into a message, using 1 bit per individual.
 
-Additionally, it is impossible to know from first principles if this
-setup is the only possible. We have to heuristically explore other
-possibilities; in this case, we will explore another messaging
-strategy called {\em no writeback}, or {\sf nw}, where the mixer
-thread, instead of sending one of the individuals back again to the
-mixer thread, sends it to the evolver channel, where it will undergo
-an additional round of evolution. The main difference between these
-two strategies is twofold:\begin{itemize}
-\item The mixer channel can be empty for some time, since it is not
-  always holding at least one population message (written back every
-  time it is activated). This might lead to {\em starvation} of the
-  mixer thread, but in fact it will not take long since it is going to
-  be processed immediately by the evolver thread.
-\item Every population is mixed just once, which might lead to
-  improvements in the algorithm.
-\end{itemize}
+%\begin{itemize}
+%\item One we have called {\em EDA}, or estimation of distribution
+%  algorithm, whose basic idea is that the population message will
+%  contain the probability distribution over each gene. In this sense,
+%  this strategy is similar to the one presented by de la Ossa et
+%  al. in \cite{10.1007/978-3-540-30217-9_25}. Not being an estimation
+%  of distribution algorithm {\em per se}, since the evolutionary
+%  thread runs a canonical genetic algorithm, when the message is being
+%  composed, every (binary) gene of the 25\% best individuals in the
+%  population is examined, and an array with the
+%  probabilities for each gene is sent to the mixer thread. The {\em
+%    mixer} thread, in turn, just takes randomly one probability from
+%  each of the two {\em populations} (actually, distributions), instead
+%  of working on individuals. While in the baseline strategy the
+%  selection took place in the mixer thread, that eliminated half the
+%  population, in this case the selection takes place when composing
+%  the message, since just the 25\% best individuals are selected to
+%  compute the probability distribution of genes. When the evolver
+%  thread reads the message, it rebuilds the population based on this
+%  distribution.
+%\item The second is called {\em compress}, and it simply bit-packs the
+%  population, without the fitness, into a message which uses 1 bit per
+%  individual, and then 64 bits, or simply 8 bytes, to transmit a
+%  single individual in the population. This strategy is equivalent to
+%  the baseline, except it introduces an additional step of evaluating
+%  the population when mixing and receiving it from the evolutionary
+%  channel. It is hoped that this additional evaluation overhead does
+%  compensates the communication overhead that is eliminated.
+%\end{itemize}
 
 
+%In the same way we did in our previous papers, first we will have to
+%evaluate these new strategies compared with baseline; since the
+%overhead will be different depending on the computation time, which in
+%this case is regulated by the number of generations that are going to
+%be performed by every thread, we will first perform an experiment
+%changing that. We will call this parameter the {\em generation gap},
+%implying that's the gap between receiving a message and activating the
+%thread and sending it, deactivating it. 
+%Besides, what we want to find out in these set of experiments is what is the 
+%generation gap that gives the best performance in terms of raw time to
+%find a solution, as well as the best number of evaluations per second.
+
+In the same way we did in our previous papers, first we will compare 
+these new strategies compared with baseline, 
+evaluating the gap between receiving a message and activating the thread and sending it, deactivating it.
+Additionally, We will heuristically explore other messaging
+strategies called {\em no writeback} ({\sf nw}), where the mixer
+thread sends the individuals to the evolver channel, where it will undergo
+an additional round of evolution.
+
+%Additionally, it is impossible to know from first principles if this
+%setup is the only possible. We have to heuristically explore other
+%possibilities; in this case, we will explore another messaging
+%strategy called {\em no writeback}, or {\sf nw}, where the mixer
+%thread, instead of sending one of the individuals back again to the
+%mixer thread, sends it to the evolver channel, where it will undergo
+%an additional round of evolution. The main difference between these
+%two strategies is twofold:\begin{itemize}
+%\item The mixer channel can be empty for some time, since it is not
+%  always holding at least one population message (written back every
+%  time it is activated). This might lead to {\em starvation} of the
+%  mixer thread, but in fact it will not take long since it is going to
+%  be processed immediately by the evolver thread.
+%\item Every population is mixed just once, which might lead to
+%  improvements in the algorithm.
+%\end{itemize}
+
+
+%----------------------------------------------------------------
 \section{Experimental results}
 \label{sec:exp}
 
@@ -609,7 +632,7 @@ more evaluations we should be able to get a big boost in computation
 time that scales gracefully to a high number of processors.
 
 
-
+%----------------------------------------------------------------
 \section{Conclusions}
 \label{sec:conclusions}
 
@@ -645,12 +668,16 @@ used for comparison uses 3 threads already: two evolutionary threads
 and a mixing thread; thus, the scaled-up version would use a total of
 9 threads (8 evolutionary + 1 for mixing).
 
+
+%----------------------------------------------------------------
 \begin{acks}
 This paper has been supported in part by
 \href{http://geneura.wordpress.com}{GeNeura Team}, 
 projects DeepBio (TIN2017-85727-C4-2-P) and TecNM Project 5654.19-P. 
 \end{acks}
 
+
+%----------------------------------------------------------------
 \bibliographystyle{ACM-Reference-Format}
 \bibliography{../geneura,../concurrent,../perl6} 
 
