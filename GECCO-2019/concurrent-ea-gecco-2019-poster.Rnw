@@ -182,14 +182,12 @@ can be leveraged to take full advantage of the processor capabilities.
 These capabilities must be matched at an abstract level by concurrent languages 
 that are characterized by the presence of programming constructs that manage processes.
 The language provides an abstraction for communication using new communication constructs.
-
 %that build on them so that high-level algorithms can use them without
 %worrying about the low-level mechanisms of creation or destruction of
 %threads, or how data is shared or communicated among them. These
 %languages are called concurrent, and the programming paradigm
 %implemented in them concurrency-oriented programming or simply
 %concurrent programming \cite{Armstrong2003}. 
-
 %These languages are characterized by the presence of
 %programming constructs that manage processes like first class
 %objects; that means that the language includes  operators for acting upon them and the
@@ -200,12 +198,10 @@ The language provides an abstraction for communication using new communication c
 %language provides an abstraction for communication, on the other hand
 %it changes the paradigm for implementing algorithms, since these new
 %communication constructs have to be taken into account. 
-
 Moreover, concurrent programming adds a layer of abstraction over the parallel
 facilities of processors and operating systems, offering a
 high-level interface that allows the user to program modules of code to
 be executed in parallel threads \cite{andrews1991concurrent}.
-
 Different languages offer different concurrency strategies depending on how they deal with shared state,
 that is, data structures that could be accessed from several processes. 
 
@@ -321,11 +317,12 @@ that sends a representation of population gene-wise statistics.
 }
 
 \caption{Schematic of communication between threads and channels for
-  concurrent EAs. The two central bars represent the channel, and
-  color corresponds to the {\em main} function they perform; blue for
-  mixer, red for evolver. As the figure shows, the evolver threads
-  always read from the mixer channel, and always write to the evolver
-  channel.}
+  concurrent EAs. 
+%  The two central bars represent the channel, and
+%  color corresponds to the {\em main} function they perform; blue for
+%  mixer, red for evolver. As the figure shows, the evolver threads
+%  always read from the mixer channel, and always write to the evolver channel.
+  }
 \label{fig:schematic}
 \end{figure}
 
@@ -340,7 +337,6 @@ communicating sequential processes.
 %channels. Every process itself will be stateless, reacting to the
 %presence of messages in the channels it is listening to and sending
 %result back to them, without changing state.
-
 As in the previous papers, \cite{merelo:WEA}, we will use two
 groups of threads and two channels:  %. We will see them in turns.
 
@@ -493,17 +489,14 @@ Perl 6 module. % for the evolutionary part, and wrote the different
   \centering
   \caption{Parameters used to explore the generation gap}
   \label{tab:gens}
-  \begin{tabular}{lr}
+  \begin{tabular}{|lr|lr|}
     \toprule
-    Parameter & Value\\
+    Parameter & Value & Parameter & Value\\
     \midrule
-Evolver threads & 2 \\
-    Mixer threads & 1 \\
-    Generations & 8,16,32 \\
-    Population size & 256 \\
-    Initial populations & 3 \\
-    Bits & 64 \\
-    Repetitions & $>=$ 15 \\
+Evolver threads & 2    &  Population size & 256 \\
+Mixer threads & 1      &  Initial populations & 3 \\
+Generations & 8,16,32  &  Bits & 64   \\
+Repetitions & $>=$ 15  &       &      \\
   \bottomrule
   \end{tabular}
 \end{table}
@@ -522,8 +515,8 @@ and sent to the evolver channel was also designed to avoid starvation.
 
 First, the generation gap and strategy that obtains the smaller
 number of evaluations has been found.
-As shown in Figure \ref{fig:threads2}, in
-general, the number of evaluations increases with the generation
+%As shown in Figure \ref{fig:threads2}, 
+In general, the number of evaluations increases with the generation
 gap. More evolution without interchange with other populations implies
 more exploitation, and then the possibility of stagnation.
 The lowest number of evaluations is achieved for the EDA strategy with no writeback.
@@ -582,12 +575,12 @@ As a result, using EDA strategy, a communication strategy that improves the spee
 %populations. However, the increase of speed must be entirely due to
 %the compactness of the messages used by this strategy.
 
-However, the intention of concurrent evolutionary algorithms is to
-leverage the power of all threads and processors in a computer, so
-unlike in previous papers, we must find a version of the algorithm
-that speeds up with the number of threads.
-After many tests, eventually the scaling strategy was simply to divide
-the total population by the number of threads.
+%However, the intention of concurrent evolutionary algorithms is to
+%leverage the power of all threads and processors in a computer, so
+%unlike in previous papers, we must find a version of the algorithm
+%that speeds up with the number of threads.
+%After many tests, eventually the scaling strategy was simply to divide
+%the total population by the number of threads.
 
 %However, the intention of concurrent evolutionary algorithms is to
 %leverage the power of all threads and processors in a computer, so
@@ -615,14 +608,14 @@ the total population by the number of threads.
 %leveraging their full power. Please check also the number of threads
 %that are actually running at the same time, a few of which are being used by our application. 
 
-\begin{figure}[h!tb]
-  \centering
-<<threads2, cache=FALSE,echo=FALSE,fig.height=4,message=FALSE>>=
-ggplot(data.freqs.ap.threads,aes(x=Threads,y=Time,group=Threads))+geom_boxplot(fill='blue',notch=TRUE)+theme_tufte()+scale_x_continuous(name="Threads",breaks=c(2,4,6,8))+labs(x="Generation.Gap",y="Time",title="Scaling")
-@ 
-\caption{Total time vs. number of threads. Lower is better.}
-\label{fig:threads2}
-\end{figure}
+%\begin{figure}[h!tb]
+%  \centering
+%<<threads2, cache=FALSE,echo=FALSE,fig.height=4,message=FALSE>>=
+%ggplot(data.freqs.ap.threads,aes(x=Threads,y=Time,group=Threads))+geom_boxplot(fill='blue',notch=TRUE)+theme_tufte()+scale_x_continuous(name="Threads",breaks=c(2,4,6,8))+labs(x="Generation.Gap",y="Time",title="Scaling")
+%@ 
+%\caption{Total time vs. number of threads. Lower is better.}
+%\label{fig:threads2}
+%\end{figure}
 
 %We are first interested in the number of evaluations needed to find
 %the solution, which are plotted in Fig. \ref{fig:threads1}. It
