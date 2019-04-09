@@ -119,8 +119,8 @@ data.generations <- data.frame(
 %----------------------------------------------------------------
 \begin{abstract}
 Concurrent evolutionary algorithms use threads that  communicate via
-messages. Parametrizing how much work is done in every thread and the
-way they communicate result is the main challenge in its design. In
+messages. Parametrizing the work in every thread and the
+way they communicate results is the main challenge in its design. In
 this paper we work with concurrent evolutionary algorithms implemented
 in Perl 6, and explore different options of single-thread evolution
 parameters, communication and mixing of results, and eventually
@@ -151,7 +151,7 @@ scaling achieved in a multi-core environment.
 
 \ccsdesc[500]{Theory of computation~Concurrent algorithms}
 \ccsdesc[500]{Computing methodologies~Genetic algorithms}
-\ccsdesc[300]{General and reference~Performance}
+%\ccsdesc[300]{General and reference~Performance}
 
 \keywords{Concurrent evolutionary algorithms, performance evaluation}
 
@@ -470,7 +470,7 @@ an additional round of evolution.
 
 %----------------------------------------------------------------
 \section{Experimental results}
-\label{sec:exp}
+\label{sec:results}
 
 The experiments have been prepared by using OneMax function with 64
 bits. This function was chosen primarily since it was the one used in
