@@ -205,7 +205,7 @@ a lossless one that compresses the population, and a lossy one
 that sends a representation of population gene-wise statistics.
 
 %----------------------------------------------------------------
-\section{Experimental setup}
+\section{Experimental setup and results}
 \label{sec:exp}
 
 Building upon the design we used in previous experiments\cite{Merelo:2018:MEA:3205651.3208317}, 
@@ -435,10 +435,6 @@ an additional round of evolution.
 %\end{itemize}
 
 
-%----------------------------------------------------------------
-\section{Experimental results}
-\label{sec:results}
-
 The experiments have been prepared by using OneMax function with 64
 bits. This function was chosen primarily since it was the one used in
 previous experiments, but also because it is a classical benchmark, it
@@ -619,45 +615,11 @@ has been redesigned using the distribution of probabilities as a representation 
 population.
 Different messaging strategies has been also tested.
 
-%Designing a concurrent, stateless evolutionary algorithm brings a new
-%set of configuration decisions that must be taken into account at the algorithm and
-%at the parameter level. Thus, the main intention in this paper was to
-%explore the parameter space in a concurrent evolutionary algorithm
-%looking for the combination that yields the best performance in terms
-%of time, without sacrificing the algorithmic performance. Since the
-%biggest obstacle to scaling and high performance was the size of
-%messages interchanged within the channel, in this paper we decided to
-%redesign this communication either in an algorithmic specific way:
-%using the distribution of probabilities as a representation of the
-%population; or in a data structure specific way: compressing the
-%bitstring to actual bits in a binary message. 
-%We also tested different messaging strategies.
-
 Experiments show that the number of generations that the population undergoes must be kept to a small number.
 The results also indicate that the EDA strategy is the fastest, with a relatively low impact in the number of evaluations, as the messages are the most compact.
 Finally, obtained results have shown that simultaneous threads running 
 an evolutionary algorithm via population splitting do increase the number of simultaneous evaluations,
 leading the new concurrent evolutionary algorithm to improve the performance in comparison to the equivalent single thread evolutionary algorithm.
-
-%Experiments show that no matter what the communication or messaging strategy is, we need to keep the number of generations that the population undergoes to a small number, which resulted to be 8 in this case. This is equivalent to 2048 evaluations: a number which is likely dependent on the problem and the data structure we are evolving. 
-%We would need to investigate this number further, and find a methodology to set it in advance, avoiding heuristics. That is left as a future line of work, but meanwhile our conclusion would be the importance of this generation gap in stateless evolutionary algorithms and the need to follow an experimental strategy to establish its value for particular problems or implementations. 
-
-%These experiments also yielded the EDA strategy as the fastest, with a relatively low impact in the number of evaluations. The fact that messages are the most compact is probably the main reason, but the fact that it uses a higher selective pressure is probably also a factor that should be taken into account.
-
-%Finally, this paper has shown for the first time the good scaling
-%behavior of this kind of concurrent evolutionary
-%algorithms. Simultaneous threads running an evolutionary algorithm do
-%increase the number of simultaneous evaluations, although since this
-%scaling is achieved via population splitting, the actual time achieved
-%reaches its lowest peak with just 4 threads. As a matter of fact, and
-%probably due to hardware limitations, the number of simultaneous
-%evaluations seems to reach a plateau with 8 threads. At any rate, this
-%new concurrent evolutionary algorithm is achieving results that are
-%much better than what the equivalent, single thread, evolutionary
-%algorithm would achieve. It should be noted that the base algorithm
-%used for comparison uses 3 threads already: two evolutionary threads
-%and a mixing thread; thus, the scaled-up version would use a total of
-%9 threads (8 evolutionary + 1 for mixing).
 
 
 %----------------------------------------------------------------
