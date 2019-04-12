@@ -348,16 +348,10 @@ We observe that this strategy is reminiscent of some migration policies used in 
 \begin{call}{M}{mix()}{M}{\vdots}\end{call}
 \prelevel
 \begin{call}{E}{evolve()}{E}{\vdots}\end{call}
-\vspace{-.2cm}
+%\vspace{-.2cm}
 \end{sequencediagram}
 }
-\caption{Schematic of communication between threads and channels for
-  concurrent EAs. 
-%  The two central bars represent the channel, and
-%  color corresponds to the {\em main} function they perform; blue for
-%  mixer, red for evolver. As the figure shows, the evolver threads
-%  always read from the mixer channel, and always write to the evolver channel.
-  }
+\caption{Concurrent EAs timeline }
 \label{fig:schematic}
 \end{wrapfigure}
 %\end{figure}
@@ -476,71 +470,30 @@ Repetitions & $>=$ 15  &       &      \\
   \hline
   \end{tabular}
 \end{table}
+%
+\begin{figure}[h!tb]
+  \centering
+<<gens2, cache=FALSE,echo=FALSE,fig.height=4>>=
+ggplot(data.generations,aes(x=gap,y=evaluations/time,group=strategy, color=strategy))+geom_point()+ stat_summary(fun.y="mean", geom="line", size=2)+scale_y_log10()+scale_x_log10(name="Generations",breaks=c(4,8,16,32,64))+theme_tufte()+labs(x="Generations",y="Evaluations/second")
+@ 
+\caption{Number of evaluations per second vs. generation gap for the baseline
+  strategy (in pink) and the EDA and compress messaging strategies,
+  with or without writeback (WB). Higher is better. Axes are logarithmic.}
+\label{fig:evals2}
+\end{figure}
 
-First, the generation gap and strategy that obtains the smaller
-number of evaluations has been found.
-%As shown in Figure \ref{fig:threads2}, 
+
+First, the generation gap and strategy that obtains the best number of evaluations and evaluations per second has been found, and this is shown in Figure \ref{fig:evals2}
 In general, the number of evaluations increases with the generation
 gap. More evolution without interchange with other populations implies
-more exploitation, and then the possibility of stagnation.
-The lowest number of evaluations is achieved for the EDA strategy with no writeback.
+more exploitation, and then the possibility of stagnation. However, the highest number of evaluations per second are achieved by the EDA strategies, as shown in the figure. This EDA-style communication strategy finds the best balance between number of evaluations and communicaiton speed mainly due to the compactness of its messages, but also due to the fact that it is non-elitist and might avoid stagnation or dominance of the population by a super-individual.
 
-%Since we are exploring the parameter space, we will first try
-%to find out the generation gap and strategy that obtains the smaller
-%number of evaluations, indicating it is the best algorithmic
-%strategy. These are shown in Figure \ref{fig:evals}, where the two
-%messaging strategies, EDA and compress, with or without writeback, are
-%plotted and compared with the baseline strategy, which uses the full,
-%evaluated population as a message. The first observation is that, in
-%general, the number of evaluations increases with the generation
-%gap. More evolution without interchange with other populations implies
-%more exploitation, and then the possibility of stagnation. For 8
-%generations the results are very similar, but they diverge with the
-%generation gap. Clearly, the baseline strategy achieves the lowest
-%number of evaluations, for two reasons: it does not need to
-%re-evaluate the population when the message is received, but also, in
-%the case of EDA, the population is rebuilt from its statistical
-%description, so the exact individual (with the possible highest
-%fitness) is not kept. The lowest number of evaluations, although not
-%significantly so, is achieved for the EDA strategy with no writeback.
-%This chart can also be used to check the performance of the {\em no-writeback} 
-%strategies. In principle, since they use more evolved
-%populations, they should be better. As a matter of fact, since they
-%are injecting an additional population that is actually evolved, they
-%use more evaluations. So in principle these strategies will be
-%discarded.
-Additionally, the raw performance in evaluations per second of all strategies has been evaluated, 
-showing that the EDA strategy is superior to the rest for all generation gaps. 
-%Additionally, we evaluate the raw performance, in evaluations per
-%second, of all strategies, since at the end of the day, working with
-%concurrent evolutionary algorithms pursue higher speed. This is shown
-%in Figure \ref{fig:evals2}, which shows in the $y$ axis the number of
-%evaluations per second. In this case, the EDA strategy is clearly
-%superior to the rest, beating them significantly for all generation
-%gaps. In this case, generation gap == 8 will be chosen, since it
-%achieves the best combination of algorithmic and wallclock
-%performance.
-As a result, the EDA-style communication strategy improves the speed of the algorithm, mainly due to the compactness of its messages.
-
-%Our initial intention in this paper was to design a communication
-%strategy that improves the speed of the algorithm, and with the EDA
-%strategy we have achieved just that. However, there are two parts in
-%this strategy: using significantly smaller messages, and moving
-%selection strategy from the mixer to the evolver (when computing the
-%probability distribution). In fact, 1/4 of the population is used to
-%compute the distribution, as opposed to the baseline mixer (labeled
-%``Full''), which takes the better half of the pair of populations for
-%mixing. This is undoubtedly a factor that contributes to balance the
-%number of additional evaluations needed for the new, rebuilt,
-%populations. However, the increase of speed must be entirely due to
-%the compactness of the messages used by this strategy.
-
-%However, the intention of concurrent evolutionary algorithms is to
-%leverage the power of all threads and processors in a computer, so
-%unlike in previous papers, we must find a version of the algorithm
-%that speeds up with the number of threads.
-%After many tests, eventually the scaling strategy was simply to divide
-%the total population by the number of threads.
+However, the intention of concurrent evolutionary algorithms is to
+leverage the power of all threads and processors in a computer, so
+unlike in previous papers, we must find a version of the algorithm
+that speeds up with the number of threads.
+After many tests, eventually the scaling strategy was simply to divide
+the total population by the number of threads.
 
 %However, the intention of concurrent evolutionary algorithms is to
 %leverage the power of all threads and processors in a computer, so
