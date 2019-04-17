@@ -162,12 +162,12 @@ scalability is achieved in a multi-core environment.
 \section{Introduction}
 
 Nowadays, concurrent programming is the best option to leverage the number of processes and threads that a multi-core processor architecture can host.
-
+%
 %% where many processes 
 %% and threads can coexists at the same time.
 %% This eventually means that many processes (heavy or lightweight) 
 %% can be leveraged to take full advantage of the processor capabilities.
-
+%
 These capabilities must be matched at an abstract level by concurrent languages
 that incorporate programming constructs intended to manage creation, execution 
 and termination of processes, as well as new models of communication between such processes.
@@ -194,76 +194,7 @@ Moreover, concurrent programming adds a layer of abstraction over the parallel
 facilities of processors and operating systems, offering a
 high-level interface that allows the user to program modules of code to
 be executed in parallel threads \cite{andrews1991concurrent}.
-Different languages offer different concurrency policies depending on how they deal with state, 
-that is, data structures that could be accessed from several processes. They can be divided roughly between channel-based concurrency, with no shared nor stored state, and actor based concurrency, which stores state (in actors) but does not share it. This last model is the one used by the Perl 6 language, which is the one we are going to be using in this work.
-
-Previously we
-designed an evolutionary algorithm based on using a stateless architecture  \cite{Merelo:2018:MEA:3205651.3208317,merelo:WEA}, 
-with different processes reacting to a channel input without changing state, and writing to the channel,
-and explored its possibilities. However, the design of this kind of stateless algorithm leaves many options open, and they have to be explored heuristically. First, we will find out what are the best parameters from the point of view of the algorithm; then, we will test several communication strategies: 
-a lossless one that compresses the population, and a lossy one 
-that sends a representation of population gene-wise statistics.
-
-%----------------------------------------------------------------
-\section{Experimental setup and results}
-\label{sec:exp}
-
-Building upon the design we used in previous experiments\cite{Merelo:2018:MEA:3205651.3208317}, 
-here our goal was to
-%The baseline we are coming from is similar to the one used in previous experiments
-%\cite{Merelo:2018:MEA:3205651.3208317}. Our intention was to
-create a system that was not functionally equivalent to a sequential
-evolutionary algorithms, and that followed the principle of
-communicating sequential processes. 
-%In this kind of methodology, we
-%will have processes (or threads) communicating state through
-%channels. Every process itself will be stateless, reacting to the
-%presence of messages in the channels it is listening to and sending
-%result back to them, without changing state.
-As in the previous papers, \cite{merelo:WEA}, we will use two
-groups of threads, one for performing the evolutionary algorithm and other for mixing populations, and two channels, one for carrying non-evolved, or generated, populations, and another for pairs of evolved
-  populations. 
-
-The proposed system is illustrated in Figure \ref{fig:schematic}.
-%These will be connected as shown in Figure \ref{fig:schematic}.
-The evolutionary group of threads will read only from the evolutionary channel,
-evolve for a number of generations, and place result in the mixer
-channel; the mixer group of threads will read only from the mixer
-channel, in pairs. From every pair, a random element is put back into
-the mixer channel, and a new population is obtained and sent back to
-the evolutionary channel. 
-The aim of using two channels is
-to avoid deadlocks; the fact that one population is always written 
-back to the mixer channel avoids starvation in that channel. 
-%How this runs in practice is shown in Figure \ref{fig:schematic}, where the
-%timeline of the interchange of messages between the evolver and mixer
-%threads and evolver and mixer channels is clarified.
-
-%One of the problems of the baseline configuration was that
-%communication took a great amount of time, adding some overhead to the
-%algorithm. The {\em message} consisted of the whole population, and
-%the size increased with population size, obviously. This tipped the
-%balance between communication and computation towards communication,
-%so that the more threads, the more communication was taking place. Our
-%first intention in this paper was to slim down messages so that they
-%took less bandwidth (or memory) and less time to send and process. In
-%general, this strategy also can be framed in the context of migration
-%strategies, since that is the most similar thing in the context of
-%parallel algorithms. In parallel algorithms, an adequate selection of
-%migration strategies, balancing exploration and exploitation, is the
-%key to achieving high performance, as indicated in
-%\cite{Cantu-Paz:1999:MPT:2933923.2934003}.
-%In the context of concurrent evolutionary algorithms we will talk
-%about {\em population messages}, but their effect is going to be similar. 
-
-In the baseline configuration the communication model was costly in time, since the {\em message} consisted of the entire population whose memory size increases with larger populations.
-We observe that this strategy is reminiscent of some migration policies used in other models of parallel evolutionary algorithms.
-
-% In the baseline configuration the communication took a great amount of time. 
-% The {\em message} consisted of the whole population and the size increased with population size.
-% This strategy also can be framed in the context of migration strategies, since that is the most similar thing in the context of parallel algorithms.
-
-%\begin{figure}[tb]
+%
 \begin{wrapfigure}[29]{r}{0.45\columnwidth}
   %\centering
   \vspace{-.5\intextsep}
@@ -336,9 +267,71 @@ We observe that this strategy is reminiscent of some migration policies used in 
 \caption{Concurrent EAs timeline }
 \label{fig:schematic}
 \end{wrapfigure}
-%\end{figure}
+%
+Different languages offer different concurrency policies depending on how they deal with state, 
+that is, data structures that could be accessed from several processes. They can be divided roughly between channel-based concurrency, with no shared nor stored state, and actor based concurrency, which stores state (in actors) but does not share it. This last model is the one used by the Perl 6 language, which is the one we are going to be using in this work.
 
-In this paper we introduce two different messaging strategies:  
+Previously we
+designed an evolutionary algorithm based on using a stateless architecture  \cite{Merelo:2018:MEA:3205651.3208317,merelo:WEA}, 
+with different processes reacting to a channel input without changing
+state, and writing to the channel, but its design leaves many options open, and they have to be explored heuristically. First, we will find out what are the best parameters from the point of view of the algorithm; then, we will test several communication strategies: 
+a lossless one that compresses the population, and a lossy one 
+that sends a representation of population gene-wise statistics.
+
+%----------------------------------------------------------------
+\section{Experimental setup and results}
+\label{sec:exp}
+
+Building upon the design we used in previous experiments\cite{Merelo:2018:MEA:3205651.3208317}, 
+here our goal was to
+%The baseline we are coming from is similar to the one used in previous experiments
+%\cite{Merelo:2018:MEA:3205651.3208317}. Our intention was to
+create a system that was not functionally equivalent to a sequential
+evolutionary algorithms, and that followed the principle of
+communicating sequential processes. 
+%In this kind of methodology, we
+%will have processes (or threads) communicating state through
+%channels. Every process itself will be stateless, reacting to the
+%presence of messages in the channels it is listening to and sending
+%result back to them, without changing state.
+As in the previous papers, \cite{merelo:WEA}, we will use two
+groups of threads, one for performing the evolutionary algorithm and other for mixing populations, and two channels, one for carrying non-evolved, or generated, populations, and another for pairs of evolved
+  populations. 
+
+The proposed system is illustrated in Figure \ref{fig:schematic}.
+%These will be connected as shown in Figure \ref{fig:schematic}.
+The evolutionary group of threads will read only from the evolutionary channel,
+evolve for a number of generations, and place result in the mixer
+channel; the mixer group of threads will read only from the mixer
+channel, in pairs. From every pair, a random element is put back into
+the mixer channel, and a new population is obtained and sent back to
+the evolutionary channel. 
+The aim of using two channels is
+to avoid deadlocks; the fact that one population is always written 
+back to the mixer channel avoids starvation in that channel. 
+%How this runs in practice is shown in Figure \ref{fig:schematic}, where the
+%timeline of the interchange of messages between the evolver and mixer
+%threads and evolver and mixer channels is clarified.
+
+%One of the problems of the baseline configuration was that
+%communication took a great amount of time, adding some overhead to the
+%algorithm. The {\em message} consisted of the whole population, and
+%the size increased with population size, obviously. This tipped the
+%balance between communication and computation towards communication,
+%so that the more threads, the more communication was taking place. Our
+%first intention in this paper was to slim down messages so that they
+%took less bandwidth (or memory) and less time to send and process. In
+%general, this strategy also can be framed in the context of migration
+%strategies, since that is the most similar thing in the context of
+%parallel algorithms. In parallel algorithms, an adequate selection of
+%migration strategies, balancing exploration and exploitation, is the
+%key to achieving high performance, as indicated in
+%\cite{Cantu-Paz:1999:MPT:2933923.2934003}.
+%In the context of concurrent evolutionary algorithms we will talk
+%about {\em population messages}, but their effect is going to be similar. 
+
+The baseline communication model was time-costly so in this paper we
+introduce two different messaging strategies:   
 {\em EDA}, in which the message consist of a probability distribution of each gene in the population,
 and {\em compress}, that simply bit-packs the population without the fitness into a message, using 1 bit per individual.
 
@@ -411,11 +404,10 @@ an additional round of evolution.
 %\end{itemize}
 
 
-The experiments have been prepared by using OneMax function with 64
-bits. This function was chosen primarily since it was the one used in
-previous experiments, but also because it is a classical benchmark, it
+The experiments used 64-bit OneMax, a classical benchmark, it
 can be easily programmed in Perl 6, and allowed us to focus in the 
-design of the relevant mechanisms of the concurrent evolutionary model. 
+design of the relevant mechanisms of the concurrent evolutionary
+model; it was also used in the baselin experiments. 
 We used the open source {\tt Algorithm::Evolutionary::Simple}
 Perl 6 module. % for the evolutionary part, and wrote the different
 %scripts in the same language. The latest version, compiled from
@@ -426,7 +418,7 @@ Perl 6 module. % for the evolutionary part, and wrote the different
 
 %The parameters used are shown in Table
 %\ref{tab:gens}.
-Two evolver threads are needed, as mentioned above, to avoid
+Two evolver threads are needed to avoid
 starvation of the mixer thread. The generation gap was checked for
 the shown values, although in some cases we extended it to 4
 and 64 generations. The population was sized as in previous papers using
@@ -474,67 +466,11 @@ leverage the power of all threads and processors in a computer, so
 unlike in previous papers, we must find a version of the algorithm
 that speeds up with the number of threads.
 After many tests, eventually the scaling strategy was simply to divide
-the total population by the number of threads.
-
-%However, the intention of concurrent evolutionary algorithms is to
-%leverage the power of all threads and processors in a computer, so
-%unlike in previous papers, we must find a version of the algorithm
-%that speeds up with the number of threads. We will settle on the
-%communication strategy, EDA, that has been proved to work before, and
-%the population size (256) and generation gap (8) that has been proved
-%to work previously. The number of initial populations was set to the
-%number of threads plus one, as the minimum required to avoid starvation. 
-%However, we need to devise a strategy that actually makes scaling possible and profitable.
-%After many tests, eventually the scaling strategy was simply to divide
-%the total population by the number of threads. Initially we had two
-%threads and total population equal to 512, so our strategy, called AP
-%for adaptive population, was to divide the number of total individuals
-%between the threads, so that 4 threads, for instance, get 128
-%individuals each. We repeated every run 15 times.
-
-%In this case, experiments were run on a different machine with the
-%Ubuntu 18.04 OS and an AMD Ryzen 7 2700X Eight-Core Processor
-%at 3.7GHz. Figure \ref{fig:screenshot} shows the utility htop with an
-%experiment running; the top of the screen shows the rate at which all
-%cores are working, showing all of them occupied; of course, the
-%program was not running exclusively, but the list of processes below
-%show how the program is replicated in several processor, thus
-%leveraging their full power. Please check also the number of threads
-%that are actually running at the same time, a few of which are being used by our application. 
-
-%\begin{figure}[h!tb]
-%  \centering
-%<<threads2, cache=FALSE,echo=FALSE,fig.height=4,message=FALSE>>=
-%ggplot(data.freqs.ap.threads,aes(x=Threads,y=Time,group=Threads))+geom_boxplot(fill='blue',notch=TRUE)+theme_tufte()+scale_x_continuous(name="Threads",breaks=c(2,4,6,8))+labs(x="Generation.Gap",y="Time",title="Scaling")
-%@ 
-%\caption{Total time vs. number of threads. Lower is better.}
-%\label{fig:threads2}
-%\end{figure}
-
-%We are first interested in the number of evaluations needed to find
-%the solution, which are plotted in Fig. \ref{fig:threads1}. It
-%increases slightly and not significantly from 2 to 4 threads, but it
-%does increase significantly for 6 and 8 threads, indicating that the
-%algorithm is performing significantly worse when we increase the number
-%of threads. This is probably due to the fact that we are
-%simultaneously decreasing the population size, leading to earlier
-%convergence for the number of generations (8) it is being used. This
-%interplay between the degree of concurrency, the population size and
-%the number of generations will have to be explored further.
-
-%But we were also interested in the actual wallclock time, plotted in
-%Fig. \ref{fig:threads2}. The picture shows that it decreases
-%significantly when we go from 2 (the baseline) to 4 threads, since we
-%are using more computing power for (roughly) the same number of
-%evaluations. It then increases slightly we we increase the number of
-%threads; as a matter of fact and as shown in \ref{fig:threads3}, the
-%number of evaluations per second increases steeply up to 6 threads,
-%and slightly when we use 8 threads. However, the amount of evaluations
-%needed overcompensates this speed, resulting in a worse results. It
-%confirms, however, that we are actually using all threads for
-%evaluations, and if only we could find a strategy that didn't need
-%more evaluations we should be able to get a big boost in computation
-%time that scales gracefully to a high number of processors.
+the total population by the number of threads. This resulted in a
+decrease of wallclock time from 2 to 4 threads, and an additional
+increase of evaluations/second up to 8 threads. However, since smaller
+population brings about decreased diversity, more evaluations were
+needed and time actually increased from 4 threads up.
 
 
 %----------------------------------------------------------------
@@ -553,13 +489,21 @@ Experiments show that the number of generations that the population undergoes mu
 The results also indicate that the EDA strategy is the fastest, with a relatively low impact in the number of evaluations, as the messages are the most compact.
 Finally, obtained results have shown that simultaneous threads running 
 an evolutionary algorithm via population splitting do increase the number of simultaneous evaluations,
-leading the new concurrent evolutionary algorithm to improve the performance in comparison to the equivalent single thread evolutionary algorithm.
+leading the new concurrent evolutionary algorithm to improve the
+performance in comparison to the equivalent single thread evolutionary
+algorithm. However, the total time does not decrease in the same
+proportion due to the effect of the division of population.
+
+For the time being, it has been proved that these concurrent
+algorithms are able to improve performance in a limited way. Further
+explorations into the parameter space will be needed, including
+adaptivity of other parameters or use of a random parametrization or
+other communication strategies.
 
 
 %----------------------------------------------------------------
 \begin{acks}
 This paper has been supported in part by
-\href{http://geneura.wordpress.com}{GeNeura Team}, 
 projects DeepBio (TIN2017-85727-C4-2-P) and TecNM Project 5654.19-P. 
 \end{acks}
 
