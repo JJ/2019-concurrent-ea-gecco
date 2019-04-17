@@ -474,11 +474,11 @@ performance in comparison to the equivalent single thread evolutionary
 algorithm. However, the total time does not decrease in the same
 proportion due to the effect of the division of population.
 
-For the time being, it has been proved that these concurrent
-algorithms are able to improve performance in a limited way. Further
-explorations into the parameter space will be needed, including
-adaptivity of other parameters or use of a random parametrization or
-other communication strategies.
+% For the time being, it has been proved that these concurrent
+% algorithms are able to improve performance in a limited way. Further
+% explorations into the parameter space will be needed, including
+% adaptivity of other parameters or use of a random parametrization or
+% other communication strategies.
 
 
 %----------------------------------------------------------------
