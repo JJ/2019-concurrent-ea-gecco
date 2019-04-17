@@ -175,11 +175,11 @@ facilities of processors and operating systems, offering a
 high-level interface that allows the user to program modules of code to
 be executed in parallel threads \cite{andrews1991concurrent}.
 %
-\begin{wrapfigure}[29]{r}{0.37\columnwidth}
+\begin{wrapfigure}[29]{r}{0.45\columnwidth}
   %\centering
   \vspace{-.5\intextsep}
-\hspace*{-.95\columnsep}
-\scalebox{.8}[.6]{
+\hspace*{-.8\columnsep}
+\scalebox{.7}[.6]{
 \begin{sequencediagram}
 
 \newthread[red]{E}{Evolver} 
