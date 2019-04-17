@@ -124,7 +124,7 @@ messages. Parametrizing the work in every thread and the
 way they communicate results is a major challenge in its design. In
 this paper we work with concurrent evolutionary algorithms implemented
 in Perl 6, and explore different options of single-thread evolution
-parameterization, communication and mixing of results, showing that 
+parametrization, communication and mixing of results, showing that 
 scalability is achieved in a multi-core environment.
 
 \end{abstract}
@@ -407,7 +407,7 @@ an additional round of evolution.
 The experiments used 64-bit OneMax, a classical benchmark, it
 can be easily programmed in Perl 6, and allowed us to focus in the 
 design of the relevant mechanisms of the concurrent evolutionary
-model; it was also used in the baselin experiments. 
+model; it was also used in the baseline experiments. 
 We used the open source {\tt Algorithm::Evolutionary::Simple}
 Perl 6 module. % for the evolutionary part, and wrote the different
 %scripts in the same language. The latest version, compiled from
@@ -459,7 +459,7 @@ ggplot(data.generations,aes(x=gap,y=evaluations/time,group=strategy, color=strat
 First, the generation gap and strategy that obtains the best number of evaluations and evaluations per second has been found, and this is shown in Figure \ref{fig:evals2}
 In general, the number of evaluations increases with the generation
 gap. More evolution without interchange with other populations implies
-more exploitation, and then the possibility of stagnation. However, the highest number of evaluations per second are achieved by the EDA strategies, as shown in the figure. This EDA-style communication strategy finds the best balance between number of evaluations and communicaiton speed mainly due to the compactness of its messages, but also due to the fact that it is non-elitist and might avoid stagnation or dominance of the population by a super-individual.
+more exploitation, and then the possibility of stagnation. However, the highest number of evaluations per second are achieved by the EDA strategies, as shown in the figure. This EDA-style communication strategy finds the best balance between number of evaluations and communication speed mainly due to the compactness of its messages, but also due to the fact that it is non-elitist and might avoid stagnation or dominance of the population by a super-individual.
 
 However, the intention of concurrent evolutionary algorithms is to
 leverage the power of all threads and processors in a computer, so
