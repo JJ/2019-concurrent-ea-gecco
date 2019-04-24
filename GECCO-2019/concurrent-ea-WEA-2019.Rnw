@@ -20,10 +20,10 @@ data.rr <- data.rr %>% group_by(data.rr$Threads) %>% add_tally()
 data.lo <- data.lo %>% group_by(data.lo$Threads) %>% add_tally()
 @
 
-\title{Concurrency in evolutionary algorithms}
+\title{Scaling in concurrent evolutionary algorithms}
 % \thanks{Supported by organization x.}}
 
-\titlerunning{Binary Optimisation with an Urban Pigeon-Inspired Algorithm}
+\titlerunning{Concurrency in evolutionary algorithms}
 
 \author{Anonymous Author 1\inst{1} \and
 Anonymous Author 2\inst{1} \and
