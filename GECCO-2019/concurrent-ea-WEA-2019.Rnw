@@ -732,9 +732,8 @@ thread, or using different parameters per thread. This opens a vast
 space of possibilities, but the payoff might be worth it.
 
 \section{Acknowledgements}
-Acknowledgements taking\\
-this much\\
-space
+This paper has been supported in part by
+projects DeepBio (TIN2017-85727-C4-2-P) and TecNM Project 5654.19-P. 
 
 
 \bibliographystyle{splncs04}
