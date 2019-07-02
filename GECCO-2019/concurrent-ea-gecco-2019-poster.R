@@ -20,5 +20,9 @@ data.generations <- data.frame(
 
 
 ## ----gens2, cache=FALSE,echo=FALSE,fig.height=4--------------------------
-ggplot(data.generations,aes(x=gap,y=evaluations/time,group=strategy, color=strategy))+geom_point()+ stat_summary(fun.y="mean", geom="line", size=2)+scale_y_log10()+scale_x_log10(name="Generations",breaks=c(4,8,16,32,64))+theme_tufte()+labs(x="Generations",y="Evaluations/second")
-
+ggplot(data.generations,aes(x=gap,y=evaluations/time,group=strategy, color=strategy))+geom_point()+ stat_summary(fun.y="mean", geom="line", size=2)+scale_y_log10()+scale_x_log10(name="Generations",breaks=c(4,8,16,32,64))+theme_tufte()+labs(x="Generations",y="Evaluations/second")+theme(axis.text.x = element_text(face="bold", color="#993333", size=14), axis.text.y = element_text(face="bold", color="#993333", size=14),legend.text=element_text(size=14),text=element_text(size=18))
+ggsave(filename="chart.pdf", 
+       device = cairo_pdf, 
+       width = 297, 
+       height = 210, 
+       units = "mm")
