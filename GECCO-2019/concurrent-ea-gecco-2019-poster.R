@@ -26,3 +26,8 @@ ggsave(filename="chart.pdf",
        width = 297, 
        height = 210, 
        units = "mm")
+
+ggsave(filename="chart.png", 
+       width = 297, 
+       height = 210, 
+       units = "mm")
