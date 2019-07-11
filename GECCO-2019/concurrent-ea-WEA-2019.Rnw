@@ -3,6 +3,9 @@
 \usepackage{booktabs} % For formal tables
 \usepackage{tikz}
 \usepackage{pgfbaselayers}
+\usepackage{wrapfig}
+\usepackage{multicol}
+\usepackage{float}
 \usepackage[underline=false]{pgf-umlsd}
 \usetikzlibrary{shadows}
 \usetikzlibrary{arrows}
@@ -25,29 +28,51 @@ data.lo <- data.lo %>% group_by(data.lo$Threads) %>% add_tally()
 
 \titlerunning{Concurrency in evolutionary algorithms}
 
-\author{Anonymous Author 1\inst{1} \and
-Anonymous Author 2\inst{1} \and
-Anonymous Author 3\inst{1} \and
-Anonymous Author 4\inst{1} }
-%
-\authorrunning{Author 1, Author 2, Author 3, Author 4}
-
-\institute{University 1, city1, country1 
-\email{aa@email.org}\\
+ \author{Juan J. Merelo\inst{1}
+ \and
+ J.L.J. Laredo\inst{2}
+ \and
+ Pedro A. Castillo\inst{1}
+ \and
+ José-Mario García-Valdez\inst{3}
+\and
+Sergio Rojas-Galeano\inst{4}
 }
+
+ \institute{%
+   Universidad de Granada/CITIC\\
+   Granada, Spain\\
+   \email{\{jmerelo,pacv\}@ugr.es}\\
+ \and
+	RI2C-LITIS, Université du Havre Normandie\\
+   Le Havre, France\\
+   \email{juanlu.jimenez@univ-lehavre.fr}\\
+ \and
+ Instituto Tecnológico de Tijuana\\
+ Calzada Tecnológico, s/n\\
+ Tijuana, Mexico\\
+ \email{mario@tectijuana.edu.mx}
+ \and
+ School of Engineering\\
+ Universidad Distrital Francisco José de Caldas\\
+ Bogotá, Colombia\\
+ \email{srojas@udistrital.edu.co}
+}
+
+\authorrunning{Merelo, JJ. et al.}
 
 \maketitle
 
 \begin{abstract}
-One of the core ideas behind the design of multi-threaded concurrent
-algorithms is the concept of \emph{channel}, a computational device
-used to convey state to the different threads of processes that are
-executed concurrently. In the case of concurrent evolutionary
-algorithms, threads can be designed to perform different tasks within
-the evolutionary loop such as genetic operations or mixing of
-populations, and therefore they will need to communicate by passing
-messages across channels. In this paper we study to what extent the
-design of these messages in a communicating sequential processes
+The concept of \emph{channel}, a computational mechanism
+used to convey state to different threads of process execution,
+is at the core of the design of multi-threaded concurrent
+algorithms. In the case of concurrent evolutionary
+algorithms, \emph{channels} can be used to communicate messages 
+between several threads performing different evolution tasks 
+related to genetic operations or mixing of
+populations. In this paper we study to what extent the
+design of these messages in a communicating sequential process
 context may influence scaling and performance of concurrent
 evolutionary algorithms. For this aim, we designed a channel-based
 concurrent evolutionary algorithm that is able to effectively solve
@@ -61,7 +86,7 @@ communication and evolutionary parameters affect the outcome of the
 evolved solutions, opening-up new opportunities for algorithm design. 
 \end{abstract}
 
-\keywords{Concurrency, Concurrent evolutionary algorithms, performance
+\keywords{Concurrency, concurrent evolutionary algorithms, performance
 evaluation, algorithm design, distributed evolutionary algorithm}
 
 \section{Introduction}
@@ -73,32 +98,32 @@ creation of concurrent evolutionary algorithms that work in a single
 computing node or that extend seamlessly from single to many
 computers. In that sense, concurrent programming seems to be the best 
 option if we are dealing with a multi-core multi-threaded processor architecture 
-where many processes and threads can coexists at the same time, which
+where many processes and threads can coexists at the same time. The latter 
 implies applications (and algorithms) should be able to leverage those
 processes to take full advantage of their capabilities.
 
-The best way to do so, and to think of processing at a high level, is
+The best way to do so is
 to match those capabilities at an abstract level by languages
-that build on them so that high-level algorithms can employ them without
+that build on them so that high-level algorithms can be implemented without
 worrying about the low-level mechanisms of creation or destruction of
 threads, or how data is shared or communicated among them. These
 languages are called concurrent, and the programming paradigm
 implemented in them concurrency-oriented programming or simply
 concurrent programming \cite{Armstrong2003}.
 
-These languages, that include Perl 6, Go, Scala and Julia are characterized by the presence of
+These languages, that include Perl 6, Go, Scala and Julia, usually support 
 programming constructs that manage threads like first class
-objects; that means that the language includes  operators for acting upon them and the
-possibility of using them like parameters or function's result
-values. This changes the coding of concurrent algorithms due to the
+objects, including operators for acting upon them and to using them as 
+function's input or return parameters. The latter have implications in 
+the coding of concurrent algorithms due to the
 direct mapping between patterns of communication and processes with
 % patterns of communication between processes? - Mario 
 % no, two different things  - JJ
-language expressions; on the one hand it becomes simpler since the
-language provides an abstraction for communication, on the other hand
+language expressions: on the one hand it simplifies coding because higher-level
+abstractions for communication are available; on the other hand
 it changes the paradigm for implementing algorithms, since these new
 communication constructs and the overhead they bring to processing
-data have to be taken into account.
+data need to be considered.
 
 Moreover, concurrent programming adds a layer of abstraction over the parallel
 facilities of processors and operating systems, offering a
@@ -132,7 +157,7 @@ reactive and functional programming, and allows for a more efficient
 implementation, with less overhead, and with well-defined
 primitives. This is why we will use it in this paper for creating  {\em natively}
 concurrent evolutionary algorithms. We have chosen Perl 6, although 
-other languages such as Go and Julia, are feasible alternatives.
+other alternatives such as Go and Julia are feasible.
 
 In previous papers
 \cite{Merelo:2018:MEA:3205651.3208317:anon,merelo:WEA:anon} we
@@ -148,17 +173,18 @@ statistics of the population.
 
 The rest of the paper is organized as follows: next we present the
 state of the art in concurrency in evolutionary algorithms, followed
-by a section on the design of concurrent EAs in Perl 6
-\ref{sec:design}. Experimental results are presented next in Section
-\ref{sec:exp}; finally, we will present our conclusions in Section
+by Section \ref{sec:design} on the design of concurrent EAs in Perl 6. 
+Experimental results are presented next in Section
+\ref{sec:exp}; finally, we discuss our conclusions in Section
 \ref{sec:conclusions}. 
 
 \section{State of the Art}
 
-The problem of communication/synchronization
-between processes or threads has been the subject of long-standing study,
-to fully leverage the multiple
-processors and cores on a given machine. The parallelization of nature-based
+% The problem of communication/synchronization
+% between processes or threads has been the subject of long-standing study,
+% to fully leverage the multiple
+% processors and cores on a given machine. 
+The parallelization of nature-inspired
 optimization algorithms has been an active field, allowing researchers 
 to solve complex optimization problems having a high computational 
 cost \cite{Lalwani2019}. In the literature, most works are concerned 
@@ -175,10 +201,10 @@ their multi-threading capabilities. (the latter including additional mechanisms 
 {\em promises} or low-level access to the creation of threads). Even 
 interpreted languages with a global interpreter lock, such as Python also
 have included {\em promises} and {\em futures} in their latest versions,
-to leverage multi-threading capabilities for IO intensive tasks.
-Using these native capabilities give developers the advantage of
-having less error-prone implementations which are more readable, concise, and
-following language conventions. 
+to leverage intensive multi-threading IO capabilities.
+% Using these native capabilities give developers the advantage of
+% having less error-prone implementations which are more readable, concise, and
+% following language conventions. 
 
 
 
@@ -208,34 +234,32 @@ The fact that messages have to be processed without secondary effects
 and that actors do not share state makes concurrent
 programming specially fit for languages with
 functional features; this has made this paradigm specially popular for
-late cloud computing implementations; however, its presence in the EA
-world is not so widespread, although some efforts have lately revived
+late cloud computing implementations; however, its reception 
+in the EA community has been scarce \cite{Hawkins:2001:GFG:872017.872197}, 
+although some efforts have lately revived
 the interest for this paradigm \cite{swan2015research}.
 Several years ago it was used in Genetic Programming
 \cite{Briggs:2008:FGP:1375341.1375345,Huelsbergen:1996:TSE:1595536.1595579,walsh:1999:AFSFESIHLP}
-and recently in neuroevolution \cite{Sher2013} but its occurrence in EA,
-despite being scarce in the previous years
-\cite{Hawkins:2001:GFG:872017.872197}, has experimented a certain rise
-lately with papers such as \cite{valkov2018synthesis} which perform
-program synthesis using the functional programming features of the Erlang language
-\cite{barwell2017using} for building an evolutionary multi-agent system.
+and recently in neuroevolution \cite{Sher2013} and program synthesis \cite{valkov2018synthesis} 
+using the functional programming features of the Erlang language
+ for building an evolutionary multi-agent system \cite{barwell2017using}.
 
-Regarding functional languages, Erlang and Scala have
-embraced the actor model of concurrency and get excellent results in
-many application domains; Clojure is another one with concurrent
-features such as promises/futures, software transactional memory (STM) 
-and agents; Kotlin \cite{simson2017open} has been recently used for
-implementing a functional evolutionary algorithm framework.  
-
-On the
-other hand, Perl 6 \cite{Tang:2007:PRI:1190216.1190218,lenzperl} 
-uses different concurrency models, varying from implicit concurrency 
-using the {\tt hyper} and {\tt race} functions, that automatically 
-parallelize operations on iterable data structures, to explicit 
-concurrency using threads. 
-The {\tt Algorithm::Evolutionary::Simple} library introduced last year
-%\cite{DBLP:conf/gecco/GuervosV18}
-.
+% Regarding functional languages, Erlang and Scala have
+% embraced the actor model of concurrency and get excellent results in
+% many application domains; Clojure is another one with concurrent
+% features such as promises/futures, software transactional memory (STM) 
+% and agents; Kotlin \cite{simson2017open} has been recently used for
+% implementing a functional evolutionary algorithm framework.  
+% 
+% On the
+% other hand, Perl 6 \cite{Tang:2007:PRI:1190216.1190218,lenzperl} 
+% uses different concurrency models, varying from implicit concurrency 
+% using the {\tt hyper} and {\tt race} functions, that automatically 
+% parallelize operations on iterable data structures, to explicit 
+% concurrency using threads. 
+% The {\tt Algorithm::Evolutionary::Simple} library introduced last year
+% %\cite{DBLP:conf/gecco/GuervosV18}
+% .
 
 Earlier efforts to study the issues of concurrency in EA are worth 
 mentioning. For instance, the EvAg model \cite{evag:gpem} resorts to 
@@ -244,8 +268,8 @@ execution of the evolving agents; in this way the model scaled-up
 seamlessly to take full advantage of CPU cores. In the same avenue 
 of measuring scalability,  experiments were conducted
 in \cite{wcci:evoag} comparing single and a dual-core processor 
-concurrency achieving near linear speed-ups . The latter
-was later on extended in \cite{DBLP:conf/evoW/LaredoBMG12} by scaling
+concurrency achieving near linear speed-ups. The latter
+was further on extended in \cite{DBLP:conf/evoW/LaredoBMG12} by scaling
 up the experiment to up to 188 parallel machines, reporting speed-ups 
 up to $960\times$, nearly four times the expected linear growth 
 in the number of machines (when local concurrency were not taken 
@@ -256,7 +280,6 @@ shared memory and a clever mechanism to avoid deadlocks. Similarly,
 developed in Erlang, separating GA populations as different
 processes, although all communication was taking place with a common
 central thread. 
-
 
 In previous papers 
 \cite{Merelo:2018:MEA:3205651.3208317:anon,Garcia-Valdez:2018:MEA:3205651.3205719:anon},
@@ -280,7 +303,8 @@ Perl 6 is a concurrent, functional language
 intention of providing a solid conceptual framework for multi-paradigm
 computing, including thread-based concurrency and asynchrony. It's got
 a heuristic layer that optimizes code during execution time. In the last few
-years, performance of programs written in Perl 6 has been sped-up by a 100x factor, approaching the same scale of other interpreted
+years, performance of programs written in Perl 6 has been sped-up by a 100x factor, 
+approaching the same scale of other interpreted
 languages, although still with some room for improvement.
 
 The {\tt Algorithm::Evolutionary::Simple} Perl 6 module was published
@@ -290,21 +314,66 @@ algorithm with binary representation and includes building blocks for
 a generational genetic algorithm, as well as some fitness functions
 used generally as benchmarks.
 
-Those evolutionary algorithm building blocks do not include concurrent
-primitives; it's up to the developer to design a concurrent
-evolutionary algorithm using it.
+% Those evolutionary algorithm building blocks do not include concurrent
+% primitives; it's up to the developer to design a concurrent
+% evolutionary algorithm using it.
 
-\begin{figure}[h!tb]
-  \centering
-\includegraphics[width=0.5\columnwidth]{../figure/popmixer}
+The baseline we are building upon, is similar to the one used in previous experiments
+\cite{Merelo:2018:MEA:3205651.3208317:anon}. Our intention was to
+create a system that was not functionally equivalent to a sequential
+evolutionary algorithms, that also follows the principle of
+CSP. We decided to allow the algorithm to implement several threads communicating state through
+channels. Every process itself will be stateless, reacting to the
+% Please consider for other papers: Every 'subroutine' itself will be stateless, reacting to the... - Mario
+presence of messages in the channels it is listening to and sending
+result back to them, without changing state.
+
+As in the previous papers, \cite{merelo:WEA:anon}, we will use two
+groups of threads and two channels. The two groups of threads perform the following
+functions:\begin{itemize}
+\item The {\em evolutionary} threads will be the ones performing 
+the operations of the evolutionary algorithm.
+\item The {\em mixing} thread will take existing populations, to create
+  new ones as a mixture of them.
+\end{itemize}
+
+% \begin{figure}[h!tb]
+%   \centering
+\begin{wrapfigure}[16]{l}{0.35\columnwidth}
+  %\centering
+  \vspace{-.5\intextsep}
+\hspace*{-.8\columnsep}
+\includegraphics[width=0.35\columnwidth]{../figure/popmixer}
 \caption{General scheme of operation of channels and thread groups. }
 \label{fig:scheme}
-\end{figure}
-%
+\end{wrapfigure}
+% \end{figure}
 
-\begin{figure}[h!tb]
+
+Besides, the two channels carry messages consisting of populations,
+but they do so in a different way:\begin{itemize}
+  
+\item The {\em evolutionary} channel will be used for carrying
+  non-evolved, or generated, populations.
+\item The {\em mixer} channel will carry, {\em in pairs}, evolved
+  populations. 
+\end{itemize}
+
+These will be connected as shown in Figure \ref{fig:scheme}. The
+evolutionary thread group will read only from the evolutionary channel,
+evolve for a number of generations, and send the result to the mixer
+channel; the mixer group of threads will read only from the mixer
+channel, in pairs. From every pair, a random element is put back into
+the mixer channel, and a new population is generated and sent back to
+the evolutionary channel. 
+
+% \begin{figure}[h!tb]
+%   \centering
+\begin{wrapfigure}[29]{r}{0.55\columnwidth}
   \centering
-\scalebox{.7}{
+  \vspace{-.5\intextsep}
+\hspace*{-.8\columnsep}
+\scalebox{.6}{
 \begin{sequencediagram}
 
 \newthread[red]{E}{Evolver} 
@@ -370,75 +439,47 @@ evolutionary algorithm using it.
 \end{sequencediagram}
 }
 
-\caption{Schematic of communication between threads and channels for
+\caption{Communication between threads and channels for
   concurrent EAs. The two central bars represent the channel, and
-  color corresponds to the {\em main} function they perform; blue for
-  mixer, red for evolver. As the figure shows, the evolver threads
-  always read from the mixer channel, and always write to the evolver
-  channel.}
+  color corresponds to their roles: blue for mixer, red for evolver. 
+  Notice how the evolver threads always read from the mixer channel, 
+  and always write to the evolver channel.}
 \label{fig:schematic}
-\end{figure}
+% \end{figure}
+\end{wrapfigure}
 
-
-The baseline we are building upon, is similar to the one used in previous experiments
-\cite{Merelo:2018:MEA:3205651.3208317:anon}. Our intention was to
-create a system that was not functionally equivalent to a sequential
-evolutionary algorithms, that also follows the principle of
-CSP. We decided to allow the algorithm to implement several threads communicating state through
-channels. Every process itself will be stateless, reacting to the
-% Please consider for other papers: Every 'subroutine' itself will be stateless, reacting to the... - Mario
-presence of messages in the channels it is listening to and sending
-result back to them, without changing state.
-
-As in the previous papers, \cite{merelo:WEA:anon}, we will use two
-groups of threads and two channels. We will see them in turns.
-
-The two groups of threads perform the following
-functions:\begin{itemize}
-\item The {\em evolutionary} threads will be the ones performing the operations of the evolutionary algorithm.
-\item The {\em mixing} thread will take existing populations, to create
-  new ones as a mixture of them.
-\end{itemize}
-
-The two channels carry messages consisting of populations,
-but they do so in a different way:\begin{itemize}
-  
-\item The {\em evolutionary} channel will be used for carrying
-  non-evolved, or generated, populations.
-\item The {\em mixer} channel will carry, {\em in pairs}, evolved
-  populations. 
-\end{itemize}
-
-These will be connected as shown in Figure \ref{fig:scheme}. The
-evolutionary thread group will read only from the evolutionary channel,
-evolve for a number of generations, and send the result to the mixer
-channel; the mixer group of threads will read only from the mixer
-channel, in pairs. From every pair, a random element is put back into
-the mixer channel, and a new population is generated and sent back to
-the evolutionary channel. The main objective of using two channels is
+The main objective of using two channels is
 to avoid deadlocks; the fact that one population is written always
-back to the mixer channel avoids starvation of the channel. Figure \ref{fig:schematic} illustrates this operation, where the
+back to the mixer channel avoids starvation of the channel. 
+Figure \ref{fig:schematic} illustrates this operation, where the
 timeline of the interchange of messages between the evolver and mixer
 threads and evolver and mixer channels is clarified.
 
 The state of the algorithm will be transmitted via messages that
 contain data about one population. Since using the whole population
-will incur in a lob of overhead, we use a strategy that is similar to {\em EDA}, or estimation of distribution algorithm: basically, instead of transmitting the entire population, the message sent to the channel will consist of a prototype array containing the probability distribution across each gene in the population. In this sense,
-  this strategy is similar to the one presented by de la Ossa et
-  al. in \cite{10.1007/978-3-540-30217-9_25}. Not being an estimation
-  of distribution algorithm {\em per se}, since the evolutionary
-  thread internally runs a canonical genetic algorithm, when the message is being
-  composed the 25\% best individuals in the
-  population is examined, and an array with the
-  probability distribution for each gene (computed with frequentist rules) is sent to the mixer thread. The {\em mixer} thread, in turn, just chooses randomly one probability for every gene from
-  each of the two {\em populations} (actually, distributions), instead
-  of working directly on individuals. While in the baseline strategy the
-  selection took place in the mixer thread, eliminating half the
-  population, in this new design the selection takes place when composing
-  the message, since just the 25\% best individuals are selected to
-  compute the probability distribution of genes. When the evolver
-  thread reads the message, it rebuilds the population based on the mixed 
-  distribution.
+will incur in a lot of overhead, we use a strategy that is inspired in {\em EDA}, 
+or Estimation of Distribution Algorithm: instead of 
+transmitting the entire population, the message sent to the channel 
+will consist of a prototype array containing the probability distribution 
+across each gene in the population. In this sense,
+this strategy is similar to the one presented by de la Ossa et
+al. in \cite{10.1007/978-3-540-30217-9_25}. 
+  
+Nonetheless, our strategy differs from a pure EDA in that once the evolutionary
+thread have internally run a canonical genetic algorithm, it takes 
+only the top quartile of best individuals to compute an array with the 
+probability distribution of their genes (computed with frequentist rules) 
+and then compose the message that is sent to the {\em mixer} threads. 
+  
+A {\em mixer} thread, in turn, 
+builds a new prototype array by choosing randomly at each gene location
+one probability parameter out of the  two {\em populations} (actually, distributions), 
+instead of working directly on individuals. While in the baseline strategy the
+selection took place in the mixer thread by eliminating half the
+population, in this new design the selection occurs in the evolutionary thread
+that selects the 25\% best individuals to compose the probability distribution
+message. When the evolver thread reads the message back, it generates a new population 
+using the mixed distribution obtained by the mixer.
 
 \section{Experimental results}
 \label{sec:exp}
@@ -446,9 +487,6 @@ will incur in a lob of overhead, we use a strategy that is similar to {\em EDA},
 We were mainly interested in the scaling capabilities of the algorithm
 and implementation, so we tested several benchmark, binary functions:
 OneMax, Royal Road and Leading Ones, all of them with 64 bits. 
-
-
-
 
 \begin{figure*}[h!tb]
   \centering
@@ -460,9 +498,18 @@ OneMax, Royal Road and Leading Ones, all of them with 64 bits.
 \end{figure*}
 %
 However, the intention of concurrent evolutionary algorithms is to
-leverage the power of all threads and processors in a computer so we must find out how it scales for different fitness functions. We are setting the number of initial populations was set to the
+leverage the power of all threads and processors in a computer 
+so we must find out how it scales for different fitness functions. 
+We are setting the number of initial populations to the
 number of threads plus one, as the minimum required to avoid
-starvation, and we are using a single mixing thread. As proved in our previous paper (hidden for anonymity), we are dividing the total population by the number of threads. The initial population will be 1024 for OneMax, 8192 for Royal Road and 4096 Leading Ones. These quantities were found heuristically by applying the bisection method on a selectorrecombinative algorithm, which doubles the population until one that is able to find the solution 95\% of the time is found.
+starvation, and we are using a single mixing thread. 
+As reported in our previous papers \cite{Merelo:2018:MEA:3205651.3208317:anon,Garcia-Valdez:2018:MEA:3205651.3205719:anon}, 
+we are dividing the total population by the number of threads. 
+The population size will be 1024 for OneMax, 8192 for Royal Road 
+and 4096 Leading Ones. These quantities were found heuristically 
+by applying the bisection method on a selectorrecombinative algorithm, 
+which doubles the population until one that is able to find 
+the solution 95\% of the time is found.
 
 Experiments were run on a machine with the
 Ubuntu 18.04 OS and an AMD Ryzen 7 2700X Eight-Core Processor
@@ -472,77 +519,119 @@ experiment running; the top of the screen shows the rate at which all
 cores are working, showing all of them occupied; of course, the
 program was not running exclusively, but the list of processes below
 show how the program is replicated in several processor, thus
-leveraging their full power. Please check also the number of threads
-that are actually running at the same time, a few of which are being used by our application; these are not, however, physical but operating system threads; the OS is able to accommodate many more threads that are physically available if the code using them is idle. 
+leveraging their full power. 
 
-\begin{figure}[h!tb]
-  \centering\fbox{\scalebox{.5}{
-<<threads1, cache=FALSE,echo=FALSE,fig.height=4,message=FALSE>>=
-ggplot(data.om,aes(x=Threads,y=Evaluations,group=Threads)) + geom_boxplot(fill='green',notch=TRUE)+theme_tufte()+scale_x_continuous(name="Threads",breaks=c(2,4,6,8))+labs(x="Threads",y="Evaluations",title="Scaling")+theme(text = element_text(size=24))
-@ 
-}}
-\caption{OneMax: Number of evaluations vs. number of threads. Higher is better.}
-\label{fig:threads1}
-\end{figure}
+Observe also the number of threads
+that are actually running at the same time, 
+a few of which are being used by our application; these are not, however, 
+physical but operating system threads; 
+the OS is able to accommodate many more threads that are physically 
+available if the code using them is idle. 
+
 %
-\begin{figure}[h!tb]
-  \centering\fbox{\scalebox{.5}{
-<<threads2, cache=FALSE,echo=FALSE,fig.height=4,message=FALSE>>=
-ggplot(data.om,aes(x=Threads,y=Time,group=Threads))+geom_boxplot(fill='blue',notch=TRUE)+theme_tufte()+scale_x_continuous(name="Threads",breaks=c(2,4,6,8))+labs(x="Generation.Gap",y="Time",title="Scaling")+theme(text = element_text(size=24))
-@ 
-}}
-\caption{OneMax: Total time vs. number of threads. Lower is better.}
-\label{fig:threads2}
-\end{figure}
-%
-We are first interested in the number of evaluations needed to find
-the solution, which are plotted in Fig. \ref{fig:threads1}, since, as
-indicated from the beginning, there is going to be an interaction
+We are firstly interested in the number of evaluations needed to find
+the solution (see Fig. \ref{fig:threads1}), since as
+it was mentioned previously, a tradeoff should exist
 between the performance of the algorithm and the way it is
-implemented, spreading it over different threads. In this case, and
-looking at the similarity with island-based parallel EAs, population
-does have an influence on the number of evaluations, with bigger
+deployed over different threads. In this case, population
+size does have an influence on the number of evaluations, with bigger
 populations tipping the balance in favor of exploration and thus
 making more evaluations to achieve the same result; the same happens
 with smaller populations, they tend to reach local minima and thus
-also increase exploration. Figure \ref{fig:threads1} shows how the
+also increase exploration. 
+
+Figure \ref{fig:threads1} shows how the
 overall number of populations
 increases slightly and not significantly from 2 to 4 threads, but it
 does increase significantly for 6 and 8 threads, indicating that the
-algorithm's performance is worse when we increase the number
-of threads, and consequently we need more evaluations to achieve the
+algorithm's performance is worsen when we increase the number
+of threads, and consequently more evaluations are needed to achieve the
 same result. This is probably due to the fact that we are
-simultaneously decreasing the population size, leading to earlier
+simultaneously decreasing the population size, yielding an earlier
 convergence for the number of generations (8) it is being used. This
 interplay between the degree of concurrency, the population size and
 the number of generations will have to be explored further.
 
-\begin{figure}[h!tb]
-  \centering\fbox{\scalebox{.5}{
+\begin{multicols}{2}
+
+\begin{figure}[H]
+  \centering\fbox{\scalebox{.9}{
+<<threads1, cache=FALSE,echo=FALSE,fig.height=4,message=FALSE>>=
+ggplot(data.om,aes(x=Threads,y=Evaluations,group=Threads)) + geom_boxplot(fill='green',notch=TRUE)+theme_tufte()+scale_x_continuous(name="Threads",breaks=c(2,4,6,8))+labs(x="Threads",y="Evaluations",title="Scaling")+theme(text = element_text(size=24))
+@
+}}
+\caption{OneMax: Number of evaluations vs. number of threads. Higher is better.}
+\label{fig:threads1}
+\end{figure}
+
+\begin{figure}[H]
+  \centering\fbox{\scalebox{.9}{
+<<threads2, cache=FALSE,echo=FALSE,fig.height=4,message=FALSE>>=
+ggplot(data.om,aes(x=Threads,y=Time,group=Threads))+geom_boxplot(fill='blue',notch=TRUE)+theme_tufte()+scale_x_continuous(name="Threads",breaks=c(2,4,6,8))+labs(x="Generation.Gap",y="Time",title="Scaling")+theme(text = element_text(size=24))
+@
+}}
+\caption{OneMax: Total time vs. number of threads. Lower is better.}
+\label{fig:threads2}
+\end{figure}
+
+\end{multicols}
+
+
+% \begin{figure}[h!tb]
+%   \centering
+\begin{wrapfigure}[11]{r}{0.5\columnwidth}
+  \vspace{-.5\intextsep}
+  \hspace*{.2\columnsep}  
+  \fbox{\scalebox{.9}{
 <<threads3, cache=FALSE,echo=FALSE,fig.height=4,message=FALSE>>=
 ggplot(data.om,aes(x=Threads,y=Evaluations/Time,group=Threads))+geom_boxplot(fill='yellow',notch=TRUE)+theme_tufte()+scale_x_continuous(name="Threads",breaks=c(2,4,6,8))+labs(x="Generation.Gap",y="Evaluation/time",title="Scaling")+theme(text = element_text(size=24))
 @ 
 }}
 \caption{OneMax: Evaluations per second vs. number of threads. Higher is better.}
 \label{fig:threads3}
-\end{figure}
+\end{wrapfigure}
+%\end{figure}
 %
-But we were also interested in the actual wallclock time, plotted in
+Besides, we also wanted to assess the actual wallclock time, plotted in
 Fig. \ref{fig:threads2}. The picture shows that it decreases
 significantly when we go from 2 (the baseline) to 4 threads, since we
 are using more computing power for (roughly) the same number of
-evaluations. It then increases slightly we we increase the number of
-threads; as a matter of fact and as shown in \ref{fig:threads3}, the
+evaluations. It then increases slightly when we increase the number of
+threads; as a matter of fact and as shown in Fig. \ref{fig:threads3}, the
 number of evaluations per second increases steeply up to 6 threads,
 and slightly when we use 8 threads. However, the amount of evaluations
-needed overcompensates this speed, resulting in a worse results. It
-confirms, however, that we are actually using all threads for
+spetn overcompensates this speed, yielding in a worse result. It
+confirms, nonetheless, that we are actually using all threads for
 evaluations, and if only we could find a strategy that didn't need
 more evaluations we should be able to get a big boost in computation
 time that scales gracefully to a high number of processors.
 
-\begin{figure}[h!tb]
-  \centering\fbox{\scalebox{.5}{
+But we were interested also in checking whether the same kind of
+patterns are found for other fitness functions, with a different
+landscape, and also how much further scaling with the number of
+threads could go; that is why we set up another experiment with the
+Royal Road function. We run the experiment as above, but in this case there were
+some runs in which the solution was not found within the time limit of
+800 seconds; in the first case, for two threads, this is indicated
+with a lighter shade corresponding to the number of instances where it
+did found the solution, 6 out of 15. The number of evaluations needed
+to find the solution is shown as a boxplot in Fig.
+\ref{fig:threads:rr:1}; the total time in Fig.
+\ref{fig:threads:rr:2} and the number of evaluations per second in
+Fig. \ref{fig:threads:rr:3}. 
+
+Since the Royal Road function is
+slightly heavier than Onemax, this number reaches a lower peak of
+approximately 25\%. Comparing also Figures
+\ref{fig:threads1} with \ref{fig:threads:rr:2} we see that that Royal Road
+needs one order of magnitude more evaluations than OneMax to find the
+solution. As we capped the running time at 800 seconds, this causes
+some the lack of success for the lowest number of threads.
+
+\begin{multicols}{2}
+
+\begin{figure}[H]
+  \centering\fbox{\scalebox{.9}{
 <<threads-rr1, cache=FALSE,echo=FALSE,fig.height=4,message=FALSE>>=
 ggplot(data.rr,aes(x=Threads,y=Evaluations,group=Threads,alpha=n)) + geom_boxplot(fill="green",notch=TRUE)+theme_tufte()+scale_x_continuous(name="Threads",breaks=c(2,4,6,8,10,12))+labs(x="Threads",y="Evaluations",title="Royal Road 64 bits")+theme(text = element_text(size=24))
 @ 
@@ -551,8 +640,8 @@ ggplot(data.rr,aes(x=Threads,y=Evaluations,group=Threads,alpha=n)) + geom_boxplo
 \label{fig:threads:rr:1}
 \end{figure}
 %
-\begin{figure}[h!tb]
-  \centering\fbox{\scalebox{.5}{
+\begin{figure}[H]
+  \centering\fbox{\scalebox{.9}{
 <<threads-rr2, cache=FALSE,echo=FALSE,fig.height=4,message=FALSE>>=
 ggplot(data.rr,aes(x=Threads,y=Time,group=Threads,alpha=n))+geom_boxplot(fill='blue',notch=TRUE)+theme_tufte()+scale_x_continuous(name="Threads",breaks=c(2,4,6,8,10,12))+labs(x="Threads",y="Time",title="Royal Road 64 bits")+theme(text = element_text(size=24))
 @ 
@@ -560,19 +649,64 @@ ggplot(data.rr,aes(x=Threads,y=Time,group=Threads,alpha=n))+geom_boxplot(fill='b
 \caption{Royal Road: Total time vs. number of threads. Lower is better.}
 \label{fig:threads:rr:2}
 \end{figure}
-%
-\begin{figure}[h!tb]
-  \centering\fbox{\scalebox{.5}{
+
+\end{multicols}
+
+% \begin{figure}[h!tb]
+%   \centering
+\begin{wrapfigure}[11]{r}{0.5\columnwidth}
+  \vspace{-.5\intextsep}
+  \hspace*{.2\columnsep}   
+  \fbox{\scalebox{.9}{
 <<threads-rr3, cache=FALSE,echo=FALSE,fig.height=4,message=FALSE>>=
 ggplot(data.rr,aes(x=Threads,y=Evaluations/Time,group=Threads,alpha=n))+geom_boxplot(fill='yellow',notch=TRUE)+theme_tufte()+scale_x_continuous(name="Threads",breaks=c(2,4,6,8,10,12))+labs(x="Threads",y="Evaluation/time",title="Royal Road 64 bits")+theme(text = element_text(size=24))
 @ 
 }}
 \caption{Royal Road: Evaluations per second vs. number of threads. Higher is better.}
 \label{fig:threads:rr:3}
-\end{figure}
-%
-\begin{figure}[h!tb]
-  \centering\fbox{\scalebox{.5}{
+\end{wrapfigure}
+%\end{figure}
+
+The pattern these charts exhibit is very similar to the one for
+OneMax. The performance scales up to a certain range, and then it
+plateaus, scaling only in speed, but not in wallclock time. From 2 to
+6 threads speed increases 2x, due to an increase in speed with a
+slight decrease in the number of evaluations needed to find the
+solution; besides, success rate goes up from 2 to 4 threads, shifting
+from finding the solution 6 out of 15 times to finding it every
+time. This is basically due to the cap in the time allowed to run,
+which is 800 seconds; it is likely that if more time had been allowed,
+solution had been found. 
+
+However, we again find the
+same effect of increase in performance up to an optimal number of
+threads, 6 in this case. This is slightly better than it was
+for Onemax, which reached an optimal performance for 4 threads. The
+fact that the optimal population in Royal Road is 4x that needed for
+OneMax will probably have an influence. As a rule of
+thumb, performance will only increase to the point that population
+size will make the algorithm worsen in the opposite
+direction. Interestingly, it also proves that the peak performance is mainly
+due to algorithmic, not the physical number of threads (which should
+be around 16 for this machine). %Finding an algorithmic solution to
+%this problem would allow us to leverage the number of threads
+%available in a machine even more.
+
+Besides, not all problems behave in the same way and scaling in
+performance and success rate is strongly problem-dependent. To
+illustrate that fact, we used another benchmark function, 
+LeadingOnes, which counts the leading number of ones in a
+bitstring. Despite its superficial similarity to OneMax, it's in practice
+a more difficult problem, since it has got long plateaus with no
+increment in fitness. It is thus a more difficult problem which is why
+we had to increase the number of generations per thread to 16 and
+decrease the length of the chromosome to 48, as well as the time
+budget to 1200 seconds. 
+
+\begin{multicols}{2}
+
+\begin{figure}[H]
+  \centering\fbox{\scalebox{.85}{
 <<threads-lo1, cache=FALSE,echo=FALSE,fig.height=4,message=FALSE>>=
 ggplot(data.lo,aes(x=Threads,y=Evaluations,group=Threads,alpha=n)) + geom_boxplot(fill="green",notch=TRUE)+theme_tufte()+scale_x_continuous(name="Threads",breaks=c(2,4,6,8,10,12))+labs(x="Threads",y="Evaluations",title="Leading ones 48 bits")+theme(text = element_text(size=24))
 @ 
@@ -581,8 +715,8 @@ ggplot(data.lo,aes(x=Threads,y=Evaluations,group=Threads,alpha=n)) + geom_boxplo
 \label{fig:lo:1}
 \end{figure}
 %
-\begin{figure}[h!tb]
-  \centering\fbox{\scalebox{.5}{
+\begin{figure}[H]
+  \centering\fbox{\scalebox{.85}{
 <<threads-lo2, cache=FALSE,echo=FALSE,fig.height=4,message=FALSE>>=
 ggplot(data.lo,aes(x=Threads,y=Time,group=Threads,alpha=n))+geom_boxplot(fill='blue',notch=TRUE)+theme_tufte()+scale_x_continuous(name="Threads",breaks=c(2,4,6,8,10,12))+labs(x="Threads",y="Time",title="Leading ones 48 bits")+theme(text = element_text(size=24))
 @ 
@@ -590,78 +724,34 @@ ggplot(data.lo,aes(x=Threads,y=Time,group=Threads,alpha=n))+geom_boxplot(fill='b
 \caption{Leading ones: Total time vs. number of threads. Lower is better.}
 \label{fig:lo:2}
 \end{figure}
-%
-\begin{figure}[h!tb]
-  \centering\fbox{\scalebox{.5}{
+
+\end{multicols}
+
+% \begin{figure}[h!tb]
+%   \centering
+\begin{wrapfigure}[11]{r}{0.5\columnwidth}
+  \vspace{-.5\intextsep}
+  \hspace*{.2\columnsep}   
+  \fbox{\scalebox{.85}{  
 <<threads-lo3, cache=FALSE,echo=FALSE,fig.height=4,message=FALSE>>=
 ggplot(data.lo,aes(x=Threads,y=Evaluations/Time,group=Threads,alpha=n))+geom_boxplot(fill='yellow',notch=TRUE)+theme_tufte()+scale_x_continuous(name="Threads",breaks=c(2,4,6,8,10,12))+labs(x="Threads",y="Evaluation/time",title="Leading ones 48 bits")+theme(text = element_text(size=24))
 @ 
 }}
 \caption{Leading ones: Evaluations per second vs. number of threads. Higher is better.}
 \label{fig:lo:3}
-\end{figure}
-%
-But we were interested also in checking whether the same kind of
-patterns are found for other fitness functions, with a different
-landscape, and also how much further scaling with the number of
-threads could go; that is why we set up another experiment with the
-Royal Road function. The next figures starting with \ref{fig:threads:rr:1} chart the results obtained for it. We run the experiment as above, but in this case there were
-some runs in which the solution was not found within the time limit of
-800 seconds; in the first case, for two threads, this is indicated
-with a lighter shade corresponding to the number of instances where it
-did found the solution, 6 out of 15. The number of evaluations needed
-to find the solution is shown as a boxplot in Figure
-\ref{fig:threads:rr:1}; the total time in Figure
-\ref{fig:threads:rr:2} and the number of evaluations per second in
-Figure \ref{fig:threads:rr:3}. Since the Royal Road function is
-slightly heavier than onemax, this number reaches a peak that is
-approximately 25\% lower than for onemax. Comparing also Figures
-\ref{fig:threads1} with \ref{fig:threads:rr:2} we see that that Royal Road
-needs one order of magnitude more evaluations than OneMax to find the
-solution. Since we cap the running time at 800 seconds, this causes
-the lack of success in some cases for the lowest number of threads.
+\end{wrapfigure}
+%\end{figure}
 
-The pattern these charts follow is very similar to the one for
-OneMax. The performance scales up to a certain range, and then it
-plateaus, scaling only in speed, but not in wallclock time. From 2 to
-6 threads speed increases 2x, due to an increase in speed with a
-slight decrease in the number of evaluations needed to find the
-solution; besides, success rate goes up from 2 to 4 threads, going
-from finding the solution 6 out of 15 times to finding it every
-time. This is basically due to the cap in the time allowed to run,
-which is 800 seconds; it is likely that if more time had been allowed,
-solution had been found. However, the fact is that we again find the
-same effect of increase in performance, up to an optimal number of
-threads, which is 6 in this case. This is slightly better than it was
-for onemax, which reached an optimal performance for 4 threads. The
-fact that the optimal population in Royal Road is 4x that needed for
-OneMax will probably have an influence in that fact; as a rule of
-thumb, performance will only increase to the point that population
-size will make the algorithm worsen in the opposite
-direction. However, it also proves that the peak performance is mainly
-due to algorithmic, not the physical number of threads (which should
-be around 16 for this machine). Finding an algorithmic solution to
-this problem would allow us to leverage the number of threads
-available in a machine even more.
-
-Besides, not all problems behave in the same way and scaling in
-performance and success rate is strongly problem-dependent. To
-illustrate that fact, we used another benchmark function, {\em
-  LeadingOnes}, which counts the leading number of ones in a
-string. Despite its superficial similarity to OneMax, it's in practice
-a more difficult problem, since it has got long plateaus with no
-increment in fitness. It is thus a more difficult problem which is why
-we had to increase the number of generations per thread to 16 and
-decrease the length of the chromosome to 48, as well as the time
-budget to 1200 seconds. Even so, results were quite different. They
+Even so, results were quite different. They
 are shown in Figures \ref{fig:lo:1}, \ref{fig:lo:2},
 \ref{fig:lo:3}. Although we tested with up to 8 threads, only the ones
 for which the solution was actually found, 2 and 4, are shown. The
 situation is inverted with respect to the other problems. Although, as
 shown in Figure \ref{fig:lo:3}, the number of evaluations increases
 with the number of threads (and is actually higher than for Royal
-Road), the success rate {\em decreases} (shown with increasing
-transparency) and the time to solution does the same.
+Road), the success rate {\em decreases} 
+%(shown with increasing transparency) 
+and the time to solution does the same.
 
 This might be due, in part, to the intrinsic difficulty of the
 problem, with a flat fitness landscape that only changes if a single
@@ -672,80 +762,80 @@ representation of the population. If there are not many
 representatives with the latest bits set, it can happen (and indeed it
 does) that the best solution in the previous evolution run is lost,
 and sometimes is not retrieved in the 16 generations it runs before
-communicating again. This gets worse with the increasing number of
+communicating again. The latter gets worse with the increasing number of
 threads, since the population size decreases. As indicated at the
 beginning, balancing exploration and exploitation needs a population
-with the right size, and tipping the balance to too much exploitation
+with the right size, and tipping the balance towards too much exploitation
 might be as negative (in terms of success rate) as too much exploration.
 
-At any rate, this new experiment helps us understand better the nature
-of the interaction between the implementation and the algorithm
-itself. 
+% At any rate, this new experiment helps us understand better the nature
+% of the interaction between the implementation and the algorithm
+% itself. 
+
 
 \section{Conclusions}
 \label{sec:conclusions}
 
-Designing a concurrent, stateless evolutionary algorithm brings a new
-set of configuration decisions that must be taken into account at the algorithm and
-at the parameter level. In previous papers we have established
-strategies that have allowed us to take advantage of processor threads
-to achieve better wallclock performance through the design of messages
-and channels to interchange between threads and a procedure to divide
-the population between them. In this paper we wanted to focus on the
-software tool that we have used for performing these experiments, as
-well as to check what kind of scaling we can achieve on different
-types of problems. 
-
-
-What we have observed is that, since OneMax is a simple problem which
-needs a small population to find the solution, scaling is very limited
+% Designing a concurrent, stateless evolutionary algorithm brings a new
+% set of configuration decisions that must be taken into account at the algorithm and
+% at the parameter level. In previous papers we have established
+% strategies that have allowed us to take advantage of processor threads
+% to achieve better wallclock performance through the design of messages
+% and channels to interchange between threads and a procedure to divide
+% the population between them. 
+% In this paper we wanted to focus on the
+% software tool that we have used for performing these experiments, as
+% well as to check what kind of scaling we can achieve on different
+% types of problems. 
+In this paper we studied to what extent scaling can be achieved 
+on evolutionary concurrent algorithms on different types of problems. 
+We observed that because OneMax simplicity requires a small population
+to find the solution, scaling is very limited
 and only means a real improvement if we use four threads instead of
-two, getting no further improvement. That is why we experimented with
-the Royal Road function with the same length, which showed an
+two. The Royal Road function with the same length is more challenging, showing an
 interesting behavior in the sense that it scaled in success rate and
 speed from 2 to 4 threads, and then again in speed through 6
-threads. In this experiment we measured up to 12 threads, and we
+threads. In this problem we measured up to 12 threads, and we
 noticed that the number of evaluations per second also reaches a
 plateau at around 6k evaluations. For 8 threads, our program uses
 actually 9 threads since there is another one for mixing. Since the
-computer only has 16 physical threads (2 threads x 8 cores), and
-taking into account other system programs, this is probably due to a
-physical limit. Anyway, peak performance is reached for 6 processors,
-so we need to reconsider the problem again in order to be able to
-reach this limit.
+computer only has 16 physical threads (2 threads x 8 cores), plus
+the load incurred by other system programs, this probably suggest a
+physical limit. %Anyway, peak performance is reached for 6 processors,
+%so we need to reconsider the problem again in order to be able to
+%reach this limit.
 
-The fact that in some cases, like in the case of Leading Ones, peak
-performance is reached for the minimum number of threads leads us to
-reconsider, in the most general case, the migration strategy (which
-losses what could be vital information), as well as the population
-adaptation strategy (dividing the population into the existing number of
-threads might not always be the best option).
+% The fact that in some cases, such as Leading Ones, peak
+% performance is reached for the minimum number of threads leads us to
+% reconsider, in the most general case, the migration strategy (which
+% losses what could be vital information), as well as the population
+% adaptation strategy (dividing the population into the existing number of
+% threads might not always be the best option).
 
-The experiments clearly show that creating a concurrent version of an
-algorithm, including evolutionary algorithms, is never
-straightforward, and includes challenges such as designing the best
+The experiments also indicate that creating a concurrent version of an
+evolutionary algorithm poses challenges such as designing the best
 communication strategy (including frequency and message formats) and
 distributing the algorithm workload, in this case the population,
 among the different threads; in both cases, physical features such as
-message size and real number of threads must be taken into account.
+message size and actual number of threads must be considered.
 
-All this opens several possible future lines of research. The first
-one is to continue exploring the 
-algorithm itself trying to find out a scaling strategy that
-consistently has a positive  influence in the number of evaluations so
+As a consequence, several possible future lines of research arise. 
+The first one is to try new algorithmic scaling strategies that
+consistently has a positive influence in the number of evaluations so
 that speedup is extended at least up to the physical number of
 threads.
 
-The messaging strategies proposed here can be used only if the problem
-can be represented via a binary data structure. New strategies will
-have to be explored for floating-point representation, or more
+On the other hand, the messaging strategies proposed 
+here can be used only if the problem
+can be represented via a binary data structure. New mechanisms will
+have to be devised for floating-point representation, or more
 complicated data structures. There are general-purpose strategies for
 compressing messages, for instance, and they could be used in this
-case. Estimation of distribution algorithms can also be extended to
+case. EDAs can also be extended to
 other types of data, so this is is something that can be also
-explored; in the case of lossy messages such as this one, they could
-be complemented with the best individual, although this does carry its
-own perils.
+considered. %in the case of lossy messages such as this one, they could
+% be complemented with the best individual, although this does carry its
+% own perils.
 
 Finally, we are using the same kind of algorithm and parametrization in all
 threads. Nothing prevents us from using a different algorithm per
@@ -754,11 +844,10 @@ space of possibilities, but the payoff might be worth it.
 
 \section{Acknowledgements}
 This paper has been supported in part by
-a project taking som 
-%projects DeepBio (TIN2017-85727-C4-2-P) and TecNM Project 5654.19-P. 
-
+projects DeepBio (TIN2017-85727-C4-2-P) and TecNM Project 5654.19-P. 
 
 \bibliographystyle{splncs04}
+\tiny
 \bibliography{../geneura,../concurrent,../perl6} 
 
 \end{document}
