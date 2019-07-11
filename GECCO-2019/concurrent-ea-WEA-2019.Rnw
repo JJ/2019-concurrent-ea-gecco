@@ -844,7 +844,7 @@ space of possibilities, but the payoff might be worth it.
 
 \section{Acknowledgements}
 This paper has been supported in part by
-projects DeepBio (TIN2017-85727-C4-2-P) and TecNM Project 5654.19-P. 
+projects DeepBio (TIN2017-85727-C4-2-P), TecNM Project 5654.19-P and CONACYT-PEI 220590. 
 
 \bibliographystyle{splncs04}
 \tiny
