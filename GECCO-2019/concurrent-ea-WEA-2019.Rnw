@@ -44,18 +44,18 @@ Sergio Rojas-Galeano\inst{4}
    Granada, Spain\\
    \email{\{jmerelo,pacv\}@ugr.es}\\
  \and
-	RI2C-LITIS, Université du Havre Normandie\\
+	RI2C-LITIS, Universit\'e du Havre Normandie\\
    Le Havre, France\\
    \email{juanlu.jimenez@univ-lehavre.fr}\\
  \and
- Instituto Tecnológico de Tijuana\\
- Calzada Tecnológico, s/n\\
+ Instituto Tecnol\'ogico de Tijuana\\
+ Calzada Tecnol\'ogico, s/n\\
  Tijuana, Mexico\\
  \email{mario@tectijuana.edu.mx}
  \and
  School of Engineering\\
- Universidad Distrital Francisco José de Caldas\\
- Bogotá, Colombia\\
+ Universidad Distrital Francisco Jos\'e de Caldas\\
+ Bogot\'a, Colombia\\
  \email{srojas@udistrital.edu.co}
 }
 
