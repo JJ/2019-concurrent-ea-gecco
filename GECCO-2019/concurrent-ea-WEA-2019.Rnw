@@ -160,7 +160,8 @@ concurrent evolutionary algorithms. We have chosen Perl 6, although
 other alternatives such as Go and Julia are feasible.
 
 In previous papers
-\cite{Merelo:2018:MEA:3205651.3208317:anon,merelo:WEA:anon} we
+%\cite{Merelo:2018:MEA:3205651.3208317:anon,merelo:WEA:anon}
+\cite{Merelo:2018:MEA:3205651.3208317,merelo:WEA} we
 designed an evolutionary algorithm that fits well this architecture
 and explored its possibilities. That initial exploration showed that
 a critical factor within this algorithmic model is the communication
@@ -282,7 +283,8 @@ processes, although all communication was taking place with a common
 central thread. 
 
 In previous papers 
-\cite{Merelo:2018:MEA:3205651.3208317:anon,Garcia-Valdez:2018:MEA:3205651.3205719:anon},
+%\cite{Merelo:2018:MEA:3205651.3208317:anon,Garcia-Valdez:2018:MEA:3205651.3205719:anon},
+\cite{Merelo:2018:MEA:3205651.3208317,Garcia-Valdez:2018:MEA:3205651.3205719},
 we presented a proof of concept of the implementation of a stateless 
 evolutionary algorithms using Perl 6, based on a single 
 channel model communicating threads for population evolving and 
@@ -319,7 +321,8 @@ used generally as benchmarks.
 % evolutionary algorithm using it.
 
 The baseline we are building upon, is similar to the one used in previous experiments
-\cite{Merelo:2018:MEA:3205651.3208317:anon}. Our intention was to
+%\cite{Merelo:2018:MEA:3205651.3208317:anon}
+\cite{Merelo:2018:MEA:3205651.3208317}. Our intention was to
 create a system that was not functionally equivalent to a sequential
 evolutionary algorithms, that also follows the principle of
 CSP. We decided to allow the algorithm to implement several threads communicating state through
@@ -328,9 +331,9 @@ channels. Every process itself will be stateless, reacting to the
 presence of messages in the channels it is listening to and sending
 result back to them, without changing state.
 
-As in the previous papers, \cite{merelo:WEA:anon}, we will use two
-groups of threads and two channels. The two groups of threads perform the following
-functions:\begin{itemize}
+As in the previous papers, \cite{merelo:WEA},% \cite{merelo:WEA:anon}, 
+we will use two groups of threads and two channels. 
+The two groups of threads perform the following functions:\begin{itemize}
 \item The {\em evolutionary} threads will be the ones performing 
 the operations of the evolutionary algorithm.
 \item The {\em mixing} thread will take existing populations, to create
@@ -484,15 +487,15 @@ using the mixed distribution obtained by the mixer.
 \section{Experimental results}
 \label{sec:exp}
 
-We were mainly interested in the scaling capabilities of the algorithm
+We focused on the scaling capabilities of the algorithm
 and implementation, so we tested several benchmark, binary functions:
-OneMax, Royal Road and Leading Ones, all of them with 64 bits. 
+OneMax, Royal Road and Leading Ones, all of them with 64 bits (for function definitions see e.g. \cite{rojas2012memory}). 
 
 \begin{figure*}[h!tb]
   \centering
-\includegraphics[width=0.95\textwidth]{../figure/screenshot}
-\caption{Screenshot using the htop utility of the used machine running
-  two experiments at the same time. As it can be seen, all processors
+\includegraphics[width=.99\textwidth]{../figure/screenshot}
+\caption{An htop utility screenshot for the used machine running
+  two experiments simultaneously. It can be seen all processors
   are kept busy, with a very high load average. }
 \label{fig:screenshot}
 \end{figure*}
@@ -503,7 +506,8 @@ so we must find out how it scales for different fitness functions.
 We are setting the number of initial populations to the
 number of threads plus one, as the minimum required to avoid
 starvation, and we are using a single mixing thread. 
-As reported in our previous papers \cite{Merelo:2018:MEA:3205651.3208317:anon,Garcia-Valdez:2018:MEA:3205651.3205719:anon}, 
+As reported in our previous papers %\cite{Merelo:2018:MEA:3205651.3208317:anon,Garcia-Valdez:2018:MEA:3205651.3205719:anon}, 
+\cite{Merelo:2018:MEA:3205651.3208317,Garcia-Valdez:2018:MEA:3205651.3205719},
 we are dividing the total population by the number of threads. 
 The population size will be 1024 for OneMax, 8192 for Royal Road 
 and 4096 Leading Ones. These quantities were found heuristically 
@@ -636,7 +640,7 @@ some the lack of success for the lowest number of threads.
 ggplot(data.rr,aes(x=Threads,y=Evaluations,group=Threads,alpha=n)) + geom_boxplot(fill="green",notch=TRUE)+theme_tufte()+scale_x_continuous(name="Threads",breaks=c(2,4,6,8,10,12))+labs(x="Threads",y="Evaluations",title="Royal Road 64 bits")+theme(text = element_text(size=24))
 @ 
 }}
-\caption{Royal Road: Number of evaluations vs. number of threads. Higher is better.}
+\caption{Royal Road: Number of evaluations vs. num. of threads. Higher is better.}
 \label{fig:threads:rr:1}
 \end{figure}
 %
@@ -654,10 +658,10 @@ ggplot(data.rr,aes(x=Threads,y=Time,group=Threads,alpha=n))+geom_boxplot(fill='b
 
 % \begin{figure}[h!tb]
 %   \centering
-\begin{wrapfigure}[11]{r}{0.5\columnwidth}
+\begin{wrapfigure}[10]{r}{0.5\columnwidth}
   \vspace{-.5\intextsep}
   \hspace*{.2\columnsep}   
-  \fbox{\scalebox{.9}{
+  \fbox{\scalebox{.8}{
 <<threads-rr3, cache=FALSE,echo=FALSE,fig.height=4,message=FALSE>>=
 ggplot(data.rr,aes(x=Threads,y=Evaluations/Time,group=Threads,alpha=n))+geom_boxplot(fill='yellow',notch=TRUE)+theme_tufte()+scale_x_continuous(name="Threads",breaks=c(2,4,6,8,10,12))+labs(x="Threads",y="Evaluation/time",title="Royal Road 64 bits")+theme(text = element_text(size=24))
 @ 
@@ -667,14 +671,14 @@ ggplot(data.rr,aes(x=Threads,y=Evaluations/Time,group=Threads,alpha=n))+geom_box
 \end{wrapfigure}
 %\end{figure}
 
-The pattern these charts exhibit is very similar to the one for
+The pattern these charts exhibit is very similar to those for
 OneMax. The performance scales up to a certain range, and then it
-plateaus, scaling only in speed, but not in wallclock time. From 2 to
+plateaus, increasing only in speed, but not in wallclock time. From 2 to
 6 threads speed increases 2x, due to an increase in speed with a
 slight decrease in the number of evaluations needed to find the
 solution; besides, success rate goes up from 2 to 4 threads, shifting
 from finding the solution 6 out of 15 times to finding it every
-time. This is basically due to the cap in the time allowed to run,
+time. This is due to the cap in the allowed runtime,
 which is 800 seconds; it is likely that if more time had been allowed,
 solution had been found. 
 
@@ -687,8 +691,8 @@ OneMax will probably have an influence. As a rule of
 thumb, performance will only increase to the point that population
 size will make the algorithm worsen in the opposite
 direction. Interestingly, it also proves that the peak performance is mainly
-due to algorithmic, not the physical number of threads (which should
-be around 16 for this machine). %Finding an algorithmic solution to
+due to algorithmic, not the physical number of threads (around 16 for this machine). 
+%Finding an algorithmic solution to
 %this problem would allow us to leverage the number of threads
 %available in a machine even more.
 
@@ -703,20 +707,31 @@ we had to increase the number of generations per thread to 16 and
 decrease the length of the chromosome to 48, as well as the time
 budget to 1200 seconds. 
 
+Even so, results were quite different, see
+Figures \ref{fig:lo:1}, \ref{fig:lo:2},
+\ref{fig:lo:3} (8 threads data not shown, because the solution was 
+actually found with 2 and 4 threads only). The
+situation is inverted with respect to the other problems. Although, as
+shown in Figure \ref{fig:lo:3}, the number of evaluations increases
+with the number of threads (and is actually higher than for Royal
+Road), the success rate {\em decreases} 
+%(shown with increasing transparency) 
+and the time to solution does the same.
+
 \begin{multicols}{2}
 
 \begin{figure}[H]
-  \centering\fbox{\scalebox{.85}{
+  \centering\fbox{\scalebox{.75}{
 <<threads-lo1, cache=FALSE,echo=FALSE,fig.height=4,message=FALSE>>=
 ggplot(data.lo,aes(x=Threads,y=Evaluations,group=Threads,alpha=n)) + geom_boxplot(fill="green",notch=TRUE)+theme_tufte()+scale_x_continuous(name="Threads",breaks=c(2,4,6,8,10,12))+labs(x="Threads",y="Evaluations",title="Leading ones 48 bits")+theme(text = element_text(size=24))
 @ 
 }}
-\caption{Leading ones: Number of evaluations vs. number of threads. Higher is better.}
+\caption{Leading ones: Number of evaluations vs. num. of threads. Higher is better.}
 \label{fig:lo:1}
 \end{figure}
 %
 \begin{figure}[H]
-  \centering\fbox{\scalebox{.85}{
+  \centering\fbox{\scalebox{.75}{
 <<threads-lo2, cache=FALSE,echo=FALSE,fig.height=4,message=FALSE>>=
 ggplot(data.lo,aes(x=Threads,y=Time,group=Threads,alpha=n))+geom_boxplot(fill='blue',notch=TRUE)+theme_tufte()+scale_x_continuous(name="Threads",breaks=c(2,4,6,8,10,12))+labs(x="Threads",y="Time",title="Leading ones 48 bits")+theme(text = element_text(size=24))
 @ 
@@ -729,10 +744,10 @@ ggplot(data.lo,aes(x=Threads,y=Time,group=Threads,alpha=n))+geom_boxplot(fill='b
 
 % \begin{figure}[h!tb]
 %   \centering
-\begin{wrapfigure}[11]{r}{0.5\columnwidth}
+\begin{wrapfigure}[9]{r}{0.5\columnwidth}
   \vspace{-.5\intextsep}
   \hspace*{.2\columnsep}   
-  \fbox{\scalebox{.85}{  
+  \fbox{\scalebox{.75}{  
 <<threads-lo3, cache=FALSE,echo=FALSE,fig.height=4,message=FALSE>>=
 ggplot(data.lo,aes(x=Threads,y=Evaluations/Time,group=Threads,alpha=n))+geom_boxplot(fill='yellow',notch=TRUE)+theme_tufte()+scale_x_continuous(name="Threads",breaks=c(2,4,6,8,10,12))+labs(x="Threads",y="Evaluation/time",title="Leading ones 48 bits")+theme(text = element_text(size=24))
 @ 
@@ -742,16 +757,6 @@ ggplot(data.lo,aes(x=Threads,y=Evaluations/Time,group=Threads,alpha=n))+geom_box
 \end{wrapfigure}
 %\end{figure}
 
-Even so, results were quite different. They
-are shown in Figures \ref{fig:lo:1}, \ref{fig:lo:2},
-\ref{fig:lo:3}. Although we tested with up to 8 threads, only the ones
-for which the solution was actually found, 2 and 4, are shown. The
-situation is inverted with respect to the other problems. Although, as
-shown in Figure \ref{fig:lo:3}, the number of evaluations increases
-with the number of threads (and is actually higher than for Royal
-Road), the success rate {\em decreases} 
-%(shown with increasing transparency) 
-and the time to solution does the same.
 
 This might be due, in part, to the intrinsic difficulty of the
 problem, with a flat fitness landscape that only changes if a single
@@ -815,25 +820,20 @@ physical limit. %Anyway, peak performance is reached for 6 processors,
 The experiments also indicate that creating a concurrent version of an
 evolutionary algorithm poses challenges such as designing the best
 communication strategy (including frequency and message formats) and
-distributing the algorithm workload, in this case the population,
-among the different threads; in both cases, physical features such as
-message size and actual number of threads must be considered.
+distributing the algorithm workload, i.e. the population,
+among the different threads; anyway, physical features such as
+message size and number of threads must be considered.
 
 As a consequence, several possible future lines of research arise. 
 The first one is to try new algorithmic scaling strategies that
 consistently has a positive influence in the number of evaluations so
 that speedup is extended at least up to the physical number of
-threads.
-
-On the other hand, the messaging strategies proposed 
-here can be used only if the problem
-can be represented via a binary data structure. New mechanisms will
-have to be devised for floating-point representation, or more
-complicated data structures. There are general-purpose strategies for
-compressing messages, for instance, and they could be used in this
-case. EDAs can also be extended to
-other types of data, so this is is something that can be also
-considered. %in the case of lossy messages such as this one, they could
+threads. On the other hand, the messaging strategies proposed 
+here are suitable for problem representation
+via a binary data structure. New mechanisms will
+have to be devised for floating-point representation, or other data structures. 
+For that matter, general-purpose compressing techniques or EDAs extended to
+other abstract data types can be examined. %in the case of lossy messages such as this one, they could
 % be complemented with the best individual, although this does carry its
 % own perils.
 
