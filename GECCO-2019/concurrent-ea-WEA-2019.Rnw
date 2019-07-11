@@ -34,7 +34,7 @@ data.lo <- data.lo %>% group_by(data.lo$Threads) %>% add_tally()
  \and
  Pedro A. Castillo\inst{1}
  \and
- José-Mario García-Valdez\inst{3}
+ Jos\'e-Mario Garc\'ia-Valdez\inst{3}
 \and
 Sergio Rojas-Galeano\inst{4}
 }
