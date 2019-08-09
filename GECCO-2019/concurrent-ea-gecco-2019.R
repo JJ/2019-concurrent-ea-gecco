@@ -33,5 +33,6 @@ ggplot(data.freqs.ap.threads,aes(x=Threads,y=Evaluations,group=Threads)) + geom_
 ggplot(data.freqs.ap.threads,aes(x=Threads,y=Time,group=Threads))+geom_boxplot(fill='blue',notch=TRUE)+theme_tufte()+scale_x_continuous(name="Threads",breaks=c(2,4,6,8))+labs(x="Generation.Gap",y="Time",title="Scaling")
 
 ## ----threads3, cache=FALSE,echo=FALSE,fig.height=4,message=FALSE---------
-ggplot(data.freqs.ap.threads,aes(x=Threads,y=Evaluations/Time,group=Threads))+geom_boxplot(fill='yellow',notch=TRUE)+theme_tufte()+scale_x_continuous(name="Threads",breaks=c(2,4,6,8))+labs(x="Generation.Gap",y="Evaluation/time",title="Scaling")
+ggplot(data.freqs.ap.threads,aes(x=Threads,y=Evaluations/Time,group=Threads))+geom_boxplot(fill='yellow',notch=TRUE)+theme_tufte()+scale_x_continuous(name="Threads",breaks=c(2,4,6,8))+labs(x="Generation.Gap",y="Evaluations/s",title="Scaling")+theme(text = element_text(size=40))
+ggsave("evaluations-second-freqs-ap.png", width=21, units="cm" )
 
