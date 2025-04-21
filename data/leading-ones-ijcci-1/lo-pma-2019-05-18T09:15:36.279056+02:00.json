@@ -1,0 +1,11 @@
+{
+  "time": "2019-05-18T09:15:36.296821+02:00",
+  "msg": {
+    "start-at": "2019-05-18T09:15:36.289670+02:00",
+    "threads": 10,
+    "generations": 16,
+    "population-size": 204,
+    "length": 48,
+    "initial-populations": 11
+  }
+}

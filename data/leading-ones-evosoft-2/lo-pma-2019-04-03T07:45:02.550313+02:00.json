@@ -1,0 +1,11 @@
+{
+  "msg": {
+    "initial-populations": 9,
+    "threads": 8,
+    "population-size": 256,
+    "start-at": "2019-04-03T07:45:02.560845+02:00",
+    "length": 48,
+    "generations": 16
+  },
+  "time": "2019-04-03T07:45:02.565196+02:00"
+}

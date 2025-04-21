@@ -1,0 +1,11 @@
+2019-02-06  Juan J. merelo  <jmerelo@penny>
+
+	* charts-gecco-2019.R: OK, now scaling works if only you bother to decrease the population it's working with. If you use the same population, it's going ot take pretty much the same time. I should have known that.
+
+2019-02-05  Juan J. merelo  <jmerelo@penny>
+
+	* charts-gecco-2019.R: The evaluation/time rate does not seem to change, even increasing the number of threads. Maybe because the number of initial populations is not increased.
+	The number of evaluations, and generations per unit time, increases with the number of generations. The less generations, the better.
+	Same problem with the compressed send, does not improve the number of generations, no way.
+	Evaluations/second for 8 generations gap is the best, with the lowest time and highest number of evaluations/second.
+
